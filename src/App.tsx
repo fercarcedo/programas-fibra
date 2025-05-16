@@ -43,6 +43,7 @@ function App() {
         }}
         maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}>
           <NavigationControl position='top-left' showCompass={false} />
+          <GeolocateControl position='top-left' showUserLocation={false} />
       </Map>
     </div>
   )
