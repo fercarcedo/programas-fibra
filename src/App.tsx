@@ -1,57 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import cloudflareLogo from './assets/Cloudflare_Logo.svg'
-import './App.css'
+import { useEffect } from 'react';
+import './App.css';
+import Map from 'react-map-gl/maplibre';
+import maplibregl from 'maplibre-gl';
+import "maplibre-gl/dist/maplibre-gl.css";
+import { Protocol } from 'pmtiles';
+import { layers, namedFlavor } from '@protomaps/basemaps';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [name, setName] = useState('unknown')
+  useEffect(() => {
+    let protocol = new Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
+    return () => {
+      maplibregl.removeProtocol('pmtiles');
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href='https://vite.dev' target='_blank'>
-          <img src={viteLogo} className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://react.dev' target='_blank'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-        <a href='https://workers.cloudflare.com/' target='_blank'>
-          <img src={cloudflareLogo} className='logo cloudflare' alt='Cloudflare logo' />
-        </a>
-      </div>
-      <h1>Vite + React + Cloudflare</h1>
-      <div className='card'>
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          aria-label='increment'
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className='card'>
-        <button
-          onClick={() => {
-            fetch('/api/')
-              .then((res) => res.json() as Promise<{ name: string }>)
-              .then((data) => setName(data.name))
-          }}
-          aria-label='get name'
-        >
-          Name from API is: {name}
-        </button>
-        <p>
-          Edit <code>worker/index.ts</code> to change the name
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <Map
+        style={{ width: '100%', height: '100%' }}
+        mapStyle={{
+          version: 8,
+          glyphs: 
+            'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
+          sprite: 'https://protomaps.github.io/basemaps-assets/sprites/v4/light',
+          sources: {
+            protomaps: {
+              type: 'vector',
+              tiles: [
+                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map/{z}/{x}/{y}.mvt",
+              ]
+            }
+          },
+          layers: layers("protomaps", namedFlavor('light'), {lang:'es'}),
+        }}
+        attributionControl={false}
+        renderWorldCopies={false}
+        initialViewState={{
+          latitude: 40.413401, 
+          longitude: -3.692422,
+          zoom: 6.5,
+        }}
+        maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}>
+      </Map>
+    </div>
   )
 }
 
