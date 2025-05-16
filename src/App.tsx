@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import './App.css';
-import Map from 'react-map-gl/maplibre';
+import Map, { GeolocateControl, NavigationControl } from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from 'pmtiles';
@@ -42,6 +42,7 @@ function App() {
           zoom: 6.5,
         }}
         maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}>
+          <NavigationControl position='top-left' showCompass={false} />
       </Map>
     </div>
   )
