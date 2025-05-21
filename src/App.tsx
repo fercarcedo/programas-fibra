@@ -5,6 +5,7 @@ import maplibregl from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from 'pmtiles';
 import { layers, namedFlavor } from '@protomaps/basemaps';
+import SearchControl from './components/SearchControl';
 
 function App() {
   useEffect(() => {
@@ -41,7 +42,9 @@ function App() {
           longitude: -3.692422,
           zoom: 6.5,
         }}
-        maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}>
+        maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}
+        maxZoom={15}>
+          <SearchControl position='top-left' showResultsWhileTyping={true} collapsed={true} language="es" placeholder="Buscar" />
           <NavigationControl position='top-left' showCompass={false} />
           <GeolocateControl position='top-left' showUserLocation={false} />
       </Map>
