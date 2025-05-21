@@ -13,7 +13,10 @@ export type SearchControlProps = {
 
 const featuresFromGeojson = (geojson: any | null): MaplibreGeocoderFeatureResults => {
     const features: CarmenGeojsonFeature[] = geojson?.features.map((feature: any) => {
-        const center = [feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2, feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2];
+        const center = [
+            feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2, 
+            feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2
+        ];
         return {
             id: feature.properties.osm_id,
             type: 'Feature',
