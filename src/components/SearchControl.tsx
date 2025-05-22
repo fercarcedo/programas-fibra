@@ -6,6 +6,11 @@ import MaplibreGeocoder, {
 import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import { useControl, type ControlPosition } from "react-map-gl/maplibre";
 import maplibregl from "maplibre-gl";
+import search from "../api/nominatim";
+import type {
+  NominatimFeature,
+  NominatimSearchResponse,
+} from "../api/nominatim/types";
 
 export type SearchControlProps = {
   showResultsWhileTyping?: boolean;
@@ -16,10 +21,10 @@ export type SearchControlProps = {
 };
 
 const featuresFromGeojson = (
-  geojson: any | null,
+  geojson: NominatimSearchResponse | null,
 ): MaplibreGeocoderFeatureResults => {
   const features: CarmenGeojsonFeature[] =
-    geojson?.features.map((feature: any) => {
+    geojson?.features.map((feature: NominatimFeature) => {
       const center = [
         feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
         feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
@@ -50,17 +55,7 @@ function SearchControl(props: SearchControlProps) {
           }
 
           try {
-            const url = new URL("https://nominatim.openstreetmap.org/search");
-            url.searchParams.set("q", config.query.toString());
-            url.searchParams.set("format", "geojson");
-            url.searchParams.set("polygon_geojson", "1");
-            url.searchParams.set("addressdetails", "1");
-            url.searchParams.set("countrycodes", "es");
-            url.searchParams.set("accept-language", "es");
-
-            const response = await fetch(url.toString());
-            const geojson = await response.json();
-
+            const geojson = await search(config.query.toString());
             return featuresFromGeojson(geojson);
           } catch (e) {
             console.log("Error while searching");
