@@ -1,55 +1,66 @@
-import { useEffect } from 'react';
-import './App.css';
-import Map, { GeolocateControl, NavigationControl } from 'react-map-gl/maplibre';
-import maplibregl from 'maplibre-gl';
+import { useEffect } from "react";
+import "./App.css";
+import Map, {
+  GeolocateControl,
+  NavigationControl,
+} from "react-map-gl/maplibre";
+import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Protocol } from 'pmtiles';
-import { layers, namedFlavor } from '@protomaps/basemaps';
-import SearchControl from './components/SearchControl';
+import { Protocol } from "pmtiles";
+import { layers, namedFlavor } from "@protomaps/basemaps";
+import SearchControl from "./components/SearchControl";
 
 function App() {
   useEffect(() => {
     let protocol = new Protocol();
-    maplibregl.addProtocol('pmtiles', protocol.tile);
+    maplibregl.addProtocol("pmtiles", protocol.tile);
     return () => {
-      maplibregl.removeProtocol('pmtiles');
+      maplibregl.removeProtocol("pmtiles");
     };
   }, []);
 
   return (
     <div className="app">
       <Map
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         mapStyle={{
           version: 8,
-          glyphs: 
-            'https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf',
-          sprite: 'https://protomaps.github.io/basemaps-assets/sprites/v4/light',
+          glyphs:
+            "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
+          sprite:
+            "https://protomaps.github.io/basemaps-assets/sprites/v4/light",
           sources: {
             protomaps: {
-              type: 'vector',
+              type: "vector",
               tiles: [
                 "https://programas-fibra-tile-server.fercarcedo.workers.dev/map/{z}/{x}/{y}.mvt",
-              ]
-            }
+              ],
+            },
           },
-          layers: layers("protomaps", namedFlavor('light'), {lang:'es'}),
+          layers: layers("protomaps", namedFlavor("light"), { lang: "es" }),
         }}
         attributionControl={false}
         renderWorldCopies={false}
         initialViewState={{
-          latitude: 40.413401, 
+          latitude: 40.413401,
           longitude: -3.692422,
           zoom: 6.5,
         }}
         maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}
-        maxZoom={15}>
-          <SearchControl position='top-left' showResultsWhileTyping={true} collapsed={true} language="es" placeholder="Buscar" />
-          <NavigationControl position='top-left' showCompass={false} />
-          <GeolocateControl position='top-left' showUserLocation={false} />
+        maxZoom={15}
+      >
+        <SearchControl
+          position="top-left"
+          showResultsWhileTyping={true}
+          collapsed={true}
+          language="es"
+          placeholder="Buscar"
+        />
+        <NavigationControl position="top-left" showCompass={false} />
+        <GeolocateControl position="top-left" showUserLocation={false} />
       </Map>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,13 +1,12 @@
-
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "programas-fibra",
-	"main": "worker/index.ts",
-	"compatibility_date": "2025-05-13",
-	"assets": {
-		"not_found_handling": "single-page-application"
-	},
-	"observability": {
-		"enabled": true
-	}
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "programas-fibra",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-05-13",
+  "assets": {
+    "not_found_handling": "single-page-application",
+  },
+  "observability": {
+    "enabled": true,
+  },
 }
