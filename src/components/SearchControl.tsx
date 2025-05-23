@@ -59,9 +59,8 @@ function SearchControl(props: SearchControlProps) {
             return featuresFromGeojson(geojson);
           } catch (e) {
             console.log("Error while searching");
+            return featuresFromGeojson(null);
           }
-
-          return featuresFromGeojson(null);
         },
       };
       return new MaplibreGeocoder(geocoderApi, {
