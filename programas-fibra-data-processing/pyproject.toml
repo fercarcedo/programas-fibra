@@ -1,0 +1,22 @@
+[project]
+name = "programas-fibra-data-processing"
+version = "0.1.0"
+description = "Process GeoJSON files from the fiber programs to only include awarded areas"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ijson>=3.4.0",
+ "openpyxl>=3.1.5",
+ "pandas>=2.2.3",
+ "simplejson>=3.20.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.4.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
