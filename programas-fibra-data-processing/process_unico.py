@@ -19,12 +19,14 @@ def read_args():
         "--eligible-areas",
         type=str,
         help="Path of the GeoJSON file with the eligible areas",
+        required=True,
     )
     parser.add_argument(
         "-a",
         "--awarded-areas",
         type=str,
         help="Path of the Excel file with the awarded areas",
+        required=True,
     )
     parser.add_argument(
         "-o",
