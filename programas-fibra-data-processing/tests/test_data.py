@@ -541,3 +541,239 @@ AWARDED_AREAS_JSON = """
   ]
 }
 """
+
+MAPPED_AWARDED_AREAS = [
+    {
+        "type": "Feature",
+        "properties": {
+            "program_type": "UNICO",
+            "autonomous_community": "País Vasco/Euskadi",
+            "province": "Araba/Álava",
+            "municipality": "Amurrio",
+            "area_code": "01002000000-2024-000002",
+            "building_count": 1,
+            "house_count": 1,
+        },
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [
+                        Decimal("-2.992326889999958"),
+                        Decimal("43.03218856500007"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992195219999928"),
+                        Decimal("43.032441526000071"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992141746999948"),
+                        Decimal("43.032554904000051"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992040759999952"),
+                        Decimal("43.032642120000048"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991933823999943"),
+                        Decimal("43.032698799000059"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991815016999965"),
+                        Decimal("43.032751128000029"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991963511999927"),
+                        Decimal("43.032829636000031"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991904094999938"),
+                        Decimal("43.032964824000032"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.99182682999998"),
+                        Decimal("43.033181570000067"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991583526999932"),
+                        Decimal("43.033054581000044"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991310301999931"),
+                        Decimal("43.032980422000037"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991441024999972"),
+                        Decimal("43.032688246000077"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991666789999954"),
+                        Decimal("43.032326296000065"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991826175999961"),
+                        Decimal("43.032102487000031"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991827783999952"),
+                        Decimal("43.032100236000076"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991844661999949"),
+                        Decimal("43.032103290000066"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.991973927999936"),
+                        Decimal("43.032125433000033"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992164321999951"),
+                        Decimal("43.032157270000027"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992247262999967"),
+                        Decimal("43.032171504000075"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.99230812199994"),
+                        Decimal("43.032183368000062"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.992326889999958"),
+                        Decimal("43.03218856500007"),
+                        Decimal("0.0"),
+                    ],
+                ]
+            ],
+        },
+    },
+    {
+        "type": "Feature",
+        "properties": {
+            "program_type": "UNICO",
+            "autonomous_community": "País Vasco/Euskadi",
+            "province": "Araba/Álava",
+            "municipality": "Amurrio",
+            "area_code": "01002000000-2024-000005",
+            "building_count": 1,
+            "house_count": 1,
+        },
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [
+                        Decimal("-2.976285073999975"),
+                        Decimal("43.037583254000026"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976372094999931"),
+                        Decimal("43.037531376000061"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.97645780199997"),
+                        Decimal("43.037481326000034"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976467808999928"),
+                        Decimal("43.037474880000048"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976487234999979"),
+                        Decimal("43.037463124000055"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976510244999929"),
+                        Decimal("43.037450413000045"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.97653453199996"),
+                        Decimal("43.037438261000034"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976557859999957"),
+                        Decimal("43.037427712000067"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976579579999964"),
+                        Decimal("43.037418793000029"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976611391999938"),
+                        Decimal("43.037407858000051"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976635468999973"),
+                        Decimal("43.037399506000042"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976669649999963"),
+                        Decimal("43.037388050000061"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976805124999942"),
+                        Decimal("43.037497615000063"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976959560999944"),
+                        Decimal("43.037622149000072"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976846669999929"),
+                        Decimal("43.037686342000029"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976711656999953"),
+                        Decimal("43.037781542000062"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976687023999943"),
+                        Decimal("43.037798917000032"),
+                        Decimal("0.0"),
+                    ],
+                    [
+                        Decimal("-2.976285073999975"),
+                        Decimal("43.037583254000026"),
+                        Decimal("0.0"),
+                    ],
+                ]
+            ],
+        },
+    },
+]

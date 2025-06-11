@@ -3,11 +3,12 @@ from process_unico import (
     filter_awarded_areas,
     write_awarded_areas,
     process_eligible_areas,
+    map_areas
 )
 import pandas as pd
 import numpy as np
 from io import BytesIO, StringIO
-from test_data import ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON
+from test_data import ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON, MAPPED_AWARDED_AREAS
 from unittest.mock import patch, mock_open, MagicMock
 
 def test_read_awarded_area_codes():
@@ -53,6 +54,11 @@ def test_filter_awarded_areas():
     assert awarded_areas[0]["properties"]["CodigoZona"] == "01002000000-2024-000002"
     assert awarded_areas[1]["properties"]["CodigoZona"] == "01002000000-2024-000005"
 
+def test_map_areas():
+    mapped_areas = map_areas(AWARDED_AREAS)
+
+    assert mapped_areas == MAPPED_AWARDED_AREAS
+
 
 def test_write_awarded_areas():
     output = StringIO()
@@ -66,7 +72,8 @@ def test_write_awarded_areas():
 @patch('builtins.open')
 @patch('process_unico.write_awarded_areas')
 @patch('process_unico.filter_awarded_areas')
-def test_process_eligible_areas(mock_filter, mock_write, mock_open_func):
+@patch('process_unico.map_areas')
+def test_process_eligible_areas(mock_map, mock_filter, mock_write, mock_open_func):
     mock_input_file = MagicMock()
     mock_output_file = MagicMock()
 
@@ -76,7 +83,9 @@ def test_process_eligible_areas(mock_filter, mock_write, mock_open_func):
     ]
 
     mock_filtered_areas = AWARDED_AREAS
+    mapped_areas = MAPPED_AWARDED_AREAS
     mock_filter.return_value = mock_filtered_areas
+    mock_map.return_value = mapped_areas
     
     eligible_areas_file = "input.geojson"
     awarded_area_codes = ["26180000000-2021-000005", "26180000003-2021-000004"]
@@ -86,5 +95,7 @@ def test_process_eligible_areas(mock_filter, mock_write, mock_open_func):
     
     mock_open_func.assert_any_call(eligible_areas_file, "rb")
     mock_open_func.assert_any_call(output_file, "w", encoding='utf-8')    
+
     mock_filter.assert_called_once_with(mock_input_file.__enter__.return_value, awarded_area_codes)
-    mock_write.assert_called_once_with(mock_output_file.__enter__.return_value, mock_filtered_areas)
+    mock_map.assert_called_once_with(mock_filtered_areas)
+    mock_write.assert_called_once_with(mock_output_file.__enter__.return_value, mapped_areas)

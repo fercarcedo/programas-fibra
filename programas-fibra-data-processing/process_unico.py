@@ -63,12 +63,28 @@ def write_awarded_areas(f, areas):
 
     f.write("]}")
 
+def map_areas(areas):
+    return [
+        {
+            **area,
+            'properties': {
+                'program_type': 'UNICO',
+                'autonomous_community': area['properties']['Comunidad_'],
+                'province': area['properties']['Provincia'],
+                'municipality': area['properties']['Municipio'],
+                'area_code': area['properties']['CodigoZona'],
+                'building_count': area['properties']['UIs'],
+                'house_count': area['properties']['Viviendas'],
+            }
+        }
+        for area in areas
+    ]
 
 def process_eligible_areas(eligible_areas_file, awarded_area_codes, output_file):
     with open(eligible_areas_file, "rb") as f:
         with open(output_file, "w", encoding='utf-8') as out:
             areas = filter_awarded_areas(f, awarded_area_codes)
-            write_awarded_areas(out, areas)
+            write_awarded_areas(out, map_areas(areas))
 
 
 def main():
