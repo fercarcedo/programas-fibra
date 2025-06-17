@@ -1,5 +1,5 @@
 from process_unico import (
-    read_awarded_area_codes,
+    read_awarded_areas,
     filter_awarded_areas,
     write_awarded_areas,
     process_eligible_areas,
@@ -8,46 +8,117 @@ from process_unico import (
 import pandas as pd
 import numpy as np
 from io import BytesIO, StringIO
-from test_data import ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON, MAPPED_AWARDED_AREAS
+from test_data import ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON, MAPPED_AWARDED_AREAS, PROGRAM_AREAS
 from unittest.mock import patch, mock_open, MagicMock
 
-def test_read_awarded_area_codes():
+def test_read_awarded_areas():
     df = pd.DataFrame(
         {
             0: [
-                np.nan,
-                np.nan,
-                "Expediente",
-                "TSI-061400-2021-0113",
-                "TSI-061400-2021-0113",
+                *([np.nan] * 4),
+                "Programa de Universalización de Infraestructuras Digitales para la Cohesión - Banda Ancha",
+                "UNICO - Banda Ancha: Convocatoria 2024",
+                "Plan de Recuperación, Transformación y Resiliencia – Financiado por la Unión Europea – NextGenerationEU",
+                "Ámbito geográfico de la relación de solicitudes con Resolución de Concesión",
+                "EXPEDIENTE",
+                "TSI-061400-2024-0008",
+                "TSI-061400-2024-0035",
             ],
-            1: [np.nan, np.nan, "Comunidad Autónoma", "RIOJA (LA)", "RIOJA (LA)"],
-            2: [np.nan, np.nan, "Provincia", "RIOJA (LA)", "RIOJA (LA)"],
-            3: [np.nan, np.nan, "Municipio", "Zarratón", "Zarratón"],
-            4: [np.nan, np.nan, "Código INE del municipio", 26180, 26180],
+            1: [*([np.nan] * 8), "Comunidad Autónoma", "PAÍS VASCO/EUSKADI", "PAÍS VASCO/EUSKADI"],
+            2: [*([np.nan] * 8), "Provincia", "ÁLAVA", "ÁLAVA"],
+            3: [*([np.nan] * 8), "Municipio", "Amurrio", "Amurrio"],
+            4: [*([np.nan] * 8), "Código INE del municipio", "01002", "01002"],
             5: [
-                np.nan,
-                np.nan,
+                *([np.nan] * 8),
                 "Identificación  zona (Código  Referencia - 23  cifras)",
-                "26180000000-2021-000005",
-                "26180000003-2021-000004",
+                "01002000000-2024-000002",
+                "01002000000-2024-000005",
             ],
-            6: [np.nan, np.nan, "Tipo de zona", "Blanca", "Blanca"],
+            6: [*([np.nan] * 8), "Tipo de zona", "Blanca", "Blanca"],
+        }
+    )
+    df2 = pd.DataFrame(
+        {
+            0: [
+                *([np.nan] * 4),
+                "Programa de Universalización de Infraestructuras Digitales para la Cohesión - Banda Ancha",
+                "UNICO - Banda Ancha: Convocatoria 2024",
+                "Plan de Recuperación, Transformación y Resiliencia – Financiado por la Unión Europea – NextGenerationEU",
+                "Relación de solicitudes con Resolución de Concesión",
+                "EXPEDIENTE",
+                "TSI-061400-2024-0008",
+                "TSI-061400-2024-0035",
+            ],
+            1: [
+                *([np.nan] * 8),
+                "SITUACIÓN",
+                "EN EJECUCIÓN",
+                "EN EJECUCIÓN",
+            ],
+            2: [
+                *([np.nan] * 8),
+                "RAZON SOCIAL",
+                "TELEFONICA DE ESPAÑA, S.A.",
+                "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.",
+            ],
+            3: [
+                *([np.nan] * 8),
+                "COMUNIDAD AUTÓNOMA",
+                "PAÍS VASCO/EUSKADI",
+                "PAÍS VASCO/EUSKADI",
+            ],
+            4: [
+                *([np.nan] * 8),
+                "PROVINCIA",
+                "ÁLAVA",
+                "ÁLAVA",
+            ],
+            5: [
+                *([np.nan] * 8),
+                "PRESUPUESTO FINANCIABLE (€)",
+                "179.731,00",
+                "544.231,00",
+            ],
+            6: [
+                *([np.nan] * 8),
+                "AYUDA (€)",
+                "143.784,80",
+                "435.384,80",
+            ],
+            7: [
+                *([np.nan] * 8),
+                "% AYUDA",
+                "80",
+                "80",
+            ],
+            8: [
+                *([np.nan] * 8),
+                "Tecnología",
+                "FTTH",
+                "FTTH"
+            ],
+            9: [
+                *([np.nan] * 8),
+                "Fecha Finalización",
+                "31/12/2025",
+                "31/12/2025",
+            ],
         }
     )
     buffer = BytesIO()
-    df.to_excel(buffer, sheet_name="Ámbito", index=False, header=False)
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name="Ámbito", index=False, header=False)
+        df2.to_excel(writer, sheet_name="Proyectos", index=False, header=False)
     buffer.seek(0)
 
-    area_codes = read_awarded_area_codes(buffer)
-    assert area_codes == set(["26180000000-2021-000005", "26180000003-2021-000004"])
-
+    areas = read_awarded_areas(buffer)
+    assert areas == PROGRAM_AREAS
 
 def test_filter_awarded_areas():
     buffer = BytesIO(ELIGIBLE_AREAS_GEO_JSON.encode("utf-8"))
     awarded_areas = list(
         filter_awarded_areas(
-            buffer, set(["01002000000-2024-000002", "01002000000-2024-000005"])
+            buffer, PROGRAM_AREAS
         )
     )
     assert len(awarded_areas) == 2
@@ -55,7 +126,7 @@ def test_filter_awarded_areas():
     assert awarded_areas[1]["properties"]["CodigoZona"] == "01002000000-2024-000005"
 
 def test_map_areas():
-    mapped_areas = map_areas(AWARDED_AREAS)
+    mapped_areas = map_areas(AWARDED_AREAS, PROGRAM_AREAS)
 
     assert mapped_areas == MAPPED_AWARDED_AREAS
 
@@ -88,14 +159,13 @@ def test_process_eligible_areas(mock_map, mock_filter, mock_write, mock_open_fun
     mock_map.return_value = mapped_areas
     
     eligible_areas_file = "input.geojson"
-    awarded_area_codes = ["26180000000-2021-000005", "26180000003-2021-000004"]
     output_file = "out.geojson"
     
-    process_eligible_areas(eligible_areas_file, awarded_area_codes, output_file)
+    process_eligible_areas(eligible_areas_file, PROGRAM_AREAS, output_file)
     
     mock_open_func.assert_any_call(eligible_areas_file, "rb")
     mock_open_func.assert_any_call(output_file, "w", encoding='utf-8')    
 
-    mock_filter.assert_called_once_with(mock_input_file.__enter__.return_value, awarded_area_codes)
-    mock_map.assert_called_once_with(mock_filtered_areas)
+    mock_filter.assert_called_once_with(mock_input_file.__enter__.return_value, PROGRAM_AREAS)
+    mock_map.assert_called_once_with(mock_filtered_areas, PROGRAM_AREAS)
     mock_write.assert_called_once_with(mock_output_file.__enter__.return_value, mapped_areas)

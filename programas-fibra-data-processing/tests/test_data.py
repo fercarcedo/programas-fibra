@@ -1,4 +1,5 @@
 from decimal import Decimal
+from process_unico import ProgramAreas
 
 ELIGIBLE_AREAS_GEO_JSON = """
 {
@@ -553,6 +554,8 @@ MAPPED_AWARDED_AREAS = [
             "area_code": "01002000000-2024-000002",
             "building_count": 1,
             "house_count": 1,
+            'grantee': 'TELEFONICA DE ESPAÑA, S.A.',
+            'project': 'TSI-061400-2024-0008'
         },
         "geometry": {
             "type": "Polygon",
@@ -677,6 +680,8 @@ MAPPED_AWARDED_AREAS = [
             "area_code": "01002000000-2024-000005",
             "building_count": 1,
             "house_count": 1,
+            "grantee": "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.",
+            "project": "TSI-061400-2024-0035"
         },
         "geometry": {
             "type": "Polygon",
@@ -777,3 +782,14 @@ MAPPED_AWARDED_AREAS = [
         },
     },
 ]
+
+PROGRAM_AREAS = ProgramAreas(
+    area_to_project={
+        '01002000000-2024-000002': 'TSI-061400-2024-0008',
+        '01002000000-2024-000005': 'TSI-061400-2024-0035',
+    },
+    project_to_grantee={
+        'TSI-061400-2024-0008': 'TELEFONICA DE ESPAÑA, S.A.',
+        'TSI-061400-2024-0035': 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.',
+    },
+)
