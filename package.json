@@ -15,7 +15,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@maplibre/maplibre-gl-geocoder": "github:fercarcedo/maplibre-gl-geocoder#6826bca",
+    "@maplibre/maplibre-gl-geocoder": "^1.9.0",
     "@protomaps/basemaps": "^5.3.0",
     "maplibre-gl": "^5.5.0",
     "pmtiles": "^4.3.0",
