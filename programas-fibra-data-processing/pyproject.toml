@@ -5,6 +5,7 @@ description = "Process GeoJSON files from the fiber programs to only include awa
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "geojson>=3.2.0",
     "ijson>=3.4.0",
     "openpyxl>=3.1.5",
     "pandas>=2.2.3",
