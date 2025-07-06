@@ -4,8 +4,8 @@ import argparse
 import simplejson as json
 from decimal import Decimal
 from dataclasses import dataclass
-from enum import Enum
 from typing import BinaryIO, TextIO, Generator, Any
+from lib.models import AreaPropertiesUNICO
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -17,22 +17,6 @@ class DecimalEncoder(json.JSONEncoder):
 class ProgramAreas:
     area_to_project: dict[str, str]
     project_to_grantee: dict[str, str]
-
-class ProgramType(Enum):
-    UNICO = 'UNICO'
-    PEBA = 'PEBA'
-
-@dataclass
-class AreaProperties:
-    program_type: ProgramType
-    autonomous_community: str
-    province: str
-    municipality: str
-    area_code: str
-    building_count: int
-    house_count: int
-    project: str
-    grantee: str
 
 AREA_CODES_COLUMN_INDEX = 5
 PROJECTS_COLUMN_INDEX = 0
@@ -105,17 +89,19 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[
     return [
         {
             **area,
-            'properties': AreaProperties(
-                program_type=ProgramType.UNICO.value,
-                autonomous_community=area['properties']['Comunidad_'],
-                province=area['properties']['Provincia'],
-                municipality=area['properties']['Municipio'],
-                area_code=(code := area['properties']['CodigoZona']),
-                building_count=area['properties']['UIs'],
-                house_count=area['properties']['Viviendas'],
-                project=(proj := program_areas.area_to_project[code]),
-                grantee=program_areas.project_to_grantee[proj],
-            ).__dict__
+            'properties': {
+                **(area_properties := AreaPropertiesUNICO(
+                    autonomous_community=area['properties']['Comunidad_'],
+                    province=area['properties']['Provincia'],
+                    municipality=area['properties']['Municipio'],
+                    area_code=(code := area['properties']['CodigoZona']),
+                    building_count=area['properties']['UIs'],
+                    house_count=area['properties']['Viviendas'],
+                    project=(proj := program_areas.area_to_project[code]),
+                    grantee=program_areas.project_to_grantee[proj],
+                )).__dict__, 
+                'program_type': area_properties.program_type
+            }
         }
         for area in areas
     ]

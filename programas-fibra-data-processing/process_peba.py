@@ -1,56 +1,13 @@
 import argparse
-import warnings
 import pandas
-from typing import Optional, NamedTuple
-from abc import abstractmethod
-from dataclasses import dataclass
-from enum import StrEnum, auto
 import geojson
 from geojson import FeatureCollection, Feature, Point
 import math
 import numpy as np
+from lib.models import AreaProperties, AreaPropertiesPEBA
 
 PROJECTS_COLUMN_INDEX = 2
 GRANTEES_COLUMN_INDEX = 4
-
-class ProgramType(StrEnum):
-    UNICO = auto()
-    PEBA = auto()
-
-@dataclass
-class AreaProperties:
-    autonomous_community: str
-    province: str
-    municipality: str
-    project: str
-    grantee: str
-
-    @property
-    @abstractmethod
-    def program_type(self) -> ProgramType:
-        pass
-
-
-@dataclass
-class AreaPropertiesUNICO(AreaProperties):
-    area_code: str
-    building_count: int
-    house_count: int
-
-    @property
-    def program_type(self) -> ProgramType:
-        return ProgramType.UNICO
-
-@dataclass
-class AreaPropertiesPEBA(AreaProperties):
-    town: str
-    exception_zone_code: Optional[str] = None
-    exception_zone_name: Optional[str] = None
-
-    @property
-    def program_type(self) -> ProgramType:
-        return ProgramType.PEBA
-    
 
 def read_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(

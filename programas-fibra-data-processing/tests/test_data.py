@@ -547,7 +547,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
-            "program_type": "UNICO",
+            "program_type": "unico",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
             "municipality": "Amurrio",
@@ -673,7 +673,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
-            "program_type": "UNICO",
+            "program_type": "unico",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
             "municipality": "Amurrio",
