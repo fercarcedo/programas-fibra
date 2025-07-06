@@ -15,8 +15,13 @@ from geojson import FeatureCollection, Feature, Point
 import geojson
 from unittest.mock import patch, mock_open, MagicMock, call
 import numpy as np
-from test_data_peba import (AREAS_DF, ENTITIES_DF)
+from test_data_peba import (AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE, ENTITIES_DF)
+import pytest
 
+class IsNaN:
+    def __eq__(self, other):
+        return np.isnan(other)
+    
 def test_ine_code_to_coordinates():
     buffer = BytesIO()
     ENTITIES_DF.to_csv(buffer, sep=";", index=False, encoding="latin1")
@@ -95,9 +100,10 @@ def _create_point(coordinates: tuple[float, float], properties: AreaProperties) 
         properties={**properties.__dict__, 'program_type': 'peba'}
     )
 
+@pytest.mark.parametrize("df", [AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE])
 @patch('process_peba.create_properties')
 @patch('process_peba.to_geojson')
-def test_map_awarded_areas(mock_to_geojson, mock_create_properties):
+def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
     project_to_grantee = {
         "TSI-061000-2018-0001": "INFORMATICA FUENTEALBILLA S.L.",
         "TSI-061000-2018-0002": "INFORMATICA FUENTEALBILLA S.L.",
@@ -123,15 +129,24 @@ def test_map_awarded_areas(mock_to_geojson, mock_create_properties):
     mock_create_properties.side_effect = properties_list
     mock_to_geojson.side_effect = points
 
-    collection = map_awarded_areas(AREAS_DF, project_to_grantee, code_to_coordinates)
+    collection = map_awarded_areas(df, project_to_grantee, code_to_coordinates)
+
+    assert collection == FeatureCollection(points)
+
+    assert mock_create_properties.call_count == 3
+
+    expected_rows = [
+        (2, IsNaN(), 'TSI-061000-2018-0001', 'CASTILLA LA MANCHA', 'ALBACETE', 'Casas de Juan Núñez', 'CASAS DE JUAN NÚÑEZ', '02021000100', IsNaN(), IsNaN()),
+        (3, IsNaN(), 'TSI-061000-2018-0002', 'CASTILLA LA MANCHA', 'ALBACETE', 'Albacete', 'AGUAS NUEVAS', '02003000100', IsNaN(), IsNaN()),
+        (4, IsNaN(), 'TSI-061000-2018-0003', 'C.VALENCIANA', 'VALENCIA / VALÈNCIA', 'Real', 'REAL', '46212000100', IsNaN(), IsNaN())
+    ]
+
+    mock_create_properties.assert_any_call(expected_rows[0], project_to_grantee)
+    mock_create_properties.assert_any_call(expected_rows[1], project_to_grantee)
+    mock_create_properties.assert_any_call(expected_rows[2], project_to_grantee)
 
     assert mock_to_geojson.call_count == 3
     
-    mock_to_geojson.assert_any_call((2, np.nan, 'TSI-061000-2018-0001', 'CASTILLA LA MANCHA', 'ALBACETE', 'Casas de Juan Núñez', 'CASAS DE JUAN NÚÑEZ', '02021000100', np.nan, np.nan), AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
-
-    print(mock_to_geojson.mock_calls)
-    mock_to_geojson.assert_has_calls([
-        call((2, np.nan, 'TSI-061000-2018-0001', 'CASTILLA LA MANCHA', 'ALBACETE', 'Casas de Juan Núñez', 'CASAS DE JUAN NÚÑEZ', '02021000100', np.nan, np.nan), AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519)),
- call((3, np.nan, 'TSI-061000-2018-0002', 'CASTILLA LA MANCHA', 'ALBACETE', 'Albacete', 'AGUAS NUEVAS', '02003000100', np.nan, np.nan), AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947)),
- call((4, np.nan, 'TSI-061000-2018-0003', 'C.VALENCIANA', 'VALENCIA / VALÈNCIA', 'Real', 'REAL', '46212000100', np.nan, np.nan), AreaPropertiesPEBA(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))
-    ])
+    mock_to_geojson.assert_any_call(expected_rows[0], AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
+    mock_to_geojson.assert_any_call(expected_rows[1], AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947))
+    mock_to_geojson.assert_any_call(expected_rows[2], AreaPropertiesPEBA(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))

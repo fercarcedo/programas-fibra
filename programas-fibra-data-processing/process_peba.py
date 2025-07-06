@@ -8,6 +8,7 @@ from enum import StrEnum, auto
 import geojson
 from geojson import FeatureCollection, Feature, Point
 import math
+import numpy as np
 
 PROJECTS_COLUMN_INDEX = 2
 GRANTEES_COLUMN_INDEX = 4
@@ -108,7 +109,7 @@ def map_awarded_areas(
 ) -> FeatureCollection:
     if df.shape[1] < 9:
         for i in range(df.shape[1], 9):
-            df[i] = None
+            df[i] = np.nan
 
     features = []
     for row in df.itertuples(name=None):
