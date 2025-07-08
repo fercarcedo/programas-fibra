@@ -1,42 +1,12 @@
-import argparse
 import pandas
 import geojson
 from geojson import FeatureCollection, Feature, Point
 import math
 import numpy as np
-from lib.models import AreaProperties, AreaPropertiesPEBA
+from .models import AreaProperties, AreaPropertiesPEBA
 
 PROJECTS_COLUMN_INDEX = 2
 GRANTEES_COLUMN_INDEX = 4
-
-def read_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Process Excel files from the PEBA-NGA fiber programs to generate a GeoJSON file"
-    )
-    parser.add_argument(
-        "-f",
-        "--file",
-        type=str,
-        help="Path of the Excel file",
-        required=True,
-    )
-    parser.add_argument(
-        "-e",
-        "--entities",
-        type=str,
-        help="Path of the entities csv file from the CNIG",
-        required=True,
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        type=str,
-        help="Name of the result file",
-        default="out.geojson",
-        required=False,
-    )
-
-    return parser.parse_args()
 
 def awarded_areas(awarded_projects_file_path: str, entities_file_path: str) -> list[AreaProperties]:
     excel_df = pandas.read_excel(awarded_projects_file_path, sheet_name="Ámbito geográfico actuación", header=None)
@@ -106,10 +76,6 @@ def write_awarded_areas(output_file_path: str, collection: FeatureCollection):
     with open(output_file_path, "w") as f:
         geojson.dump(collection, f)
 
-def main():
-    args = read_args()
-    areas_geojson = awarded_areas(args.file, args.entities)
-    write_awarded_areas(args.output, areas_geojson)
-
-if __name__ == '__main__':
-    main()
+def execute(awarded_projects_file_path: str, entities_file_path: str, output_file_path: str):
+    areas_geojson = awarded_areas(awarded_projects_file_path, entities_file_path)
+    write_awarded_areas(output_file_path, areas_geojson)

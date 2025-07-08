@@ -1,11 +1,10 @@
 import ijson
 import pandas
-import argparse
 import simplejson as json
 from decimal import Decimal
 from dataclasses import dataclass
 from typing import BinaryIO, TextIO, Generator, Any
-from lib.models import AreaPropertiesUNICO
+from .models import AreaPropertiesUNICO
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -21,35 +20,6 @@ class ProgramAreas:
 AREA_CODES_COLUMN_INDEX = 5
 PROJECTS_COLUMN_INDEX = 0
 GRANTEES_COLUMN_INDEX = 2
-
-def read_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Process GeoJSON files from the UNICO fiber programs to only include awarded areas"
-    )
-    parser.add_argument(
-        "-e",
-        "--eligible-areas",
-        type=str,
-        help="Path of the GeoJSON file with the eligible areas",
-        required=True,
-    )
-    parser.add_argument(
-        "-a",
-        "--awarded-areas",
-        type=str,
-        help="Path of the Excel file with the awarded areas",
-        required=True,
-    )
-    parser.add_argument(
-        "-o",
-        "--output-file",
-        type=str,
-        help="Name of the result file",
-        default="out.geojson",
-        required=False,
-    )
-
-    return parser.parse_args()
 
 def read_awarded_areas(file_path: str) -> ProgramAreas:
     excel_df = pandas.read_excel(file_path, sheet_name="Ámbito", header=None)
@@ -112,12 +82,6 @@ def process_eligible_areas(eligible_areas_file_path: str, awarded_areas: Program
             areas = filter_awarded_areas(f, awarded_areas)
             write_awarded_areas(out, map_areas(areas, awarded_areas))
 
-
-def main():
-    args = read_args()
-    awarded_areas = read_awarded_areas(args.awarded_areas)
-    process_eligible_areas(args.eligible_areas, awarded_areas, args.output_file)
-
-
-if __name__ == "__main__":
-    main()
+def execute(awarded_areas_file_path: str, eligible_areas_file_path: str, output_file_path: str):
+    awarded_areas = read_awarded_areas(awarded_areas_file_path)
+    process_eligible_areas(eligible_areas_file_path, awarded_areas, output_file_path)
