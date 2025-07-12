@@ -35,9 +35,29 @@ function App() {
               tiles: [
                 "https://programas-fibra-tile-server.fercarcedo.workers.dev/map/{z}/{x}/{y}.mvt",
               ],
+              maxzoom: 15
             },
+            fiber: {
+              type: "vector",
+              tiles: [
+                "https://programas-fibra-tile-server.fercarcedo.workers.dev/output/{z}/{x}/{y}.mvt"
+              ],
+              maxzoom: 15
+            }
           },
-          layers: layers("protomaps", namedFlavor("light"), { lang: "es" }),
+          layers: [
+            ...layers("protomaps", namedFlavor("light"), { lang: "es" }),
+            {
+              id: "fiber-layer",
+              type: "fill",
+              source: "fiber",
+              "source-layer": "output",
+              paint: {
+                  "fill-color": "#ff0000",
+                  "fill-opacity": .5
+              }
+            }
+          ]
         }}
         attributionControl={false}
         renderWorldCopies={false}
@@ -46,8 +66,8 @@ function App() {
           longitude: -3.692422,
           zoom: 6.5,
         }}
-        maxBounds={[-19.160156, 27.410786, 4.394531, 44.024422]}
-        maxZoom={15}
+        maxBounds={[-19.116211,26.824071,7.954102,44.527843]}
+        maxZoom={18}
       >
         <SearchControl
           position="top-left"
