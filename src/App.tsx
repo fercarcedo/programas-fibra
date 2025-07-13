@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import "./App.css";
 import Map, {
   GeolocateControl,
   NavigationControl,
 } from "react-map-gl/maplibre";
-import maplibregl from "maplibre-gl";
+import type { MapEvent } from "react-map-gl/maplibre";
+import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
@@ -17,6 +18,18 @@ function App() {
     return () => {
       maplibregl.removeProtocol("pmtiles");
     };
+  }, []);
+
+  const handleMapLoad = useCallback((event: MapEvent) => {
+    const map = event.target as MapLibreMap;
+
+    map.touchZoomRotate.disableRotation();
+    map.keyboard.disableRotation();
+    map.dragRotate.disable();
+
+    const currentPitch = map.getPitch();
+    map.setMaxPitch(currentPitch);
+    map.setMinPitch(currentPitch);
   }, []);
 
   return (
@@ -68,6 +81,10 @@ function App() {
         }}
         maxBounds={[-19.116211,26.824071,7.954102,44.527843]}
         maxZoom={18}
+        dragRotate={false}
+        touchPitch={false}
+        pitchWithRotate={false}
+        onLoad={handleMapLoad}
       >
         <SearchControl
           position="top-left"
