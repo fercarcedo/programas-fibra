@@ -22,8 +22,8 @@ PROJECTS_COLUMN_INDEX = 0
 GRANTEES_COLUMN_INDEX = 2
 
 def read_awarded_areas(file_path: str) -> ProgramAreas:
-    excel_df = pandas.read_excel(file_path, sheet_name="Ámbito", header=None)
-    excel_projects_df = pandas.read_excel(file_path, sheet_name="Proyectos", header=None)
+    excel_df = pandas.read_excel(file_path, sheet_name=1, header=None)
+    excel_projects_df = pandas.read_excel(file_path, sheet_name=0, header=None)
 
     area_codes = excel_df[AREA_CODES_COLUMN_INDEX].dropna().iloc[1:]
     area_projects = excel_df[PROJECTS_COLUMN_INDEX].dropna().iloc[5:]
