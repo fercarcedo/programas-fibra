@@ -1,4 +1,5 @@
-from process_peba import (
+from lib.process_peba import (
+    awarded_areas,
     ine_code_to_coordinates,
     create_properties,
     to_geojson,
@@ -8,6 +9,7 @@ from process_peba import (
     AreaPropertiesPEBA,
 )
 import pandas as pd
+import pandas.testing as pdt
 from io import BytesIO
 from typing import NamedTuple
 import math
@@ -15,13 +17,21 @@ from geojson import FeatureCollection, Feature, Point
 import geojson
 from unittest.mock import patch, mock_open, MagicMock, call
 import numpy as np
-from test_data_peba import (AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE, ENTITIES_DF)
+from test_data_peba import (AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE, AREAS_FFILL_DF, AREAS_FFILLED_DF, AREAS_OLD_PEBA_DF, ENTITIES_DF, PROJECTS_DF, PROJECTS_FFILL_DF, PROJECTS_OLD_PEBA_DF)
 import pytest
 
 class IsNaN:
     def __eq__(self, other):
         return np.isnan(other)
     
+def _assert_frame_not_equal(df1, df2):
+    try:
+        pdt.assert_frame_equal(df1, df2, check_dtype=True)
+    except AssertionError:
+        # DataFrames are not equal
+        return
+    raise AssertionError("DataFrames are equal")
+
 def test_ine_code_to_coordinates():
     buffer = BytesIO()
     ENTITIES_DF.to_csv(buffer, sep=";", index=False, encoding="latin1")
@@ -41,7 +51,7 @@ def test_create_properties_with_no_exception_zone():
         "TSI-061000-2018-0001": "INFORMATICA FUENTEALBILLA S.L."
     }
     row = (1, math.nan, "TSI-061000-2018-0001", "CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "CASAS DE JUAN NÚÑEZ", "02021000100", math.nan, math.nan)
-    properties = create_properties(row, project_to_grantee)
+    properties = create_properties(row, project_to_grantee, False)
     expected_area_properties = AreaPropertiesPEBA("CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "TSI-061000-2018-0001", "INFORMATICA FUENTEALBILLA S.L.", "CASAS DE JUAN NÚÑEZ", None, None)
     assert properties == expected_area_properties
 
@@ -50,15 +60,32 @@ def test_create_properties_with_exception_zone():
         "TSI-061000-2018-0004": "REDES ÓPTICAS SALMANTINAS S.L."
     }
     row = (5, math.nan, "TSI-061000-2018-0004", "CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "POLÍGONO INDUSTRIAL", "37092000400", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
-    properties = create_properties(row, project_to_grantee)
+    properties = create_properties(row, project_to_grantee, False)
     expected_area_properties = AreaPropertiesPEBA("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     assert properties == expected_area_properties
 
+def test_create_properties_with_leading_zero_in_projects_sheet():
+    project_to_grantee = {
+        "TSI-061000-2015-0102": "VODAFONE ESPAÑA S.A."
+    }
+    row = (5, math.nan, "TSI-061000-2015-102", "Cataluña", "GIRONA", "BLANES", "BLANES", "17023000100", None, None)
+    properties = create_properties(row, project_to_grantee, False)
+    expected_area_properties = AreaPropertiesPEBA("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
+    assert properties == expected_area_properties
+
+def test_create_properties_with_leading_zero_in_areas_sheet():
+    project_to_grantee = {
+        "TSI-061000-2015-102": "VODAFONE ESPAÑA S.A."
+    }
+    row = (5, math.nan, "TSI-061000-2015-0102", "Cataluña", "GIRONA", "BLANES", "BLANES", "17023000100", None, None)
+    properties = create_properties(row, project_to_grantee, False)
+    expected_area_properties = AreaPropertiesPEBA("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-0102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
+    assert properties == expected_area_properties
+
 def test_to_geojson():
-    row = (5, math.nan, "TSI-061000-2018-0004", "CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "POLÍGONO INDUSTRIAL", "37092000400", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     properties = AreaPropertiesPEBA("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     coordinates = (41.00852887, -5.61116793)
-    feature = to_geojson(row, properties, coordinates)
+    feature = to_geojson(properties, coordinates)
     assert feature == Feature(
         geometry = Point((-5.61116793, 41.00852887)),
         properties = {
@@ -96,13 +123,13 @@ def test_write_awarded_areas(mock_open_func):
 
 def _create_point(coordinates: tuple[float, float], properties: AreaProperties) -> Feature:
     return Feature(
-        geometry=Point((-1.55853519, 39.10267748)),
+        geometry=Point(coordinates),
         properties={**properties.__dict__, 'program_type': 'peba'}
     )
 
 @pytest.mark.parametrize("df", [AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE])
-@patch('process_peba.create_properties')
-@patch('process_peba.to_geojson')
+@patch('lib.process_peba.create_properties')
+@patch('lib.process_peba.to_geojson')
 def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
     project_to_grantee = {
         "TSI-061000-2018-0001": "INFORMATICA FUENTEALBILLA S.L.",
@@ -129,7 +156,7 @@ def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
     mock_create_properties.side_effect = properties_list
     mock_to_geojson.side_effect = points
 
-    collection = map_awarded_areas(df, project_to_grantee, code_to_coordinates)
+    collection = map_awarded_areas(df, project_to_grantee, code_to_coordinates, False)
 
     assert collection == FeatureCollection(points)
 
@@ -141,12 +168,147 @@ def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
         (4, IsNaN(), 'TSI-061000-2018-0003', 'C.VALENCIANA', 'VALENCIA / VALÈNCIA', 'Real', 'REAL', '46212000100', IsNaN(), IsNaN())
     ]
 
-    mock_create_properties.assert_any_call(expected_rows[0], project_to_grantee)
-    mock_create_properties.assert_any_call(expected_rows[1], project_to_grantee)
-    mock_create_properties.assert_any_call(expected_rows[2], project_to_grantee)
+    mock_create_properties.assert_any_call(expected_rows[0], project_to_grantee, False)
+    mock_create_properties.assert_any_call(expected_rows[1], project_to_grantee, False)
+    mock_create_properties.assert_any_call(expected_rows[2], project_to_grantee, False)
 
     assert mock_to_geojson.call_count == 3
     
-    mock_to_geojson.assert_any_call(expected_rows[0], AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
-    mock_to_geojson.assert_any_call(expected_rows[1], AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947))
-    mock_to_geojson.assert_any_call(expected_rows[2], AreaPropertiesPEBA(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))
+    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
+    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947))
+    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))
+
+@patch('lib.process_peba.map_awarded_areas')
+@patch('lib.process_peba.ine_code_to_coordinates')
+@patch('pandas.ExcelFile')
+def test_awarded_areas(mock_excel_file, mock_ine_code_to_coordinates, mock_map_awarded_areas):
+    ine_code_to_coordinates = {
+        2021000100: (39.10267748, -1.55853519),
+        2003000100: (38.91810162, -1.92043947),
+        46212000100: (39.33552389, -0.60948808),
+    }
+    mock_ine_code_to_coordinates.return_value = ine_code_to_coordinates
+
+    def parse_excel(sheet_name, *args, **kwargs):
+        if sheet_name == 0:
+            return PROJECTS_DF.copy()
+        elif sheet_name == 1:
+            return AREAS_DF.copy()
+        else:
+            raise ValueError(f"Unknown sheet: {sheet_name}")
+        
+    mock_excel_instance = MagicMock()
+    mock_excel_instance.parse.side_effect = parse_excel
+    mock_excel_instance.sheet_names = ["Beneficiarios Conv 2018", "Ámbito geográfico actuación"]
+    mock_excel_file.return_value = mock_excel_instance
+
+    mock_feature_collection = MagicMock()
+    mock_map_awarded_areas.return_value = mock_feature_collection
+
+    properties = awarded_areas("test_file.xlsx", "test_entities.csv")
+    
+    assert properties == mock_feature_collection
+
+    mock_excel_file.assert_any_call("test_file.xlsx")
+    mock_ine_code_to_coordinates.assert_any_call("test_entities.csv")
+    mock_map_awarded_areas.assert_called_once()
+    args, _ = mock_map_awarded_areas.call_args
+    assert len(args) == 4
+    pdt.assert_frame_equal(args[0], AREAS_DF)
+    assert args[1] == {
+        'TSI-061000-2018-0001': 'INFORMATICA FUENTEALBILLA S.L.',
+        'TSI-061000-2018-0002': 'INFORMATICA FUENTEALBILLA S.L.',
+        'TSI-061000-2018-0003': 'INFORMATICA FUENTEALBILLA S.L.',
+    }
+    assert args[2] == ine_code_to_coordinates
+    assert args[3] == False
+
+@patch('lib.process_peba.map_awarded_areas')
+@patch('lib.process_peba.ine_code_to_coordinates')
+@patch('pandas.ExcelFile')
+def test_awarded_areas_old_peba(mock_excel_file, mock_ine_code_to_coordinates, mock_map_awarded_areas):
+    ine_code_to_coordinates = {
+        2021000100: (39.10267748, -1.55853519),
+        2003000100: (38.91810162, -1.92043947),
+        46212000100: (39.33552389, -0.60948808),
+    }
+    mock_ine_code_to_coordinates.return_value = ine_code_to_coordinates
+
+    def parse_excel(sheet_name, *args, **kwargs):
+        if sheet_name == 0:
+            return PROJECTS_OLD_PEBA_DF.copy()
+        elif sheet_name == 1:
+            return AREAS_OLD_PEBA_DF.copy()
+        else:
+            raise ValueError(f"Unknown sheet: {sheet_name}")
+        
+    mock_excel_instance = MagicMock()
+    mock_excel_instance.parse.side_effect = parse_excel
+    mock_excel_instance.sheet_names = ["PEBA NG 2013", "Ámbito Geográfico"]
+    mock_excel_file.return_value = mock_excel_instance
+
+    mock_feature_collection = MagicMock()
+    mock_map_awarded_areas.return_value = mock_feature_collection
+
+    properties = awarded_areas("test_file.xlsx", "test_entities.csv")
+    
+    assert properties == mock_feature_collection
+
+    mock_excel_file.assert_any_call("test_file.xlsx")
+    mock_ine_code_to_coordinates.assert_any_call("test_entities.csv")
+    mock_map_awarded_areas.assert_called_once()
+    args, _ = mock_map_awarded_areas.call_args
+    assert len(args) == 4
+    pdt.assert_frame_equal(args[0], AREAS_OLD_PEBA_DF)
+    assert args[1] == {
+        'TSI-061000-2013-001': 'MAGTEL COMUNICACIONES AVANZADAS S.L.',
+        'TSI-061000-2013-002': 'MAGTEL COMUNICACIONES AVANZADAS S.L.',
+        'TSI-061000-2013-003': 'MAGTEL COMUNICACIONES AVANZADAS S.L.',
+        'TSI-061000-2013-004': 'MAGTEL COMUNICACIONES AVANZADAS S.L.',
+    }
+    assert args[2] == ine_code_to_coordinates
+    assert args[3] == True
+
+@patch('lib.process_peba.map_awarded_areas')
+@patch('lib.process_peba.ine_code_to_coordinates')
+@patch('pandas.ExcelFile')
+def test_awarded_areas_ffill(mock_excel_file, mock_ine_code_to_coordinates, mock_map_awarded_areas):
+    ine_code_to_coordinates = {
+        2021000100: (39.10267748, -1.55853519),
+        2003000100: (38.91810162, -1.92043947),
+        46212000100: (39.33552389, -0.60948808),
+    }
+    mock_ine_code_to_coordinates.return_value = ine_code_to_coordinates
+
+    def parse_excel(sheet_name, *args, **kwargs):
+        if sheet_name == 0:
+            return PROJECTS_FFILL_DF.copy()
+        elif sheet_name == 1:
+            return AREAS_FFILL_DF.copy()
+        else:
+            raise ValueError(f"Unknown sheet: {sheet_name}")
+        
+    mock_excel_instance = MagicMock()
+    mock_excel_instance.parse.side_effect = parse_excel
+    mock_excel_instance.sheet_names = ["Beneficiarios Conv 2016", "Ámbito geográfico actuación"]
+    mock_excel_file.return_value = mock_excel_instance
+
+    mock_feature_collection = MagicMock()
+    mock_map_awarded_areas.return_value = mock_feature_collection
+
+    properties = awarded_areas("test_file.xlsx", "test_entities.csv")
+    
+    assert properties == mock_feature_collection
+
+    mock_excel_file.assert_any_call("test_file.xlsx")
+    mock_ine_code_to_coordinates.assert_any_call("test_entities.csv")
+    mock_map_awarded_areas.assert_called_once()
+    args, _ = mock_map_awarded_areas.call_args
+    assert len(args) == 4
+    _assert_frame_not_equal(args[0], AREAS_FFILL_DF)
+    pdt.assert_frame_equal(args[0], AREAS_FFILLED_DF)
+    assert args[1] == {
+        'TSI-061000-2016-084': 'EUSKALTEL',
+    }
+    assert args[2] == ine_code_to_coordinates
+    assert args[3] == False

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from process_unico import ProgramAreas
+from lib.process_unico import ProgramAreas
 
 ELIGIBLE_AREAS_GEO_JSON = """
 {

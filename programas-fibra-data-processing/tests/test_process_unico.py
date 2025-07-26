@@ -1,4 +1,4 @@
-from process_unico import (
+from lib.process_unico import (
     read_awarded_areas,
     filter_awarded_areas,
     write_awarded_areas,
@@ -107,8 +107,8 @@ def test_read_awarded_areas():
     )
     buffer = BytesIO()
     with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-        df.to_excel(writer, sheet_name="Ámbito", index=False, header=False)
         df2.to_excel(writer, sheet_name="Proyectos", index=False, header=False)
+        df.to_excel(writer, sheet_name="Ámbito", index=False, header=False)
     buffer.seek(0)
 
     areas = read_awarded_areas(buffer)
@@ -141,9 +141,9 @@ def test_write_awarded_areas():
     assert result.replace(" ", "").replace("\n", "") == AWARDED_AREAS_JSON.replace(" ", "").replace("\n", "")
 
 @patch('builtins.open')
-@patch('process_unico.write_awarded_areas')
-@patch('process_unico.filter_awarded_areas')
-@patch('process_unico.map_areas')
+@patch('lib.process_unico.write_awarded_areas')
+@patch('lib.process_unico.filter_awarded_areas')
+@patch('lib.process_unico.map_areas')
 def test_process_eligible_areas(mock_map, mock_filter, mock_write, mock_open_func):
     mock_input_file = MagicMock()
     mock_output_file = MagicMock()
