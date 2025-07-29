@@ -43,6 +43,13 @@ def add_peba_parser_options(peba_parser: argparse.ArgumentParser):
         default="out.geojson",
         required=False,
     )
+    peba_parser.add_argument(
+       "-p",
+       "--program-name",
+        type=str,
+        help="Program name",
+        required=True,
+    )
 
 def add_unico_parser_options(unico_parser: argparse.ArgumentParser):
     unico_parser.add_argument(
@@ -61,19 +68,26 @@ def add_unico_parser_options(unico_parser: argparse.ArgumentParser):
     )
     unico_parser.add_argument(
         "-o",
-        "--output-file",
+        "--output",
         type=str,
         help="Name of the result file",
         default="out.geojson",
         required=False,
     )
+    unico_parser.add_argument(
+       "-p",
+       "--program-name",
+        type=str,
+        help="Program name",
+        required=True,
+    )
 
 def main():
     args = read_args()
     if args.program_type == "peba":
-        execute_peba(args.file, args.entities, args.output)
+        execute_peba(args.file, args.entities, args.output, args.program_name)
     else:
-        execute_unico(args.awarded_areas, args.eligible_areas, args.output_file)
+        execute_unico(args.awarded_areas, args.eligible_areas, args.output, args.program_name)
 
 if __name__ == '__main__':
     main()

@@ -26,7 +26,7 @@ def _grantee_from_project(project: str, project_to_grantee: dict[str, str]) -> s
         return project_to_grantee[project_with_leading_zero]
     return project_to_grantee[_remove_leading_zero_project(project)]
 
-def awarded_areas(awarded_projects_file_path: str, entities_file_path: str) -> list[AreaProperties]:
+def awarded_areas(awarded_projects_file_path: str, entities_file_path: str, program_name: str) -> list[AreaProperties]:
     excel_file = pandas.ExcelFile(awarded_projects_file_path)
 
     excel_df = excel_file.parse(sheet_name=1, header=None)
@@ -51,7 +51,7 @@ def awarded_areas(awarded_projects_file_path: str, entities_file_path: str) -> l
     code_to_coordinates = ine_code_to_coordinates(entities_file_path)
     project_to_grantee=dict(zip(projects, grantees))
 
-    return map_awarded_areas(excel_df, project_to_grantee, code_to_coordinates, is_old_peba)
+    return map_awarded_areas(excel_df, project_to_grantee, code_to_coordinates, program_name, is_old_peba)
 
 def ine_code_to_coordinates(entities_file_path: str) -> dict[int, tuple[float, float]]:
     entities_df = pandas.read_csv(entities_file_path, encoding="latin1", sep=";")
@@ -66,6 +66,7 @@ def map_awarded_areas(
     df: pandas.DataFrame, 
     project_to_grantee: dict[str, str], 
     code_to_coordinates: dict[int, tuple[float, float]],
+    program_name: str,
     is_old_peba: bool
 ) -> FeatureCollection:
     if df.shape[1] < 9:
@@ -77,7 +78,7 @@ def map_awarded_areas(
         if (not is_old_peba and row[0] < 2) or (is_old_peba and row[0] < 1):
             continue
 
-        properties = create_properties(row, project_to_grantee, is_old_peba)
+        properties = create_properties(row, project_to_grantee, program_name, is_old_peba)
         ine_code_column = 7 if not is_old_peba else 8
         ine_code = row[ine_code_column]
         try:
@@ -90,8 +91,9 @@ def map_awarded_areas(
 
 def create_properties(
     row: tuple, 
-    project_to_grantee: dict[str, str], 
-    is_old_peba: bool
+    project_to_grantee: dict[str, str],
+    program_name: str,
+    is_old_peba: bool,
 ) -> AreaProperties:
     exception_code_value = row[8] if not is_old_peba else None
     exception_name_value = row[9] if not is_old_peba else None
@@ -105,6 +107,7 @@ def create_properties(
         town=row[6 if not is_old_peba else 9],
         exception_zone_code=None if exception_code_value is None or (isinstance(exception_code_value, float) and math.isnan(exception_code_value)) else exception_code_value,
         exception_zone_name=None if exception_name_value is None or (isinstance(exception_name_value, float) and math.isnan(exception_name_value)) else exception_name_value,
+        program_name=program_name,
     )
 
 def to_geojson(properties: AreaProperties, coordinates: tuple[float, float]) -> Feature:
@@ -115,6 +118,11 @@ def write_awarded_areas(output_file_path: str, collection: FeatureCollection):
     with open(output_file_path, "w") as f:
         geojson.dump(collection, f)
 
-def execute(awarded_projects_file_path: str, entities_file_path: str, output_file_path: str):
-    areas_geojson = awarded_areas(awarded_projects_file_path, entities_file_path)
+def execute(
+    awarded_projects_file_path: str, 
+    entities_file_path: str, 
+    output_file_path: str,
+    program_name: str,
+):
+    areas_geojson = awarded_areas(awarded_projects_file_path, entities_file_path, program_name)
     write_awarded_areas(output_file_path, areas_geojson)

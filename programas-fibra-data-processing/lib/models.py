@@ -9,6 +9,7 @@ class AreaType(StrEnum):
 
 @dataclass
 class AreaProperties:
+    program_name: str
     autonomous_community: str
     province: str
     municipality: str

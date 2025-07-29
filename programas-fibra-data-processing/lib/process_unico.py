@@ -55,7 +55,7 @@ def write_awarded_areas(f: TextIO, areas: list[dict[str, Any]]):
 
     f.write("]}")
 
-def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[dict[str, Any]]:
+def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas, program_name: str) -> list[dict[str, Any]]:
     return [
         {
             **area,
@@ -70,6 +70,7 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[
                     town=properties.get('Nombre_ESP'),
                     project=(proj := program_areas.area_to_project[code]),
                     grantee=program_areas.project_to_grantee[proj],
+                    program_name=program_name,
                 )).__dict__, 
                 'type': str(area_properties.type)
             }
@@ -77,12 +78,22 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[
         for area in areas
     ]
 
-def process_eligible_areas(eligible_areas_file_path: str, awarded_areas: ProgramAreas, output_file_path: str):
+def process_eligible_areas(
+    eligible_areas_file_path: str, 
+    awarded_areas: ProgramAreas, 
+    output_file_path: str,
+    program_name: str,
+):
     with open(eligible_areas_file_path, "rb") as f:
         with open(output_file_path, "w", encoding='utf-8') as out:
             areas = filter_awarded_areas(f, awarded_areas)
-            write_awarded_areas(out, map_areas(areas, awarded_areas))
+            write_awarded_areas(out, map_areas(areas, awarded_areas, program_name))
 
-def execute(awarded_areas_file_path: str, eligible_areas_file_path: str, output_file_path: str):
-    awarded_areas = read_awarded_areas(awarded_areas_file_path)
-    process_eligible_areas(eligible_areas_file_path, awarded_areas, output_file_path)
+def execute(
+    awarded_areas_file_path: str, 
+    eligible_areas_file_path: str, 
+    output_file_path: str,
+    program_name: str,
+):
+    awarded_areas = read_awarded_areas(awarded_areas_file_path, program_name)
+    process_eligible_areas(eligible_areas_file_path, awarded_areas, program_name, output_file_path)

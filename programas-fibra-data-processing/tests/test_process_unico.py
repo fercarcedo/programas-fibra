@@ -127,14 +127,14 @@ def test_filter_awarded_areas():
     assert awarded_areas[1]["properties"]["CodigoZona"] == "01002000000-2024-000005"
 
 @pytest.mark.parametrize(
-    "awarded_areas, program_areas, expected_mapped_areas", 
+    "awarded_areas, program_areas, expected_mapped_areas, program_name", 
     [
-        (AWARDED_AREAS, PROGRAM_AREAS, MAPPED_AWARDED_AREAS),
-        (AWARDED_AREAS_2020, PROGRAM_AREAS_2020, MAPPED_AWARDED_AREAS_2020)
+        (AWARDED_AREAS, PROGRAM_AREAS, MAPPED_AWARDED_AREAS, "UNICO 2024"),
+        (AWARDED_AREAS_2020, PROGRAM_AREAS_2020, MAPPED_AWARDED_AREAS_2020, "PEBA-NGA 2020")
     ]
 )
-def test_map_areas(awarded_areas, program_areas, expected_mapped_areas):
-    mapped_areas = map_areas(awarded_areas, program_areas)
+def test_map_areas(awarded_areas, program_areas, expected_mapped_areas, program_name):
+    mapped_areas = map_areas(awarded_areas, program_areas, program_name)
     assert mapped_areas == expected_mapped_areas
 
 def test_write_awarded_areas():
@@ -167,11 +167,11 @@ def test_process_eligible_areas(mock_map, mock_filter, mock_write, mock_open_fun
     eligible_areas_file = "input.geojson"
     output_file = "out.geojson"
     
-    process_eligible_areas(eligible_areas_file, PROGRAM_AREAS, output_file)
+    process_eligible_areas(eligible_areas_file, PROGRAM_AREAS, output_file, "UNICO 2024")
     
     mock_open_func.assert_any_call(eligible_areas_file, "rb")
     mock_open_func.assert_any_call(output_file, "w", encoding='utf-8')    
 
     mock_filter.assert_called_once_with(mock_input_file.__enter__.return_value, PROGRAM_AREAS)
-    mock_map.assert_called_once_with(mock_filtered_areas, PROGRAM_AREAS)
+    mock_map.assert_called_once_with(mock_filtered_areas, PROGRAM_AREAS, "UNICO 2024")
     mock_write.assert_called_once_with(mock_output_file.__enter__.return_value, mapped_areas)

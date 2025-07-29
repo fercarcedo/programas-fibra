@@ -660,6 +660,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
+            "program_name": "UNICO 2024",
             "type": "area",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
@@ -787,6 +788,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
+            "program_name": "UNICO 2024",
             "type": "area",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
@@ -902,6 +904,7 @@ MAPPED_AWARDED_AREAS_2020 = [
     { 
         "type": "Feature", 
         "properties": {
+            "program_name": "PEBA-NGA 2020",
             "type": "area",
             "autonomous_community": "Asturias, Principado de",
             "province": "Asturias",
@@ -952,6 +955,7 @@ MAPPED_AWARDED_AREAS_2020 = [
     { 
         "type": "Feature", 
         "properties": {
+            "program_name": "PEBA-NGA 2020",
             "type": "area",
             "autonomous_community": "Asturias, Principado de",
             "province": "Asturias",
