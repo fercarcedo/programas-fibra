@@ -448,6 +448,119 @@ AWARDED_AREAS = [
     },
 ]
 
+AWARDED_AREAS_2020 = [
+    { 
+        "type": "Feature", 
+        "properties": { 
+            "CCAA": "Asturias, Principado de", 
+            "Provincia": "Asturias", 
+            "Cod_Prov": "33", 
+            "Municipio": "Piloña", 
+            "Cod_Mun": "33049", 
+            "Nombre_ESP": "VILLA RIBA (LA)", 
+            "Cod_ESP": "33049060600", 
+            "Cod_Zona": "33049060600-2020-000001", 
+            "Hab_ESP": 93, 
+            "Viv_Zona": 1, 
+            "Tipo_Zona": "Blanca NGA", 
+            "Shape_Leng": Decimal(225.82005217599999), 
+            "Shape_Area": Decimal(3223.7643459400001), 
+        }, 
+        "geometry": { 
+            "type": "Polygon", 
+            "coordinates": [ 
+                [ 
+                    [ 
+                        Decimal(303783.375799999572337), 
+                        Decimal(4805629.800200000405312),
+                    ], 
+                    [ 
+                        Decimal(303738.174800000153482), 
+                        Decimal(4805647.600400000810623), 
+                    ], 
+                    [ 
+                        Decimal(303725.074500000104308), 
+                        Decimal(4805682.200799999758601),
+                    ], 
+                    [ 
+                        Decimal(303748.874900000169873), 
+                        Decimal(4805692.9013),
+                    ], 
+                    [ 
+                        Decimal(303800.076200000010431), 
+                        Decimal(4805670.200200000777841), 
+                    ], 
+                    [ 
+                        Decimal(303811.976400000043213), 
+                        Decimal(4805651.1996), 
+                    ], 
+                    [ 
+                        Decimal(303783.375799999572337), 
+                        Decimal(4805629.800200000405312),
+                    ],
+                ] 
+            ] 
+        } 
+    },
+    { 
+        "type": "Feature", 
+        "properties": { 
+            "CCAA": "Asturias, Principado de", 
+            "Provincia": "Asturias", 
+            "Cod_Prov": "33", 
+            "Municipio": "Piloña", 
+            "Cod_Mun": "33049", 
+            "Nombre_ESP": "TRESAGÜELI", 
+            "Cod_ESP": "33049051600", 
+            "Cod_Zona": "33049051600-2020-000002", 
+            "Hab_ESP": 4, 
+            "Viv_Zona": 0, 
+            "Tipo_Zona": "Blanca NGA", 
+            "Shape_Leng": Decimal(215.60132357800001), 
+            "Shape_Area": Decimal(2865.9009314),
+        }, 
+        "geometry": { 
+            "type": "Polygon", 
+            "coordinates": [ 
+                [ 
+                    [ 
+                        Decimal(317713.065899999812245), 
+                        Decimal(4806498.924000000581145), 
+                    ], 
+                    [ 
+                        Decimal(317711.865799999795854), 
+                        Decimal(4806521.524800000712276), 
+                    ], 
+                    [ 
+                        Decimal(317743.967199999839067), 
+                        Decimal(4806569.125399999320507),
+                    ], 
+                    [ 
+                        Decimal(317762.96750000026077), 
+                        Decimal(4806571.425899999216199),
+                    ], 
+                    [ 
+                        Decimal(317777.267300000414252), 
+                        Decimal(4806554.824799999594688),
+                    ], 
+                    [ 
+                        Decimal(317774.866799999959767), 
+                        Decimal(4806534.624199999496341), 
+                    ], 
+                    [ 
+                        Decimal(317735.66579999960959), 
+                        Decimal(4806501.323999999091029),
+                    ], 
+                    [ 
+                        Decimal(317713.065899999812245), 
+                        Decimal(4806498.924000000581145), 
+                    ], 
+                ] 
+            ] 
+        } 
+    },
+]
+
 AWARDED_AREAS_JSON = """
 {
   "type": "FeatureCollection",
@@ -555,7 +668,8 @@ MAPPED_AWARDED_AREAS = [
             "building_count": 1,
             "house_count": 1,
             'grantee': 'TELEFONICA DE ESPAÑA, S.A.',
-            'project': 'TSI-061400-2024-0008'
+            'project': 'TSI-061400-2024-0008',
+            'town': None,
         },
         "geometry": {
             "type": "Polygon",
@@ -681,7 +795,8 @@ MAPPED_AWARDED_AREAS = [
             "building_count": 1,
             "house_count": 1,
             "grantee": "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.",
-            "project": "TSI-061400-2024-0035"
+            "project": "TSI-061400-2024-0035",
+            "town": None,
         },
         "geometry": {
             "type": "Polygon",
@@ -783,6 +898,113 @@ MAPPED_AWARDED_AREAS = [
     },
 ]
 
+MAPPED_AWARDED_AREAS_2020 = [
+    { 
+        "type": "Feature", 
+        "properties": {
+            "program_type": "unico",
+            "autonomous_community": "Asturias, Principado de",
+            "province": "Asturias",
+            "municipality": "Piloña",
+            "area_code": "33049060600-2020-000001",
+            "building_count": None,
+            "house_count": 1,
+            'grantee': 'ADAMO TELECOM IBERIA SA',
+            'project': 'TSI-061300-2020-0107',
+            'town': "VILLA RIBA (LA)",
+        }, 
+        "geometry": { 
+            "type": "Polygon", 
+            "coordinates": [ 
+                [ 
+                    [ 
+                        Decimal(303783.375799999572337), 
+                        Decimal(4805629.800200000405312),
+                    ], 
+                    [ 
+                        Decimal(303738.174800000153482), 
+                        Decimal(4805647.600400000810623), 
+                    ], 
+                    [ 
+                        Decimal(303725.074500000104308), 
+                        Decimal(4805682.200799999758601),
+                    ], 
+                    [ 
+                        Decimal(303748.874900000169873), 
+                        Decimal(4805692.9013),
+                    ], 
+                    [ 
+                        Decimal(303800.076200000010431), 
+                        Decimal(4805670.200200000777841), 
+                    ], 
+                    [ 
+                        Decimal(303811.976400000043213), 
+                        Decimal(4805651.1996), 
+                    ], 
+                    [ 
+                        Decimal(303783.375799999572337), 
+                        Decimal(4805629.800200000405312),
+                    ],
+                ] 
+            ] 
+        } 
+    },
+    { 
+        "type": "Feature", 
+        "properties": {
+            "program_type": "unico",
+            "autonomous_community": "Asturias, Principado de",
+            "province": "Asturias",
+            "municipality": "Piloña",
+            "area_code": "33049051600-2020-000002",
+            "building_count": None,
+            "house_count": 0,
+            'grantee': 'ADAMO TELECOM IBERIA SA',
+            'project': 'TSI-061300-2020-0107',
+            'town': "TRESAGÜELI",
+        },
+        "geometry": { 
+            "type": "Polygon", 
+            "coordinates": [ 
+                [ 
+                    [ 
+                        Decimal(317713.065899999812245), 
+                        Decimal(4806498.924000000581145), 
+                    ], 
+                    [ 
+                        Decimal(317711.865799999795854), 
+                        Decimal(4806521.524800000712276), 
+                    ], 
+                    [ 
+                        Decimal(317743.967199999839067), 
+                        Decimal(4806569.125399999320507),
+                    ], 
+                    [ 
+                        Decimal(317762.96750000026077), 
+                        Decimal(4806571.425899999216199),
+                    ], 
+                    [ 
+                        Decimal(317777.267300000414252), 
+                        Decimal(4806554.824799999594688),
+                    ], 
+                    [ 
+                        Decimal(317774.866799999959767), 
+                        Decimal(4806534.624199999496341), 
+                    ], 
+                    [ 
+                        Decimal(317735.66579999960959), 
+                        Decimal(4806501.323999999091029),
+                    ], 
+                    [ 
+                        Decimal(317713.065899999812245), 
+                        Decimal(4806498.924000000581145), 
+                    ], 
+                ] 
+            ] 
+        } 
+    },
+]
+
 PROGRAM_AREAS = ProgramAreas(
     area_to_project={
         '01002000000-2024-000002': 'TSI-061400-2024-0008',
@@ -791,5 +1013,15 @@ PROGRAM_AREAS = ProgramAreas(
     project_to_grantee={
         'TSI-061400-2024-0008': 'TELEFONICA DE ESPAÑA, S.A.',
         'TSI-061400-2024-0035': 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.',
+    },
+)
+
+PROGRAM_AREAS_2020 = ProgramAreas(
+    area_to_project={
+        '33049060600-2020-000001' : 'TSI-061300-2020-0107',
+        '33049051600-2020-000002': 'TSI-061300-2020-0107',
+    },
+    project_to_grantee={
+        'TSI-061300-2020-0107': 'ADAMO TELECOM IBERIA SA',
     },
 )

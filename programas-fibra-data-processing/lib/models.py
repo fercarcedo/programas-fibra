@@ -26,6 +26,7 @@ class AreaPropertiesUNICO(AreaProperties):
     area_code: str
     building_count: int
     house_count: int
+    town: Optional[str]
 
     @property
     def program_type(self) -> ProgramType:

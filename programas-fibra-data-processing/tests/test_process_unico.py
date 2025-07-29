@@ -8,8 +8,9 @@ from lib.process_unico import (
 import pandas as pd
 import numpy as np
 from io import BytesIO, StringIO
-from test_data import ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON, MAPPED_AWARDED_AREAS, PROGRAM_AREAS
-from unittest.mock import patch, mock_open, MagicMock
+from test_data import AWARDED_AREAS_2020, ELIGIBLE_AREAS_GEO_JSON, AWARDED_AREAS, AWARDED_AREAS_JSON, MAPPED_AWARDED_AREAS, MAPPED_AWARDED_AREAS_2020, PROGRAM_AREAS, PROGRAM_AREAS_2020
+from unittest.mock import patch, MagicMock
+import pytest
 
 def test_read_awarded_areas():
     df = pd.DataFrame(
@@ -125,11 +126,17 @@ def test_filter_awarded_areas():
     assert awarded_areas[0]["properties"]["CodigoZona"] == "01002000000-2024-000002"
     assert awarded_areas[1]["properties"]["CodigoZona"] == "01002000000-2024-000005"
 
-def test_map_areas():
-    mapped_areas = map_areas(AWARDED_AREAS, PROGRAM_AREAS)
+@pytest.mark.parametrize(
+    "awarded_areas, program_areas, mapped_areas", 
+    [
+        (AWARDED_AREAS, PROGRAM_AREAS, MAPPED_AWARDED_AREAS),
+        (AWARDED_AREAS_2020, PROGRAM_AREAS_2020, MAPPED_AWARDED_AREAS_2020)
+    ]
+)
+def test_map_areas(awarded_areas, program_areas, mapped_areas):
+    mapped_areas = map_areas(awarded_areas, program_areas)
 
-    assert mapped_areas == MAPPED_AWARDED_AREAS
-
+    assert mapped_areas == mapped_areas
 
 def test_write_awarded_areas():
     output = StringIO()
