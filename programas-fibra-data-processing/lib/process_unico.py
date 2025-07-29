@@ -4,7 +4,7 @@ import simplejson as json
 from decimal import Decimal
 from dataclasses import dataclass
 from typing import BinaryIO, TextIO, Generator, Any
-from .models import AreaPropertiesUNICO
+from .models import AreaPropertiesArea
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -60,7 +60,7 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[
         {
             **area,
             'properties': {
-                **(area_properties := AreaPropertiesUNICO(
+                **(area_properties := AreaPropertiesArea(
                     autonomous_community=(properties := area['properties']).get('Comunidad_') or properties.get('CCAA'),
                     province=properties['Provincia'],
                     municipality=properties['Municipio'],
@@ -71,7 +71,7 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas) -> list[
                     project=(proj := program_areas.area_to_project[code]),
                     grantee=program_areas.project_to_grantee[proj],
                 )).__dict__, 
-                'program_type': area_properties.program_type
+                'type': str(area_properties.type)
             }
         }
         for area in areas

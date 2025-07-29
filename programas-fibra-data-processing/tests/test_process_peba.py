@@ -6,7 +6,7 @@ from lib.process_peba import (
     write_awarded_areas,
     map_awarded_areas,
     AreaProperties,
-    AreaPropertiesPEBA,
+    AreaPropertiesTown,
 )
 import pandas as pd
 import pandas.testing as pdt
@@ -15,7 +15,7 @@ from typing import NamedTuple
 import math
 from geojson import FeatureCollection, Feature, Point
 import geojson
-from unittest.mock import patch, mock_open, MagicMock, call
+from unittest.mock import patch, mock_open, MagicMock
 import numpy as np
 from test_data_peba import (AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE, AREAS_FFILL_DF, AREAS_FFILLED_DF, AREAS_OLD_PEBA_DF, ENTITIES_DF, PROJECTS_DF, PROJECTS_FFILL_DF, PROJECTS_OLD_PEBA_DF)
 import pytest
@@ -52,7 +52,7 @@ def test_create_properties_with_no_exception_zone():
     }
     row = (1, math.nan, "TSI-061000-2018-0001", "CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "CASAS DE JUAN NÚÑEZ", "02021000100", math.nan, math.nan)
     properties = create_properties(row, project_to_grantee, False)
-    expected_area_properties = AreaPropertiesPEBA("CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "TSI-061000-2018-0001", "INFORMATICA FUENTEALBILLA S.L.", "CASAS DE JUAN NÚÑEZ", None, None)
+    expected_area_properties = AreaPropertiesTown("CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "TSI-061000-2018-0001", "INFORMATICA FUENTEALBILLA S.L.", "CASAS DE JUAN NÚÑEZ", None, None)
     assert properties == expected_area_properties
 
 def test_create_properties_with_exception_zone():
@@ -61,7 +61,7 @@ def test_create_properties_with_exception_zone():
     }
     row = (5, math.nan, "TSI-061000-2018-0004", "CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "POLÍGONO INDUSTRIAL", "37092000400", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     properties = create_properties(row, project_to_grantee, False)
-    expected_area_properties = AreaPropertiesPEBA("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
+    expected_area_properties = AreaPropertiesTown("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     assert properties == expected_area_properties
 
 def test_create_properties_with_leading_zero_in_projects_sheet():
@@ -70,7 +70,7 @@ def test_create_properties_with_leading_zero_in_projects_sheet():
     }
     row = (5, math.nan, "TSI-061000-2015-102", "Cataluña", "GIRONA", "BLANES", "BLANES", "17023000100", None, None)
     properties = create_properties(row, project_to_grantee, False)
-    expected_area_properties = AreaPropertiesPEBA("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
+    expected_area_properties = AreaPropertiesTown("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
     assert properties == expected_area_properties
 
 def test_create_properties_with_leading_zero_in_areas_sheet():
@@ -79,11 +79,11 @@ def test_create_properties_with_leading_zero_in_areas_sheet():
     }
     row = (5, math.nan, "TSI-061000-2015-0102", "Cataluña", "GIRONA", "BLANES", "BLANES", "17023000100", None, None)
     properties = create_properties(row, project_to_grantee, False)
-    expected_area_properties = AreaPropertiesPEBA("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-0102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
+    expected_area_properties = AreaPropertiesTown("Cataluña", "GIRONA", "BLANES", "TSI-061000-2015-0102", "VODAFONE ESPAÑA S.A.", "BLANES", None, None)
     assert properties == expected_area_properties
 
 def test_to_geojson():
-    properties = AreaPropertiesPEBA("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
+    properties = AreaPropertiesTown("CASTILLA LEON", "SALAMANCA", "Castellanos de Moriscos", "TSI-061000-2018-0004", "REDES ÓPTICAS SALMANTINAS S.L.", "POLÍGONO INDUSTRIAL", "37092000400-2018-zona01", "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS")
     coordinates = (41.00852887, -5.61116793)
     feature = to_geojson(properties, coordinates)
     assert feature == Feature(
@@ -97,7 +97,7 @@ def test_to_geojson():
             "town": "POLÍGONO INDUSTRIAL",
             "exception_zone_code": "37092000400-2018-zona01",
             "exception_zone_name": "POLÍGONO INDUSTRIAL CASTELLANOS DE MORISCOS",
-            "program_type": "peba"
+            "type": "town"
         }
     )
 
@@ -124,7 +124,7 @@ def test_write_awarded_areas(mock_open_func):
 def _create_point(coordinates: tuple[float, float], properties: AreaProperties) -> Feature:
     return Feature(
         geometry=Point(coordinates),
-        properties={**properties.__dict__, 'program_type': 'peba'}
+        properties={**properties.__dict__, 'type': 'town'}
     )
 
 @pytest.mark.parametrize("df", [AREAS_DF, AREAS_DF_WITHOUT_EXCEPTION_ZONE])
@@ -143,9 +143,9 @@ def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
     }
 
     properties_list = [
-        AreaPropertiesPEBA("CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "TSI-061000-2018-0001", "INFORMÁTICA FUENTEALBILLA S.L.", "CASAS DE JUAN NÚÑEZ"),
-        AreaPropertiesPEBA("CASTILLA LA MANCHA", "ALBACETE", "Albacete", "TSI-061000-2018-0002", "INFORMÁTICA FUENTEALBILLA S.L.", "AGUAS NUEVAS"),
-        AreaPropertiesPEBA("C.VALENCIANA", "VALENCIA / VALÈNCIA", "Real", "TSI-061000-2018-0003", "INFORMÁTICA FUENTEALBILLA S.L.", "REAL"),
+        AreaPropertiesTown("CASTILLA LA MANCHA", "ALBACETE", "Casas de Juan Núñez", "TSI-061000-2018-0001", "INFORMÁTICA FUENTEALBILLA S.L.", "CASAS DE JUAN NÚÑEZ"),
+        AreaPropertiesTown("CASTILLA LA MANCHA", "ALBACETE", "Albacete", "TSI-061000-2018-0002", "INFORMÁTICA FUENTEALBILLA S.L.", "AGUAS NUEVAS"),
+        AreaPropertiesTown("C.VALENCIANA", "VALENCIA / VALÈNCIA", "Real", "TSI-061000-2018-0003", "INFORMÁTICA FUENTEALBILLA S.L.", "REAL"),
     ]
     points = [
         _create_point((-1.55853519, 39.10267748), properties_list[0]),
@@ -174,9 +174,9 @@ def test_map_awarded_areas(mock_to_geojson, mock_create_properties, df):
 
     assert mock_to_geojson.call_count == 3
     
-    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
-    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947))
-    mock_to_geojson.assert_any_call(AreaPropertiesPEBA(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))
+    mock_to_geojson.assert_any_call(AreaPropertiesTown(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Casas de Juan Núñez', project='TSI-061000-2018-0001', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='CASAS DE JUAN NÚÑEZ', exception_zone_code=None, exception_zone_name=None), (39.10267748, -1.55853519))
+    mock_to_geojson.assert_any_call(AreaPropertiesTown(autonomous_community='CASTILLA LA MANCHA', province='ALBACETE', municipality='Albacete', project='TSI-061000-2018-0002', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='AGUAS NUEVAS', exception_zone_code=None, exception_zone_name=None), (38.91810162, -1.92043947))
+    mock_to_geojson.assert_any_call(AreaPropertiesTown(autonomous_community='C.VALENCIANA', province='VALENCIA / VALÈNCIA', municipality='Real', project='TSI-061000-2018-0003', grantee='INFORMÁTICA FUENTEALBILLA S.L.', town='REAL', exception_zone_code=None, exception_zone_name=None), (39.33552389, -0.60948808))
 
 @patch('lib.process_peba.map_awarded_areas')
 @patch('lib.process_peba.ine_code_to_coordinates')

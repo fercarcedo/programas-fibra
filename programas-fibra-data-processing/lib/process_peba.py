@@ -4,7 +4,7 @@ import geojson
 from geojson import FeatureCollection, Feature, Point
 import math
 import numpy as np
-from .models import AreaProperties, AreaPropertiesPEBA
+from .models import AreaProperties, AreaPropertiesTown
 
 PROJECTS_COLUMN_INDEX = 2
 GRANTEES_COLUMN_INDEX = 4
@@ -96,7 +96,7 @@ def create_properties(
     exception_code_value = row[8] if not is_old_peba else None
     exception_name_value = row[9] if not is_old_peba else None
 
-    return AreaPropertiesPEBA(
+    return AreaPropertiesTown(
         autonomous_community=row[3 if not is_old_peba else 4],
         province=row[4 if not is_old_peba else 5],
         municipality=row[5 if not is_old_peba else 7],
@@ -109,7 +109,7 @@ def create_properties(
 
 def to_geojson(properties: AreaProperties, coordinates: tuple[float, float]) -> Feature:
     point = Point((coordinates[1], coordinates[0]))
-    return Feature(geometry=point, properties={**properties.__dict__, 'program_type': properties.program_type})
+    return Feature(geometry=point, properties={**properties.__dict__, 'type': str(properties.type)})
 
 def write_awarded_areas(output_file_path: str, collection: FeatureCollection):
     with open(output_file_path, "w") as f:

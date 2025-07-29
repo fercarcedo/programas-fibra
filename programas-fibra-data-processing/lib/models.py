@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from abc import abstractmethod
 from typing import Optional
 
-class ProgramType(StrEnum):
-    UNICO = auto()
-    PEBA = auto()
+class AreaType(StrEnum):
+    TOWN = auto()
+    AREA = auto()
 
 @dataclass
 class AreaProperties:
@@ -17,27 +17,27 @@ class AreaProperties:
 
     @property
     @abstractmethod
-    def program_type(self) -> ProgramType:
+    def type(self) -> AreaType:
         pass
 
 
 @dataclass
-class AreaPropertiesUNICO(AreaProperties):
+class AreaPropertiesArea(AreaProperties):
     area_code: str
     building_count: int
     house_count: int
     town: Optional[str]
 
     @property
-    def program_type(self) -> ProgramType:
-        return ProgramType.UNICO
+    def type(self) -> AreaType:
+        return AreaType.AREA
 
 @dataclass
-class AreaPropertiesPEBA(AreaProperties):
+class AreaPropertiesTown(AreaProperties):
     town: str
     exception_zone_code: Optional[str] = None
     exception_zone_name: Optional[str] = None
 
     @property
-    def program_type(self) -> ProgramType:
-        return ProgramType.PEBA
+    def type(self) -> AreaType:
+        return AreaType.TOWN

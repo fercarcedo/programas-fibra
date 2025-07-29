@@ -660,7 +660,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
-            "program_type": "unico",
+            "type": "area",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
             "municipality": "Amurrio",
@@ -787,7 +787,7 @@ MAPPED_AWARDED_AREAS = [
     {
         "type": "Feature",
         "properties": {
-            "program_type": "unico",
+            "type": "area",
             "autonomous_community": "País Vasco/Euskadi",
             "province": "Araba/Álava",
             "municipality": "Amurrio",
@@ -902,7 +902,7 @@ MAPPED_AWARDED_AREAS_2020 = [
     { 
         "type": "Feature", 
         "properties": {
-            "program_type": "unico",
+            "type": "area",
             "autonomous_community": "Asturias, Principado de",
             "province": "Asturias",
             "municipality": "Piloña",
@@ -952,7 +952,7 @@ MAPPED_AWARDED_AREAS_2020 = [
     { 
         "type": "Feature", 
         "properties": {
-            "program_type": "unico",
+            "type": "area",
             "autonomous_community": "Asturias, Principado de",
             "province": "Asturias",
             "municipality": "Piloña",
