@@ -95,5 +95,5 @@ def execute(
     output_file_path: str,
     program_name: str,
 ):
-    awarded_areas = read_awarded_areas(awarded_areas_file_path, program_name)
+    awarded_areas = read_awarded_areas(awarded_areas_file_path)
     process_eligible_areas(eligible_areas_file_path, awarded_areas, program_name, output_file_path)
