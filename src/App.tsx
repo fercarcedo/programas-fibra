@@ -46,14 +46,14 @@ function App() {
             protomaps: {
               type: "vector",
               tiles: [
-                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map/{z}/{x}/{y}.mvt",
+                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
               ],
               maxzoom: 15
             },
             fiber: {
               type: "vector",
               tiles: [
-                "https://programas-fibra-tile-server.fercarcedo.workers.dev/output/{z}/{x}/{y}.mvt"
+                "https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt"
               ],
               maxzoom: 15
             }
