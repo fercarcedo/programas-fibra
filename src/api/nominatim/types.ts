@@ -1,27 +1,16 @@
-import { type Geometry } from "geojson";
-
 export interface NominatimSearchResponse {
-  type: string;
-  licence: string;
-  features: NominatimFeature[];
-}
-
-export interface NominatimFeature {
-  type: string;
-  properties: NominatimFeatureProperties;
-  bbox: number[];
-  geometry: Geometry;
-}
-
-export interface NominatimFeatureProperties {
   place_id: string;
+  licence: string;
   osm_type: string;
-  osm_id: string;
-  display_name: string;
-  place_rank: string;
-  category: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  class: string;
   type: string;
+  place_rank: number;
   importance: number;
-  addresstype?: string;
-  name?: string;
+  addresstype: string;
+  name: string;
+  display_name: string;
+  boundingbox: string[];
 }

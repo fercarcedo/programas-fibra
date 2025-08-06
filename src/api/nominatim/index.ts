@@ -1,23 +1,14 @@
 import type { NominatimSearchResponse } from "./types";
 
-const EMPTY_RESPONSE = {
-  "type": "FeatureCollection",
-  "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-  "features": []
-}
-
-async function search(query: string): Promise<NominatimSearchResponse> {
+async function search(query: string): Promise<NominatimSearchResponse[]> {
   if (!query || !query.trim()) {
-    return EMPTY_RESPONSE;
+    return [];
   }
 
   const url = new URL("https://nominatim.openstreetmap.org/search");
   url.searchParams.set("q", query.toString());
-  url.searchParams.set("format", "geojson");
-  url.searchParams.set("polygon_geojson", "1");
-  url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("countrycodes", "es");
-  url.searchParams.set("accept-language", "es");
+  url.searchParams.set("format", "json");
+  url.searchParams.set("countrycodes", "ES");
 
   const response = await fetch(url.toString());
 

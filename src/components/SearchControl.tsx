@@ -7,10 +7,7 @@ import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
 import { useControl, type ControlPosition } from "react-map-gl/maplibre";
 import maplibregl from "maplibre-gl";
 import search from "../api/nominatim";
-import type {
-  NominatimFeature,
-  NominatimSearchResponse,
-} from "../api/nominatim/types";
+import type { NominatimSearchResponse } from "../api/nominatim/types";
 
 export type SearchControlProps = {
   showResultsWhileTyping?: boolean;
@@ -20,25 +17,31 @@ export type SearchControlProps = {
   position: ControlPosition;
 };
 
-const featuresFromGeojson = (
-  geojson: NominatimSearchResponse | null,
+const featuresFromSearchResults = (
+  results: NominatimSearchResponse[],
 ): MaplibreGeocoderFeatureResults => {
   const features: CarmenGeojsonFeature[] =
-    geojson?.features.map((feature: NominatimFeature) => {
-      const center = [
-        feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
-        feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2,
-      ];
+    results.map((result: NominatimSearchResponse) => {
       return {
-        id: feature.properties.osm_id,
+        id: result.osm_id.toString(),
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: center,
+          coordinates: [parseFloat(result.lon), parseFloat(result.lat)],
         },
-        place_name: feature.properties.display_name,
-        properties: feature.properties,
-        text: feature.properties.display_name,
+        place_name: result.display_name,
+        properties: {
+          place_id: result.place_id,
+          osm_type: result.osm_type,
+          osm_id: result.osm_id,
+          place_rank: result.place_rank,
+          type: result.type,
+          importance: result.importance,
+          addresstype: result.addresstype,
+          name: result.name,
+          display_name: result.display_name,
+        },
+        text: result.display_name,
         place_type: ["place"],
       };
     }) ?? [];
@@ -51,15 +54,15 @@ function SearchControl(props: SearchControlProps) {
       const geocoderApi: MaplibreGeocoderApi = {
         forwardGeocode: async (config) => {
           if (!config.query) {
-            return featuresFromGeojson(null);
+            return featuresFromSearchResults([]);
           }
 
           try {
-            const geojson = await search(config.query.toString());
-            return featuresFromGeojson(geojson);
+            const results = await search(config.query.toString());
+            return featuresFromSearchResults(results);
           } catch (e) {
             console.log("Error while searching");
-            return featuresFromGeojson(null);
+            return featuresFromSearchResults([]);
           }
         },
       };
