@@ -41,7 +41,7 @@ function App() {
           glyphs:
             "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
           sprite:
-            "https://protomaps.github.io/basemaps-assets/sprites/v4/light",
+            "https://protomaps.github.io/basemaps-assets/sprites/v4/grayscale",
           sources: {
             protomaps: {
               type: "vector",
@@ -59,16 +59,37 @@ function App() {
             }
           },
           layers: [
-            ...layers("protomaps", namedFlavor("light"), { lang: "es" }),
+            ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
             {
               id: "fiber-layer",
               type: "fill",
               source: "fiber",
               "source-layer": "output",
               paint: {
-                  "fill-color": "#ff0000",
+                  "fill-color": [
+                    "match",
+                    ["get", "grantee"],
+                    "TELEFONICA DE ESPAÑA, S.A.", "#019DF4",
+                    "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.", "#FF5E0E",
+                    "AVATEL TELECOM S.A.", "#A05EB5",
+                    "ADAMO TELECOM IBERIA SA", "#2BC36E",
+                    "ASTEO RED NEUTRA SL", "#2472B7",
+                    "VENTO REDE, S.L.", "#3B9C3F",
+                    "#ff0000"
+                  ],
                   "fill-opacity": .5
               }
+            },
+            {
+              id: "outline-layer",
+              type: "line",
+              source: "fiber",
+              "source-layer": "output",
+              "paint": {
+                "line-color": "#FE0000",
+                "line-width": 0.5,
+              },
+              minzoom: 10
             }
           ]
         }}
