@@ -5,6 +5,7 @@ from geojson import FeatureCollection, Feature, Point
 import math
 import numpy as np
 from .models import AreaProperties, AreaPropertiesTown
+from .centroid_calculator import write_centroids
 
 PROJECTS_COLUMN_INDEX = 2
 GRANTEES_COLUMN_INDEX = 4
@@ -26,7 +27,7 @@ def _grantee_from_project(project: str, project_to_grantee: dict[str, str]) -> s
         return project_to_grantee[project_with_leading_zero]
     return project_to_grantee[_remove_leading_zero_project(project)]
 
-def awarded_areas(awarded_projects_file_path: str, entities_file_path: str, program_name: str) -> list[AreaProperties]:
+def awarded_areas(awarded_projects_file_path: str, entities_file_path: str, program_name: str) -> FeatureCollection:
     excel_file = pandas.ExcelFile(awarded_projects_file_path)
 
     excel_df = excel_file.parse(sheet_name=1, header=None)
@@ -126,3 +127,4 @@ def execute(
 ):
     areas_geojson = awarded_areas(awarded_projects_file_path, entities_file_path, program_name)
     write_awarded_areas(output_file_path, areas_geojson)
+    write_centroids(output_file_path, f"centroids.{output_file_path}")

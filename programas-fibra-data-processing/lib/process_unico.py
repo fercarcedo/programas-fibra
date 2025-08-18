@@ -5,6 +5,7 @@ from decimal import Decimal
 from dataclasses import dataclass
 from typing import BinaryIO, TextIO, Generator, Any
 from .models import AreaPropertiesArea
+from .centroid_calculator import write_centroids
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -97,3 +98,4 @@ def execute(
 ):
     awarded_areas = read_awarded_areas(awarded_areas_file_path)
     process_eligible_areas(eligible_areas_file_path, awarded_areas, output_file_path, program_name)
+    write_centroids(output_file_path, f"centroids.{output_file_path}")
