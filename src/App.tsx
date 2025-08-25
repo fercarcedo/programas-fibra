@@ -3,6 +3,7 @@ import "./App.css";
 import Map, {
   GeolocateControl,
   NavigationControl,
+  Popup,
   useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
@@ -11,11 +12,12 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
-import type { MapViewState } from "@deck.gl/core";
+import type { MapViewState, PickingInfo } from "@deck.gl/core";
 
 import { MVTLayer } from '@deck.gl/geo-layers';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import type { MapboxOverlayProps } from '@deck.gl/mapbox';
+import type { Feature, Geometry } from 'geojson';
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
@@ -24,42 +26,11 @@ const INITIAL_VIEW_STATE: MapViewState = {
   maxZoom: 18,
 };
 
-const mapLayers = [
-  new MVTLayer({
-    id: 'fiber-layer',
-    sourceLayer: 'output',
-    data: [
-      'https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt'
-    ],
-    minZoom: 0,
-    maxZoom: 15,
-    filled: true,
-    stroked: true,
-    pickable: true,
-    autoHighlight: true,
-    getFillColor: feature => {
-      const grantee: string = feature.properties.grantee;
-      const fillAlpha = 128;
-      switch (grantee) {
-        case 'TELEFONICA DE ESPAÑA, S.A.': 
-          return [1, 157, 244, fillAlpha];
-        case 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.': 
-          return [255, 94, 14, fillAlpha];
-        case 'AVATEL TELECOM S.A.': 
-          return [160, 94, 181, fillAlpha];
-        case 'ADAMO TELECOM IBERIA SA': 
-          return [43, 195, 110, fillAlpha];
-        case 'ASTEO RED NEUTRA SL': 
-          return [36, 114, 183, fillAlpha];
-        case 'VENTO REDE, S.L.': 
-          return [59, 156, 63, fillAlpha];
-      }
-      return [255, 0, 0, fillAlpha];
-    },
-    getLineColor: [254, 0, 0, 255],
-    lineWidthMinPixels: 0.5,
-  }),
-];
+interface PopupInfo {
+  longitude: number;
+  latitude: number;
+  data: any;
+}
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -90,8 +61,59 @@ function App() {
     setMapLoaded(true);
   }, []);
 
+  const handleLayerClick = (info: PickingInfo<Feature<Geometry, any>>) => {
+    if (info.object && info.coordinate) {
+      setPopupInfo({
+        longitude: info.coordinate[0],
+        latitude: info.coordinate[1],
+        data: info.object.properties,
+      })
+    } else {
+      setPopupInfo(null);
+    }
+  }
+
+  const mapLayers = [
+    new MVTLayer({
+      id: 'fiber-layer',
+      sourceLayer: 'output',
+      data: [
+        'https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt'
+      ],
+      minZoom: 0,
+      maxZoom: 15,
+      filled: true,
+      stroked: true,
+      pickable: true,
+      autoHighlight: true,
+      getFillColor: feature => {
+        const grantee: string = feature.properties.grantee;
+        const fillAlpha = 128;
+        switch (grantee) {
+          case 'TELEFONICA DE ESPAÑA, S.A.': 
+            return [1, 157, 244, fillAlpha];
+          case 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.': 
+            return [255, 94, 14, fillAlpha];
+          case 'AVATEL TELECOM S.A.': 
+            return [160, 94, 181, fillAlpha];
+          case 'ADAMO TELECOM IBERIA SA': 
+            return [43, 195, 110, fillAlpha];
+          case 'ASTEO RED NEUTRA SL': 
+            return [36, 114, 183, fillAlpha];
+          case 'VENTO REDE, S.L.': 
+            return [59, 156, 63, fillAlpha];
+        }
+        return [255, 0, 0, fillAlpha];
+      },
+      getLineColor: [254, 0, 0, 255],
+      lineWidthMinPixels: 0.5,
+      onClick: handleLayerClick,
+    }),
+  ];
+
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
   return (
     <div className="app">
@@ -136,7 +158,20 @@ function App() {
           <NavigationControl position="top-left" showCompass={false} />
           <GeolocateControl position="top-left" showUserLocation={false} />
 
-          {mapLoaded && <DeckGLOverlay layers={mapLayers} />}
+          {mapLoaded && <DeckGLOverlay layers={[mapLayers]} />}
+
+          {popupInfo && (
+            <Popup 
+              longitude={popupInfo.longitude} 
+              latitude={popupInfo.latitude} 
+              onClose={() => setPopupInfo(null)}
+              style={{ zIndex: 9999 }}
+            >
+              <div>
+                <p>Test tooltip</p>
+              </div>
+            </Popup>
+          )}
         </Map>
       </div>
   );
