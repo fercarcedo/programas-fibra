@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import Map, {
   GeolocateControl,
   NavigationControl,
+  useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
 import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
@@ -10,6 +11,61 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
+import type { MapViewState } from "@deck.gl/core";
+
+import { MVTLayer } from '@deck.gl/geo-layers';
+import { MapboxOverlay } from '@deck.gl/mapbox';
+import type { MapboxOverlayProps } from '@deck.gl/mapbox';
+
+const INITIAL_VIEW_STATE: MapViewState = {
+  latitude: 40.413401,
+  longitude: -3.692422,
+  zoom: 6.5,
+  maxZoom: 18,
+};
+
+const mapLayers = [
+  new MVTLayer({
+    id: 'fiber-layer',
+    sourceLayer: 'output',
+    data: [
+      'https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt'
+    ],
+    minZoom: 0,
+    maxZoom: 15,
+    filled: true,
+    stroked: true,
+    pickable: true,
+    autoHighlight: true,
+    getFillColor: feature => {
+      const grantee: string = feature.properties.grantee;
+      const fillAlpha = 128;
+      switch (grantee) {
+        case 'TELEFONICA DE ESPAÑA, S.A.': 
+          return [1, 157, 244, fillAlpha];
+        case 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.': 
+          return [255, 94, 14, fillAlpha];
+        case 'AVATEL TELECOM S.A.': 
+          return [160, 94, 181, fillAlpha];
+        case 'ADAMO TELECOM IBERIA SA': 
+          return [43, 195, 110, fillAlpha];
+        case 'ASTEO RED NEUTRA SL': 
+          return [36, 114, 183, fillAlpha];
+        case 'VENTO REDE, S.L.': 
+          return [59, 156, 63, fillAlpha];
+      }
+      return [255, 0, 0, fillAlpha];
+    },
+    getLineColor: [254, 0, 0, 255],
+    lineWidthMinPixels: 0.5,
+  }),
+];
+
+function DeckGLOverlay(props: MapboxOverlayProps) {
+  const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
+  overlay.setProps(props);
+  return null;
+}
 
 function App() {
   useEffect(() => {
@@ -30,94 +86,59 @@ function App() {
     const currentPitch = map.getPitch();
     map.setMaxPitch(currentPitch);
     map.setMinPitch(currentPitch);
+
+    setMapLoaded(true);
   }, []);
+
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   return (
     <div className="app">
       <Map
-        style={{ width: "100%", height: "100%" }}
-        mapStyle={{
-          version: 8,
-          glyphs:
-            "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
-          sprite:
-            "https://protomaps.github.io/basemaps-assets/sprites/v4/grayscale",
-          sources: {
-            protomaps: {
-              type: "vector",
-              tiles: [
-                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
-              ],
-              maxzoom: 15
-            },
-            fiber: {
-              type: "vector",
-              tiles: [
-                "https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt"
-              ],
-              maxzoom: 15
-            }
-          },
-          layers: [
-            ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
-            {
-              id: "fiber-layer",
-              type: "fill",
-              source: "fiber",
-              "source-layer": "output",
-              paint: {
-                  "fill-color": [
-                    "match",
-                    ["get", "grantee"],
-                    "TELEFONICA DE ESPAÑA, S.A.", "#019DF4",
-                    "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.", "#FF5E0E",
-                    "AVATEL TELECOM S.A.", "#A05EB5",
-                    "ADAMO TELECOM IBERIA SA", "#2BC36E",
-                    "ASTEO RED NEUTRA SL", "#2472B7",
-                    "VENTO REDE, S.L.", "#3B9C3F",
-                    "#ff0000"
-                  ],
-                  "fill-opacity": .5
-              }
-            },
-            {
-              id: "outline-layer",
-              type: "line",
-              source: "fiber",
-              "source-layer": "output",
-              "paint": {
-                "line-color": "#FE0000",
-                "line-width": 0.5,
+          {...viewState}
+          onMove={e => setViewState(e.viewState)}
+          style={{ width: "100%", height: "100%" }}
+          mapStyle={{
+            version: 8,
+            glyphs:
+              "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
+            sprite:
+              "https://protomaps.github.io/basemaps-assets/sprites/v4/grayscale",
+            sources: {
+              protomaps: {
+                type: "vector",
+                tiles: [
+                  "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
+                ],
+                maxzoom: 15
               },
-              minzoom: 10
-            }
-          ]
-        }}
-        attributionControl={false}
-        renderWorldCopies={false}
-        initialViewState={{
-          latitude: 40.413401,
-          longitude: -3.692422,
-          zoom: 6.5,
-        }}
-        maxBounds={[-19.116211,26.824071,7.954102,44.527843]}
-        maxZoom={18}
-        dragRotate={false}
-        touchPitch={false}
-        pitchWithRotate={false}
-        onLoad={handleMapLoad}
-      >
-        <SearchControl
-          position="top-left"
-          showResultsWhileTyping={true}
-          collapsed={true}
-          language="es"
-          placeholder="Buscar"
-        />
-        <NavigationControl position="top-left" showCompass={false} />
-        <GeolocateControl position="top-left" showUserLocation={false} />
-      </Map>
-    </div>
+            },
+            layers: [
+              ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
+            ]
+          }}
+          attributionControl={false}
+          renderWorldCopies={false}
+          maxBounds={[-19.116211,26.824071,7.954102,44.527843]}
+          dragRotate={false}
+          touchPitch={false}
+          pitchWithRotate={false}
+          onLoad={handleMapLoad}
+        >
+          <SearchControl
+            position="top-left"
+            showResultsWhileTyping={true}
+            collapsed={true}
+            language="es"
+            placeholder="Buscar"
+          />
+          <NavigationControl position="top-left" showCompass={false} />
+          <GeolocateControl position="top-left" showUserLocation={false} />
+
+          {mapLoaded && <DeckGLOverlay layers={mapLayers} />}
+        </Map>
+      </div>
   );
 }
 

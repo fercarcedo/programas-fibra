@@ -15,8 +15,10 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@deck.gl/mapbox": "^9.1.14",
     "@maplibre/maplibre-gl-geocoder": "^1.9.0",
     "@protomaps/basemaps": "^5.3.0",
+    "deck.gl": "^9.1.14",
     "maplibre-gl": "^5.5.0",
     "pmtiles": "^4.3.0",
     "react": "^19.1.0",
