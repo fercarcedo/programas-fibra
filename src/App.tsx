@@ -3,7 +3,6 @@ import "./App.css";
 import Map, {
   GeolocateControl,
   NavigationControl,
-  Popup,
   useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
@@ -18,6 +17,8 @@ import { MVTLayer } from '@deck.gl/geo-layers';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import type { MapboxOverlayProps } from '@deck.gl/mapbox';
 import type { Feature, Geometry } from 'geojson';
+import type { AreaProperties } from "./api/areas/types";
+import AreaPopup from "./components/AreaPopup";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
@@ -29,7 +30,7 @@ const INITIAL_VIEW_STATE: MapViewState = {
 interface PopupInfo {
   longitude: number;
   latitude: number;
-  data: any;
+  data: AreaProperties;
 }
 
 function DeckGLOverlay(props: MapboxOverlayProps) {
@@ -161,16 +162,12 @@ function App() {
           {mapLoaded && <DeckGLOverlay layers={[mapLayers]} />}
 
           {popupInfo && (
-            <Popup 
-              longitude={popupInfo.longitude} 
+            <AreaPopup 
               latitude={popupInfo.latitude} 
+              longitude={popupInfo.longitude} 
+              data={popupInfo.data} 
               onClose={() => setPopupInfo(null)}
-              style={{ zIndex: 9999 }}
-            >
-              <div>
-                <p>Test tooltip</p>
-              </div>
-            </Popup>
+            />
           )}
         </Map>
       </div>
