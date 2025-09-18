@@ -6,17 +6,17 @@ import Map, {
   useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
-import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl';
+import maplibregl, { type Map as MapLibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
 import type { MapViewState, PickingInfo } from "@deck.gl/core";
 
-import { MVTLayer } from '@deck.gl/geo-layers';
-import { MapboxOverlay } from '@deck.gl/mapbox';
-import type { MapboxOverlayProps } from '@deck.gl/mapbox';
-import type { Feature, Geometry } from 'geojson';
+import { H3HexagonLayer, MVTLayer } from "@deck.gl/geo-layers";
+import { MapboxOverlay } from "@deck.gl/mapbox";
+import type { MapboxOverlayProps } from "@deck.gl/mapbox";
+import type { Feature, Geometry } from "geojson";
 import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
 
@@ -68,109 +68,121 @@ function App() {
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
         data: info.object.properties,
-      })
+      });
     } else {
       setPopupInfo(null);
     }
-  }
-
-  const mapLayers = [
-    new MVTLayer({
-      id: 'fiber-layer',
-      sourceLayer: 'output',
-      data: [
-        'https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt'
-      ],
-      minZoom: 0,
-      maxZoom: 15,
-      filled: true,
-      stroked: true,
-      pickable: true,
-      autoHighlight: true,
-      getFillColor: feature => {
-        const grantee: string = feature.properties.grantee;
-        const fillAlpha = 128;
-        switch (grantee) {
-          case 'TELEFONICA DE ESPAÑA, S.A.': 
-            return [1, 157, 244, fillAlpha];
-          case 'ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.': 
-            return [255, 94, 14, fillAlpha];
-          case 'AVATEL TELECOM S.A.': 
-            return [160, 94, 181, fillAlpha];
-          case 'ADAMO TELECOM IBERIA SA': 
-            return [43, 195, 110, fillAlpha];
-          case 'ASTEO RED NEUTRA SL': 
-            return [36, 114, 183, fillAlpha];
-          case 'VENTO REDE, S.L.': 
-            return [59, 156, 63, fillAlpha];
-        }
-        return [255, 0, 0, fillAlpha];
-      },
-      getLineColor: [254, 0, 0, 255],
-      lineWidthMinPixels: 0.5,
-      onClick: handleLayerClick,
-    }),
-  ];
+  };
 
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
 
+  const mapLayers =
+    viewState.zoom < 9
+      ? [
+          new H3HexagonLayer({
+            id: "hexagon-layer",
+            data: "https://programas-fibra.fercarcedo.workers.dev/data/aggregated-ae9af1d73c.json",
+            extruded: false,
+            getHexagon: (d) => d.h3Index,
+            getElevation: 0,
+            getFillColor: (d) => [255, (1 - d.totalCount / 500) * 255, 0],
+          }),
+        ]
+      : [
+          new MVTLayer({
+            id: "fiber-layer",
+            sourceLayer: "output",
+            data: [
+              "https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt",
+            ],
+            minZoom: 0,
+            maxZoom: 15,
+            filled: true,
+            stroked: true,
+            pickable: true,
+            autoHighlight: true,
+            getFillColor: (feature) => {
+              const grantee: string = feature.properties.grantee;
+              const fillAlpha = 128;
+              switch (grantee) {
+                case "TELEFONICA DE ESPAÑA, S.A.":
+                  return [1, 157, 244, fillAlpha];
+                case "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.":
+                  return [255, 94, 14, fillAlpha];
+                case "AVATEL TELECOM S.A.":
+                  return [160, 94, 181, fillAlpha];
+                case "ADAMO TELECOM IBERIA SA":
+                  return [43, 195, 110, fillAlpha];
+                case "ASTEO RED NEUTRA SL":
+                  return [36, 114, 183, fillAlpha];
+                case "VENTO REDE, S.L.":
+                  return [59, 156, 63, fillAlpha];
+              }
+              return [255, 0, 0, fillAlpha];
+            },
+            getLineColor: [254, 0, 0, 255],
+            lineWidthMinPixels: 0.5,
+            onClick: handleLayerClick,
+          }),
+        ];
+
   return (
     <div className="app">
       <Map
-          {...viewState}
-          onMove={e => setViewState(e.viewState)}
-          style={{ width: "100%", height: "100%" }}
-          mapStyle={{
-            version: 8,
-            glyphs:
-              "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
-            sprite:
-              "https://protomaps.github.io/basemaps-assets/sprites/v4/grayscale",
-            sources: {
-              protomaps: {
-                type: "vector",
-                tiles: [
-                  "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
-                ],
-                maxzoom: 15
-              },
+        {...viewState}
+        onMove={(e) => setViewState(e.viewState)}
+        style={{ width: "100%", height: "100%" }}
+        mapStyle={{
+          version: 8,
+          glyphs:
+            "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf",
+          sprite:
+            "https://protomaps.github.io/basemaps-assets/sprites/v4/grayscale",
+          sources: {
+            protomaps: {
+              type: "vector",
+              tiles: [
+                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
+              ],
+              maxzoom: 15,
             },
-            layers: [
-              ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
-            ]
-          }}
-          attributionControl={false}
-          renderWorldCopies={false}
-          maxBounds={[-19.116211,26.824071,7.954102,44.527843]}
-          dragRotate={false}
-          touchPitch={false}
-          pitchWithRotate={false}
-          onLoad={handleMapLoad}
-        >
-          <SearchControl
-            position="top-left"
-            showResultsWhileTyping={true}
-            collapsed={true}
-            language="es"
-            placeholder="Buscar"
+          },
+          layers: [
+            ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
+          ],
+        }}
+        attributionControl={false}
+        renderWorldCopies={false}
+        maxBounds={[-19.116211, 26.824071, 7.954102, 44.527843]}
+        dragRotate={false}
+        touchPitch={false}
+        pitchWithRotate={false}
+        onLoad={handleMapLoad}
+      >
+        <SearchControl
+          position="top-left"
+          showResultsWhileTyping={true}
+          collapsed={true}
+          language="es"
+          placeholder="Buscar"
+        />
+        <NavigationControl position="top-left" showCompass={false} />
+        <GeolocateControl position="top-left" showUserLocation={false} />
+
+        {mapLoaded && <DeckGLOverlay layers={[mapLayers]} />}
+
+        {popupInfo && (
+          <AreaPopup
+            latitude={popupInfo.latitude}
+            longitude={popupInfo.longitude}
+            data={popupInfo.data}
+            onClose={() => setPopupInfo(null)}
           />
-          <NavigationControl position="top-left" showCompass={false} />
-          <GeolocateControl position="top-left" showUserLocation={false} />
-
-          {mapLoaded && <DeckGLOverlay layers={[mapLayers]} />}
-
-          {popupInfo && (
-            <AreaPopup 
-              latitude={popupInfo.latitude} 
-              longitude={popupInfo.longitude} 
-              data={popupInfo.data} 
-              onClose={() => setPopupInfo(null)}
-            />
-          )}
-        </Map>
-      </div>
+        )}
+      </Map>
+    </div>
   );
 }
 
