@@ -9,4 +9,10 @@
   "observability": {
     "enabled": true,
   },
+  "r2_buckets": [
+    {
+      "binding": "BUCKET_GEO",
+      "bucket_name": "programas-fibra-geo"
+    }
+  ]
 }
