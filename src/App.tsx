@@ -171,7 +171,7 @@ function App() {
         <NavigationControl position="top-left" showCompass={false} />
         <GeolocateControl position="top-left" showUserLocation={false} />
 
-        {mapLoaded && <DeckGLOverlay layers={[mapLayers]} />}
+        {mapLoaded && <DeckGLOverlay layers={[mapLayers]} interleaved={true} />}
 
         {popupInfo && (
           <AreaPopup
