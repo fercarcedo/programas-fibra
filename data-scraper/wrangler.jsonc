@@ -1,0 +1,25 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "programas-fibra-data-scraper-scheduler",
+	"main": "src/entry.py",
+	"compatibility_date": "2025-08-01",
+	"compatibility_flags": [
+		"python_workflows",
+		"python_workers"
+	],
+	"observability": {
+		"enabled": true
+	},
+	"triggers": {
+		"crons": [
+			"0 2 * * 6"
+		]
+  	},
+	"workflows": [
+    	{
+      		"name": "programas-fibra-data-scraper-workflow",
+      		"binding": "WORKFLOW",
+      		"class_name": "DataScraperWorkflow"
+    	}
+  	]
+}
