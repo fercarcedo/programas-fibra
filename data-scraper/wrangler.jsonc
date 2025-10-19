@@ -21,5 +21,17 @@
       		"binding": "WORKFLOW",
       		"class_name": "DataScraperWorkflow"
     	}
-  	]
+  	],
+	"kv_namespaces": [
+		{
+			"binding": "CONFIG",
+			"id": "e791a9d3cddd4af3a224c2ffbf10b1a6",
+			"remote": true
+		},
+		{
+			"binding": "PROJECTS",
+			"id": "7e8b779284134b108916b8ee6f3a5614",
+			"remote": true
+		}
+	]
 }

@@ -4,11 +4,12 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "webtypy>=0.1.7",
-]
+dependencies = ["webtypy>=0.1.7", "beautifulsoup4>=4.9.3"]
 
 [dependency-groups]
-dev = [
-    "workers-py"
-]
+dev = ["workers-py", "pytest", "pytest-asyncio"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "tests"]
+asyncio_mode = "auto"
