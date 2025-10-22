@@ -19,12 +19,13 @@ class CheckUpdatedProgramsStep:
     async def run(self):
         url_map = await self.env.CONFIG.get("workflow:fiber-program-url-map")
         url_map_object = json.loads(url_map)
-
+        
         result = [await self._process_url(program_name, url) for program_name, url in url_map_object.items()]
         return [r for r in result if await self._is_updated(r)]
 
     async def _process_url(self, program_name: str, url: str) -> ProgramUpdateResult:
         response = await fetch(url)
+
         page_html = await response.text()
 
         date_regex = re.compile(r"Fecha de actualización:\s*(?P<date>\d{2}/\d{2}/\d{4})")
