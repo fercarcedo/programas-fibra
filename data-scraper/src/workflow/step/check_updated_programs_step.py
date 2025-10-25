@@ -1,16 +1,10 @@
 from workers import fetch, Request
-from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 import json
 from util.date_parser import parse_last_updated
 from dataclasses import dataclass
-
-@dataclass
-class ProgramUpdateResult:
-    file_url: str
-    program_name: str
-    last_updated: int
+from domain.program_update_result import ProgramUpdateResult
 
 class CheckUpdatedProgramsStep:
     def __init__(self, env):
@@ -24,6 +18,8 @@ class CheckUpdatedProgramsStep:
         return [r for r in result if await self._is_updated(r)]
 
     async def _process_url(self, program_name: str, url: str) -> ProgramUpdateResult:
+        from bs4 import BeautifulSoup
+
         response = await fetch(url)
 
         page_html = await response.text()
