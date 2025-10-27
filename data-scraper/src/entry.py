@@ -1,5 +1,5 @@
 from workers import handler
-from workflow.workflow import DataScraperWorkflow
+from infrastructure.workflows.workflow import DataScraperWorkflow
 
 @handler
 async def on_scheduled(controller, env, ctx):

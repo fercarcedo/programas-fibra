@@ -72,25 +72,22 @@ mock_workers.Request = MockRequest
 mock_workers.Response = MockResponse
 sys.modules['workers'] = mock_workers
 
-from workflow.step.check_updated_programs_step import CheckUpdatedProgramsStep, ProgramUpdateResult
+from application.use_cases.check_updated_programs_use_case import CheckUpdatedProgramsUseCase
+from domain.program_update_result import ProgramUpdateResult
+from domain.repositories.config_repository import ConfigRepository
+from domain.repositories.program_repository import ProgramRepository
 
-MOCK_URL_MAP = """
-{ 
+MOCK_URL_MAP = {
     "UNICO 2023": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx",
     "UNICO 2024": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO.aspx"
 }
-"""
 
-async def test_run():
-    mock_config = MagicMock()
-    mock_config.get = AsyncMock(return_value=MOCK_URL_MAP)
+async def test_execute():
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = MOCK_URL_MAP
 
-    mock_projects = MagicMock()
-    mock_projects.get = AsyncMock(return_value=None)
-
-    mock_env = MagicMock()
-    mock_env.CONFIG = mock_config
-    mock_env.PROJECTS = mock_projects
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
 
     expected_updated_projects = [
         ProgramUpdateResult(
@@ -104,22 +101,18 @@ async def test_run():
             last_updated=1734421875
         )
     ]
-    step = CheckUpdatedProgramsStep(mock_env)
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
 
-    updated_projects = await step.run()
+    updated_projects = await use_case.execute()
 
     assert expected_updated_projects == updated_projects
 
-async def test_run_with_some_not_updated_projects():
-    mock_config = MagicMock()
-    mock_config.get = AsyncMock(return_value=MOCK_URL_MAP)
+async def test_execute_with_some_not_updated_projects():
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = MOCK_URL_MAP
 
-    mock_projects = MagicMock()
-    mock_projects.get = AsyncMock(return_value=1734421875)
-
-    mock_env = MagicMock()
-    mock_env.CONFIG = mock_config
-    mock_env.PROJECTS = mock_projects
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = 1734421875
 
     expected_updated_projects = [
         ProgramUpdateResult(
@@ -128,8 +121,8 @@ async def test_run_with_some_not_updated_projects():
             last_updated=1754006400
         )
     ]
-    step = CheckUpdatedProgramsStep(mock_env)
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
 
-    updated_projects = await step.run()
+    updated_projects = await use_case.execute()
 
     assert expected_updated_projects == updated_projects

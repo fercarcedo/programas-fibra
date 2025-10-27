@@ -1,5 +1,5 @@
 import pytest
-from util.date_parser import parse_last_updated
+from application.parsers.date_parser import parse_last_updated
 
 def test_parse_last_updated_dd_mm_yyyy():
     assert 1760400000 == parse_last_updated("14/10/2025")

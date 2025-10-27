@@ -1,46 +1,15 @@
-from domain.program_update_result import ProgramUpdateResult
-from workers import fetch
+from domain.readers.sheet_file_reader import SheetFileReader
 from io import BytesIO
-import json
-import warnings
-import zipfile
-import io
 import xml.etree.ElementTree as ET
+from zipfile import ZipFile
 
-class ProcessProgramsStep:
-    def __init__(self, env):
-        self.env = env
-
-    async def run(self, program: ProgramUpdateResult):
-        response = await fetch(program.file_url)
-
-        if response is None or not response.ok:
-            return None
-
-        response_bytes = await response.bytes()
-        print(self._read_xlsx_bytes(response_bytes))
-
-        return "END"
-
-    def _read_xlsx_bytes(self, excel_bytes, sheet_number=1):
-        """
-        Read an Excel file by parsing its XML structure without dependencies.
-        Only loads shared strings that are actually used in the specified sheet.
-
-        Args:
-            excel_bytes: Bytes array of the .xlsx file (e.g., from requests.get().content)
-            sheet_number: Sheet number to read (1-indexed, default=1)
-
-        Returns:
-            List of lists representing rows and cells
-        """
-        with zipfile.ZipFile(BytesIO(excel_bytes), 'r') as zip_ref:
+class XlsxSheetFileReader(SheetFileReader):
+    def read(self, bytes, sheet_number=1):
+        with ZipFile(BytesIO(bytes), 'r') as zip_ref:
             # First pass: read the sheet and collect used shared string indices
-            print("Inside zip file")
             sheet_path = f'xl/worksheets/sheet{sheet_number}.xml'
 
             try:
-                print("Reading sheet")
                 sheet_xml = zip_ref.read(sheet_path)
             except KeyError:
                 raise ValueError(f"Sheet {sheet_number} not found in workbook")
@@ -49,8 +18,6 @@ class ProcessProgramsStep:
             used_indices = set()
             root = ET.fromstring(sheet_xml)
 
-            print("Parsed sheet")
-
             # Find all cells with type 's' (shared string)
             ns = {'ns': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
             for cell in root.findall('.//ns:c[@t="s"]', ns):
@@ -58,19 +25,15 @@ class ProcessProgramsStep:
                 if v is not None and v.text:
                     used_indices.add(int(v.text))
 
-            print("Finished parsing indices")
-
             # Second pass: stream parse shared strings, only loading what we need
             shared_strings = {}
             if used_indices:
                 try:
                     with zip_ref.open('xl/sharedStrings.xml') as ss_file:
-                        print("Opened sharedstrings")
                         # Use iterparse for streaming XML parsing
                         context = ET.iterparse(ss_file, events=('end',))
                         current_idx = 0
 
-                        print("Started iterating context")
                         for event, elem in context:
                             # Only process <si> elements (shared string items)
                             if elem.tag.endswith('si'):
@@ -90,42 +53,56 @@ class ProcessProgramsStep:
                                 if len(shared_strings) == len(used_indices):
                                     break
 
-                        print("Finished iterating context")
-
                 except KeyError:
                     pass  # No shared strings file
 
             # Third pass: build the data structure
             data = []
             for row in root.findall('.//ns:row', ns):
-                row_data = []
-
+                row_cells = {}  # Use dict to track by column
+                
                 for cell in row.findall('ns:c', ns):
+                    # Get cell reference like "A1", "B5", etc.
+                    cell_ref = cell.get('r', '')
+                    
+                    # Extract column letter(s) from reference
+                    col_letter = ''.join(c for c in cell_ref if c.isalpha())
+                    col_idx = self._column_letter_to_index(col_letter)
+                    
                     cell_type = cell.get('t', '')
                     v = cell.find('ns:v', ns)
-
+                    
                     if v is not None and v.text:
                         if cell_type == 's':  # Shared string
                             idx = int(v.text)
-                            row_data.append(shared_strings.get(idx, ''))
+                            row_cells[col_idx] = shared_strings.get(idx, '')
                         elif cell_type == 'b':  # Boolean
-                            row_data.append(v.text == '1')
+                            row_cells[col_idx] = v.text == '1'
                         elif cell_type == 'str':  # Inline string
-                            row_data.append(v.text)
+                            row_cells[col_idx] = v.text
                         else:  # Number
                             try:
-                                # Try integer first
                                 if '.' not in v.text:
-                                    row_data.append(int(v.text))
+                                    row_cells[col_idx] = int(v.text)
                                 else:
-                                    row_data.append(float(v.text))
+                                    row_cells[col_idx] = float(v.text)
                             except ValueError:
-                                row_data.append(v.text)
+                                row_cells[col_idx] = v.text
                     else:
-                        row_data.append(None)
-
-                if row_data:  # Only add non-empty rows
+                        row_cells[col_idx] = None
+                
+                # Convert dict to list, filling gaps with None
+                if row_cells:
+                    max_col = max(row_cells.keys())
+                    row_data = [row_cells.get(i, None) for i in range(max_col + 1)]
                     data.append(row_data)
-
+            
             return data
-        
+
+    @staticmethod
+    def _column_letter_to_index(column_letter):
+        """Convert Excel column letter to 0-based index. A=0, B=1, Z=25, AA=26, etc."""
+        index = 0
+        for char in column_letter:
+            index = index * 26 + (ord(char.upper()) - ord('A') + 1)
+        return index - 1

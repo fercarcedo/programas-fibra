@@ -1,15 +1,21 @@
 from workers import WorkflowEntrypoint
 from dataclasses import asdict
-from workflow.step.check_updated_programs_step import CheckUpdatedProgramsStep
-from workflow.step.process_programs_step import ProcessProgramsStep
+from application.use_cases.check_updated_programs_use_case import CheckUpdatedProgramsUseCase
+from application.use_cases.process_programs_use_case import ProcessProgramsUseCase
 from domain.program_update_result import ProgramUpdateResult
+from infrastructure.readers.xlsx_sheet_file_reader import XlsxSheetFileReader
+from infrastructure.repositories.kv_config_repository import KVConfigRepository
+from infrastructure.repositories.kv_program_repository import KVProgramRepository
 from pyodide.ffi import to_js
 from js import Object
 
 class DataScraperWorkflow(WorkflowEntrypoint):
     def __init__(self, ctx, env):
-        self.check_updated_programs_step = CheckUpdatedProgramsStep(env)
-        self.process_programs_step = ProcessProgramsStep(env)
+        config_repository = KVConfigRepository(env)
+        program_repository = KVProgramRepository(env)
+        sheet_reader = XlsxSheetFileReader()
+        self.check_updated_programs_use_case = CheckUpdatedProgramsUseCase(config_repository, program_repository)
+        self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader)
         self.env = env
 
     async def run(self, event, step):
@@ -17,12 +23,12 @@ class DataScraperWorkflow(WorkflowEntrypoint):
 
         @step.do('check-updated-programs')
         async def check_updated_programs_step():
-            program_update_results = await self.check_updated_programs_step.run()
+            program_update_results = await self.check_updated_programs_use_case.execute()
             return [asdict(program_update_result) for program_update_result in program_update_results]
 
         @step.do('process-program')
         async def process_program_step():
-            return await self.process_programs_step.run(ProgramUpdateResult(**program))
+            return await self.process_programs_use_case.execute(ProgramUpdateResult(**program))
 
         async def schedule_process_programs(updated_programs_dict):
             updated_programs = [ProgramUpdateResult(**program_dict) for program_dict in updated_programs_dict]

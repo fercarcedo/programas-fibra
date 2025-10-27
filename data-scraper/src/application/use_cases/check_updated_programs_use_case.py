@@ -2,19 +2,21 @@ from workers import fetch, Request
 from urllib.parse import urljoin
 import re
 import json
-from util.date_parser import parse_last_updated
+from application.parsers.date_parser import parse_last_updated
 from dataclasses import dataclass
 from domain.program_update_result import ProgramUpdateResult
+from domain.repositories.config_repository import ConfigRepository
+from domain.repositories.program_repository import ProgramRepository
 
-class CheckUpdatedProgramsStep:
-    def __init__(self, env):
-        self.env = env
+class CheckUpdatedProgramsUseCase:
+    def __init__(self, config_repository: ConfigRepository, program_repository: ProgramRepository):
+        self.config_repository = config_repository
+        self.program_repository = program_repository
 
-    async def run(self):
-        url_map = await self.env.CONFIG.get("workflow:fiber-program-url-map")
-        url_map_object = json.loads(url_map)
-        
-        result = [await self._process_url(program_name, url) for program_name, url in url_map_object.items()]
+    async def execute(self):
+        url_map = await self.config_repository.get_fiber_program_to_url_map()
+
+        result = [await self._process_url(program_name, url) for program_name, url in url_map.items()]
         return [r for r in result if await self._is_updated(r)]
 
     async def _process_url(self, program_name: str, url: str) -> ProgramUpdateResult:
@@ -49,7 +51,7 @@ class CheckUpdatedProgramsStep:
         )
 
     async def _is_updated(self, result: ProgramUpdateResult) -> bool:
-        saved_last_updated = await self.env.PROJECTS.get(f"programs:{result.program_name}:last-updated")
+        saved_last_updated = await self.program_repository.get_last_update(result.program_name)
         if not saved_last_updated:
             saved_last_updated = 0
         return result.last_updated > saved_last_updated
