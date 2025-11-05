@@ -56,9 +56,22 @@ class XlsxSheetFileReader(SheetFileReader):
                 except KeyError:
                     pass  # No shared strings file
 
+            # Parse merged cells information FIRST
+            merged_ranges = []
+            merge_cells_elem = root.find('.//ns:mergeCells', ns)
+            if merge_cells_elem is not None:
+                for merge_cell in merge_cells_elem.findall('ns:mergeCell', ns):
+                    ref = merge_cell.get('ref', '')
+                    if ref:
+                        parsed_range = self._parse_merge_range(ref)
+                        if parsed_range:
+                            merged_ranges.append(parsed_range)
+
             # Third pass: build the data structure
-            data = []
+            row_data_dict = {}  # Store all rows by row number
+            
             for row in root.findall('.//ns:row', ns):
+                row_num = int(row.get('r', 0)) - 1  # Convert to 0-based
                 row_cells = {}  # Use dict to track by column
                 
                 for cell in row.findall('ns:c', ns):
@@ -88,16 +101,79 @@ class XlsxSheetFileReader(SheetFileReader):
                                     row_cells[col_idx] = float(v.text)
                             except ValueError:
                                 row_cells[col_idx] = v.text
-                    else:
-                        row_cells[col_idx] = None
                 
-                # Convert dict to list, filling gaps with None
-                if row_cells:
-                    max_col = max(row_cells.keys())
-                    row_data = [row_cells.get(i, None) for i in range(max_col + 1)]
-                    data.append(row_data)
+                row_data_dict[row_num] = row_cells
+            
+            # Apply merged cell values - propagate from top-left to all cells in range
+            for merge_range in merged_ranges:
+                start_row, start_col, end_row, end_col = merge_range
+                
+                # Get the value from the top-left cell of the merged range
+                merge_value = None
+                if start_row in row_data_dict and start_col in row_data_dict[start_row]:
+                    merge_value = row_data_dict[start_row][start_col]
+                
+                # Propagate the value to all cells in the merged range
+                for row_idx in range(start_row, end_row + 1):
+                    if row_idx not in row_data_dict:
+                        row_data_dict[row_idx] = {}
+                    for col_idx in range(start_col, end_col + 1):
+                        # Only set if not already set or if it's None
+                        if col_idx not in row_data_dict[row_idx] or row_data_dict[row_idx][col_idx] is None:
+                            row_data_dict[row_idx][col_idx] = merge_value
+            
+            # Convert dict structure to list structure
+            data = []
+            if row_data_dict:
+                min_row = min(row_data_dict.keys())
+                max_row = max(row_data_dict.keys())
+                
+                # Calculate max column across all rows
+                max_col = 0
+                for row in row_data_dict.values():
+                    if row:
+                        max_col = max(max_col, max(row.keys()) if row else 0)
+                
+                for row_idx in range(min_row, max_row + 1):
+                    if row_idx in row_data_dict:
+                        row_data = [row_data_dict[row_idx].get(i, None) for i in range(max_col + 1)]
+                        data.append(row_data)
+                    else:
+                        # Empty row
+                        data.append([None] * (max_col + 1))
             
             return data
+
+    @staticmethod
+    def _parse_merge_range(ref):
+        """Parse a merge range like 'A1:D4' into (start_row, start_col, end_row, end_col)."""
+        try:
+            parts = ref.split(':')
+            if len(parts) != 2:
+                return None
+            
+            start_cell = parts[0]
+            end_cell = parts[1]
+            
+            # Parse start cell
+            start_col_letter = ''.join(c for c in start_cell if c.isalpha())
+            start_row_str = ''.join(c for c in start_cell if c.isdigit())
+            if not start_row_str:
+                return None
+            start_row = int(start_row_str) - 1  # 0-based
+            start_col = XlsxSheetFileReader._column_letter_to_index(start_col_letter)
+            
+            # Parse end cell
+            end_col_letter = ''.join(c for c in end_cell if c.isalpha())
+            end_row_str = ''.join(c for c in end_cell if c.isdigit())
+            if not end_row_str:
+                return None
+            end_row = int(end_row_str) - 1  # 0-based
+            end_col = XlsxSheetFileReader._column_letter_to_index(end_col_letter)
+            
+            return (start_row, start_col, end_row, end_col)
+        except (ValueError, IndexError):
+            return None
 
     @staticmethod
     def _column_letter_to_index(column_letter):
