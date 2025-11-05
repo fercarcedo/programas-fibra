@@ -28,7 +28,8 @@ class DataScraperWorkflow(WorkflowEntrypoint):
 
         @step.do('process-program')
         async def process_program_step():
-            return await self.process_programs_use_case.execute(ProgramUpdateResult(**program))
+            program_data = await self.process_programs_use_case.execute(ProgramUpdateResult(**program))
+            return asdict(program_data)
 
         async def schedule_process_programs(updated_programs_dict):
             updated_programs = [ProgramUpdateResult(**program_dict) for program_dict in updated_programs_dict]

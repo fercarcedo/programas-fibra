@@ -18,10 +18,16 @@ async def test_read_xlsx_bytes(test_resource):
     ]
 
 async def test_read_xlsx_merged_cells(test_resource):
-    excel_bytes = test_resource("Relacion_proyectos_aprobados_2020 (1).xlsx").read_bytes()
+    excel_bytes = test_resource("test_excel_merged_cells_file.xlsx").read_bytes()
 
     reader = XlsxSheetFileReader()
 
     result = reader.read(excel_bytes)
 
-    print(result)
+    assert result == [
+        ['First', 'Second', 'Third'],
+        ['First', 'Two', 'Three'],
+        ['Four', 'Five', 'Six'],
+        [None, 'Five', 'Eight'],
+        ['Nine', None, 'Eight']
+    ]
