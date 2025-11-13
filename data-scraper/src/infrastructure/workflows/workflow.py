@@ -7,7 +7,7 @@ from infrastructure.readers.xlsx_sheet_file_reader import XlsxSheetFileReader
 from infrastructure.repositories.kv_config_repository import KVConfigRepository
 from infrastructure.repositories.kv_program_repository import KVProgramRepository
 from pyodide.ffi import to_js
-from js import Object
+from js import Object, JSON
 
 class DataScraperWorkflow(WorkflowEntrypoint):
     def __init__(self, ctx, env):
@@ -29,7 +29,9 @@ class DataScraperWorkflow(WorkflowEntrypoint):
         @step.do('process-program')
         async def process_program_step():
             program_data = await self.process_programs_use_case.execute(ProgramUpdateResult(**program))
-            return asdict(program_data)
+            print(program_data.to_dict())
+            print(JSON.stringify(to_js(program_data.to_dict(), dict_converter=Object.fromEntries)))
+            return to_js(program_data.to_dict(), dict_converter=Object.fromEntries)
 
         async def schedule_process_programs(updated_programs_dict):
             updated_programs = [ProgramUpdateResult(**program_dict) for program_dict in updated_programs_dict]
