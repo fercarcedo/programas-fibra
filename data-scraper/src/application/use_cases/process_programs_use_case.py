@@ -4,10 +4,13 @@ from workers import fetch
 import json
 from domain.program_data import ProgramData, ProgramStatus, ProjectData
 from datetime import datetime, timedelta, date
+from domain.repositories.program_repository import ProgramRepository
+import time
 
 class ProcessProgramsUseCase:
-    def __init__(self, sheet_reader: SheetFileReader):
+    def __init__(self, sheet_reader: SheetFileReader, program_repository: ProgramRepository):
         self.sheet_reader = sheet_reader
+        self.program_repository = program_repository
 
     async def execute(self, program: ProgramUpdateResult) -> ProgramData:
         response = await fetch(program.file_url)
@@ -20,6 +23,7 @@ class ProcessProgramsUseCase:
         header_index, header = self._get_header_row(sheet_data)
 
         projects = self._process_sheet_data(sheet_data, header_index, header)
+        await self.program_repository.put_last_update(program.program_name, int(time.time()))
         return ProgramData(projects=projects)
 
     def _not_none_cells(self, row: list[str]) -> list[str]:
@@ -51,7 +55,6 @@ class ProcessProgramsUseCase:
                         funding_percentage=funding_percentage,
                         technology=row['TECNOLOGÍA'],
                         deadline=deadline,
-                        last_updated=0
                     )
                     result.append(project_data)
         return result

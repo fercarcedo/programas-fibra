@@ -15,7 +15,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=79,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0054",
@@ -27,7 +26,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=45,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0040",
@@ -39,7 +37,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2024, 11, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0091",
@@ -51,7 +48,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=61,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0023",
@@ -63,7 +59,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=66,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0098",
@@ -75,7 +70,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=43,
             technology="FTTH",
             deadline=date(2025, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0090",
@@ -87,7 +81,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2025, 3, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0125",
@@ -99,7 +92,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=45,
             technology="FTTH",
             deadline=date(2024, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0096",
@@ -111,7 +103,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=44,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0095",
@@ -123,7 +114,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=78,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0006",
@@ -135,7 +125,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2025, 11, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0122",
@@ -147,7 +136,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=51,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0046",
@@ -159,7 +147,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=76,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0104",
@@ -171,7 +158,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=71,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0116",
@@ -183,7 +169,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=78,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0028",
@@ -195,7 +180,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=62,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0042",
@@ -207,7 +191,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=66,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0051",
@@ -219,7 +202,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=30,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0103",
@@ -231,7 +213,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=35,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0033",
@@ -243,7 +224,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=64,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0111",
@@ -255,7 +235,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=43,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0118",
@@ -267,7 +246,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=32,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0127",
@@ -279,7 +257,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=33,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0119",
@@ -291,7 +268,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=30,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0055",
@@ -303,7 +279,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=60,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0011",
@@ -315,7 +290,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2025, 3, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0080",
@@ -327,7 +301,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=38,
             technology="FTTH",
             deadline=date(2025, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0082",
@@ -339,7 +312,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=29,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0017",
@@ -351,7 +323,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2025, 3, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0009",
@@ -363,7 +334,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=75,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0049",
@@ -375,7 +345,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=40,
             technology="FTTH",
             deadline=date(2024, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0089",
@@ -387,7 +356,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0108",
@@ -399,7 +367,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=42,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0050",
@@ -411,7 +378,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=77,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0121",
@@ -423,7 +389,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=50,
             technology="FTTH",
             deadline=date(2025, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0061",
@@ -435,7 +400,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=45,
             technology="FTTH",
             deadline=date(2024, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0110",
@@ -447,7 +411,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=48,
             technology="FTTH",
             deadline=date(2025, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0008",
@@ -459,7 +422,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2024, 11, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0052",
@@ -471,7 +433,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=48,
             technology="FTTH",
             deadline=date(2024, 9, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0081",
@@ -483,7 +444,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=78,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0132",
@@ -495,7 +455,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=62,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0053",
@@ -507,7 +466,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=79,
             technology="FTTH",
             deadline=date(2025, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0112",
@@ -519,7 +477,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=51,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0120",
@@ -531,7 +488,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=51,
             technology="FTTH",
             deadline=date(2024, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0101",
@@ -543,7 +499,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=52,
             technology="FTTH",
             deadline=date(2025, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0029",
@@ -555,7 +510,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=74,
             technology="FTTH",
             deadline=date(2024, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0037",
@@ -567,7 +521,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=43,
             technology="FTTH",
             deadline=date(2025, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0114",
@@ -579,7 +532,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=79,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0093",
@@ -591,7 +543,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=47,
             technology="FTTH",
             deadline=date(2025, 6, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0113",
@@ -603,7 +554,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=45,
             technology="FTTH",
             deadline=date(2025, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0084",
@@ -615,7 +565,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=48,
             technology="FTTH",
             deadline=date(2024, 5, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061400-2021-0083",
@@ -627,7 +576,6 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=74,
             technology="FTTH",
             deadline=date(2024, 5, 31),
-            last_updated=0
         ),
     ]
 )

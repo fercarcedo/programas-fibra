@@ -14,7 +14,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-002",
@@ -26,7 +25,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-003",
@@ -38,7 +36,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-004",
@@ -50,7 +47,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-005",
@@ -62,7 +58,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-006",
@@ -74,7 +69,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-007",
@@ -86,7 +80,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-008",
@@ -98,7 +91,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-009",
@@ -110,7 +102,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-010",
@@ -122,7 +113,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-011",
@@ -134,7 +124,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-012",
@@ -146,7 +135,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-013",
@@ -158,7 +146,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-014",
@@ -170,7 +157,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=19,
             technology="RFOG",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-015",
@@ -182,7 +168,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=19,
             technology="RFOG",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-016",
@@ -194,7 +179,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-017",
@@ -206,7 +190,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=13,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-020",
@@ -218,7 +201,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=28,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-018",
@@ -230,7 +212,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-019",
@@ -242,7 +223,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-021",
@@ -254,7 +234,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-022",
@@ -266,7 +245,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-023",
@@ -278,7 +256,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-024",
@@ -290,7 +267,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061000-2013-025",
@@ -302,7 +278,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=21,
             technology="FTTH",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061200-2013-006",
@@ -314,7 +289,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=17,
             technology="LTE",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061200-2013-007",
@@ -326,7 +300,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="LTE",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061200-2013-008",
@@ -338,7 +311,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="LTE",
             deadline=None,
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061200-2013-009",
@@ -350,7 +322,6 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=31,
             technology="LTE",
             deadline=None,
-            last_updated=0
         )
     ]
 )

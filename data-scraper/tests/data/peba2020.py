@@ -15,7 +15,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=69,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0027",
@@ -27,7 +26,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=70,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0030",
@@ -39,7 +37,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=75,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0031",
@@ -51,7 +48,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=47,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0034",
@@ -63,7 +59,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=53,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0036",
@@ -75,7 +70,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=69,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0037",
@@ -87,7 +81,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=64,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0039",
@@ -99,7 +92,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=69,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0048",
@@ -111,7 +103,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=79,
             technology="FTTH",
             deadline=date(2023, 3, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0063",
@@ -123,7 +114,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0064",
@@ -135,7 +125,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=80,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0070",
@@ -147,7 +136,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=55,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0072",
@@ -159,7 +147,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=35,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0074",
@@ -171,7 +158,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=34,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0075",
@@ -183,7 +169,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=68,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0076",
@@ -195,7 +180,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=70,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0079",
@@ -207,7 +191,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=70,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0085",
@@ -219,7 +202,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=51,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0086",
@@ -231,7 +213,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=56,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0088",
@@ -243,7 +224,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=41,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0089",
@@ -255,7 +235,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=66,
             technology="FTTH",
             deadline=date(2023, 3, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0091",
@@ -267,7 +246,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=55,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0092",
@@ -279,7 +257,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=57,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0094",
@@ -291,7 +268,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=70,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0095",
@@ -303,7 +279,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=68,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0096",
@@ -315,7 +290,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=69,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0098",
@@ -327,7 +301,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=28,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0099",
@@ -339,7 +312,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=70,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0103",
@@ -351,7 +323,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=26,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0104",
@@ -363,7 +334,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=24,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0105",
@@ -375,7 +345,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=40,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0107",
@@ -387,7 +356,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=72,
             technology="FTTH",
             deadline=date(2023, 5, 31),
-            last_updated=0
         ),
         ProjectData(
             project="TSI-061300-2020-0108",
@@ -399,7 +367,6 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=78,
             technology="FTTH",
             deadline=date(2023, 4, 30),
-            last_updated=0
         ),
     ]
 )

@@ -1,5 +1,5 @@
 from datetime import date
-from unittest.mock import Mock, MagicMock, AsyncMock
+from unittest.mock import Mock, MagicMock, AsyncMock, patch
 import sys
 
 class MockRequest:
@@ -63,59 +63,78 @@ async def test_execute_unico():
     mock_sheet_reader = Mock()
     mock_sheet_reader.read.return_value = UNICO_DATA
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader)
+    mock_program_repository = Mock()
+    mock_program_repository.put_last_update = AsyncMock()
+
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
 
     result = ProgramUpdateResult(
         file_url="",
-        program_name="",
+        program_name="UNICO",
         last_updated=0
     )
 
-    data = await use_case.execute(result)
-    assert data.projects == UNICO_EXPECTED_PROGRAM_DATA.projects
+    with patch("time.time", return_value=1699876543):
+        data = await use_case.execute(result)
+        assert data.projects == UNICO_EXPECTED_PROGRAM_DATA.projects
+        mock_program_repository.put_last_update.assert_called_once_with("UNICO", 1699876543)
 
 async def test_execute_peba_2020_2021():
     mock_sheet_reader = Mock()
     mock_sheet_reader.read.return_value = PEBA_2020_DATA
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader)
+    mock_program_repository = Mock()
+    mock_program_repository.put_last_update = AsyncMock()
+
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
 
     result = ProgramUpdateResult(
         file_url="",
-        program_name="",
+        program_name="PEBA 2020",
         last_updated=0
     )
 
-    data = await use_case.execute(result)
-    assert data.projects == PEBA_2020_EXPECTED_PROGRAM_DATA.projects
+    with patch("time.time", return_value=1699876543):
+        data = await use_case.execute(result)
+        assert data.projects == PEBA_2020_EXPECTED_PROGRAM_DATA.projects
+        mock_program_repository.put_last_update.assert_called_once_with("PEBA 2020", 1699876543)
 
 async def test_execute_peba_2013():
     mock_sheet_reader = Mock()
     mock_sheet_reader.read.return_value = PEBA_2013_DATA
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader)
+    mock_program_repository = Mock()
+    mock_program_repository.put_last_update = AsyncMock()
+
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
 
     result = ProgramUpdateResult(
         file_url="",
-        program_name="",
+        program_name="PEBA 2013",
         last_updated=0
     )
 
-    data = await use_case.execute(result)
-    assert data.projects == PEBA_2013_EXPECTED_PROGRAM_DATA.projects
+    with patch("time.time", return_value=1699876543):
+        data = await use_case.execute(result)
+        assert data.projects == PEBA_2013_EXPECTED_PROGRAM_DATA.projects
+        mock_program_repository.put_last_update.assert_called_once_with("PEBA 2013", 1699876543)
 
 async def test_execute_peba_2014():
     mock_sheet_reader = Mock()
     mock_sheet_reader.read.return_value = PEBA_2014_DATA
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader)
+    mock_program_repository = Mock()
+    mock_program_repository.put_last_update = AsyncMock()
+
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
 
     result = ProgramUpdateResult(
         file_url="",
-        program_name="",
+        program_name="PEBA 2014",
         last_updated=0
     )
 
-    data = await use_case.execute(result)
-    print(data)
-    #assert data.projects == PEBA_2014_EXPECTED_PROGRAM_DATA.projects
+    with patch("time.time", return_value=1699876543):
+        data = await use_case.execute(result)
+        mock_program_repository.put_last_update.assert_called_once_with("PEBA 2014", 1699876543)
+        #assert data.projects == PEBA_2014_EXPECTED_PROGRAM_DATA.projects

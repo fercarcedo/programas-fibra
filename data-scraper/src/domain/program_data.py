@@ -18,7 +18,6 @@ class ProjectData:
     funding_percentage: float
     technology: str
     deadline: date
-    last_updated: int
 
     def to_dict(self) -> dict[str, any]:
         return {
@@ -31,7 +30,6 @@ class ProjectData:
             "funding_percentage": self.funding_percentage,
             "technology": self.technology,
             "deadline": self.deadline.isoformat() if self.deadline else None,
-            "last_updated": self.last_updated
         }
 
 @dataclass

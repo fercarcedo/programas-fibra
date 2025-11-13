@@ -15,7 +15,6 @@ PEBA_EXPECTED_PROGRAM_DATA = ProgramData(
             funding_percentage=69,
             technology="FTTH",
             deadline=date(2022, 12, 31),
-            last_updated=0
         )
     ]
 )
