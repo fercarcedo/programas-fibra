@@ -137,4 +137,4 @@ async def test_execute_peba_2014():
     with patch("time.time", return_value=1699876543):
         data = await use_case.execute(result)
         mock_program_repository.put_last_update.assert_called_once_with("PEBA 2014", 1699876543)
-        #assert data.projects == PEBA_2014_EXPECTED_PROGRAM_DATA.projects
+        assert data.projects == PEBA_2014_EXPECTED_PROGRAM_DATA.projects
