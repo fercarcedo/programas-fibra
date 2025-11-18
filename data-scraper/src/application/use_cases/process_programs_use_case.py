@@ -23,6 +23,8 @@ class ProcessProgramsUseCase:
         header_index, header = self._get_header_row(sheet_data)
 
         projects = self._process_sheet_data(sheet_data, header_index, header)
+        for project in projects:
+            await self.program_repository.put_project(project)
         await self.program_repository.put_last_update(program.program_name, int(time.time()))
         return ProgramData(projects=projects)
 
@@ -32,7 +34,6 @@ class ProcessProgramsUseCase:
     def _process_sheet_data(self, sheet_data: list[list[str]], header_index: int, header: list[str]) -> list[ProjectData]:
         result = []
         for index in range(header_index + 1, len(sheet_data)):
-            print(sheet_data[index])
             if len(self._not_none_cells(header)) - len(self._not_none_cells(sheet_data[index])) <= 1:
                 row = dict(zip(header, sheet_data[index]))
                 project=row['EXPEDIENTE'] if 'EXPEDIENTE' in row else row['PROYECTO']

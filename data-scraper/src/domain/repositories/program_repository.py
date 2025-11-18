@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from domain.program_data import ProjectData
 
 class ProgramRepository(ABC):
     @abstractmethod
@@ -7,4 +8,8 @@ class ProgramRepository(ABC):
 
     @abstractmethod
     async def put_last_update(program_name: str, last_updated: int):
+        pass
+
+    @abstractmethod
+    async def put_project(project: ProjectData):
         pass
