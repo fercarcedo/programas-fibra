@@ -15,7 +15,7 @@ class DataScraperWorkflow(WorkflowEntrypoint):
         program_repository = KVProgramRepository(env)
         sheet_reader = XlsxSheetFileReader()
         self.check_updated_programs_use_case = CheckUpdatedProgramsUseCase(config_repository, program_repository)
-        self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader)
+        self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader, program_repository)
         self.env = env
 
     async def run(self, event, step):
