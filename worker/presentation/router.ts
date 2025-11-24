@@ -9,8 +9,6 @@ router.get("/data/:key", async (request: IRequest, _env, _ctx, container) => {
   return getData(dataRequest, geoDataService);
 });
 
-router.get("/data/:key", getData);
-
 router.get("/api/", () => {
   return null;
 });
