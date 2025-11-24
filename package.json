@@ -20,6 +20,7 @@
     "@protomaps/basemaps": "^5.3.0",
     "@tailwindcss/vite": "^4.1.12",
     "deck.gl": "^9.1.14",
+    "itty-router": "^5.0.22",
     "maplibre-gl": "^5.5.0",
     "pmtiles": "^4.3.0",
     "react": "^19.1.0",
