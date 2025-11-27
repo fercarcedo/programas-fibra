@@ -117,7 +117,7 @@ describe("SearchControl", () => {
 
     const result: MaplibreGeocoderFeatureResults =
       await geocoder.forwardGeocode({ query: "Bucharest" });
-    const mockFeature = MOCK_NOMINATIM_RESPONSE_SUCCESS.features[0];
+    const mockFeature = MOCK_NOMINATIM_RESPONSE_SUCCESS[0];
     expect(result).toEqual({
       type: "FeatureCollection",
       features: [
@@ -127,17 +127,25 @@ describe("SearchControl", () => {
           geometry: {
             type: "Point",
             coordinates: [
-              mockFeature.bbox[0] +
-                (mockFeature.bbox[2] - mockFeature.bbox[0]) / 2,
-              mockFeature.bbox[1] +
-                (mockFeature.bbox[3] - mockFeature.bbox[1]) / 2,
+              parseFloat(mockFeature.lon),
+              parseFloat(mockFeature.lat),
             ],
           },
           place_name:
             "17, Strada Pictor Alexandru Romano, Bukarest, Bucharest, Sector 2, Bucharest, 023964, Romania",
           text: "17, Strada Pictor Alexandru Romano, Bukarest, Bucharest, Sector 2, Bucharest, 023964, Romania",
           place_type: ["place"],
-          properties: mockFeature.properties,
+          properties: {
+            addresstype: mockFeature.addresstype,
+            display_name: mockFeature.display_name,
+            importance: mockFeature.importance,
+            name: mockFeature.name,
+            osm_id: mockFeature.osm_id,
+            osm_type: mockFeature.osm_type,
+            place_id: mockFeature.place_id,
+            place_rank: mockFeature.place_rank,
+            type: mockFeature.type,
+          },
         },
       ],
     });

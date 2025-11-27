@@ -19,22 +19,12 @@ describe("Nominatim API", () => {
 
   it("should return empty response if query is empty", async () => {
     const result = await search("");
-    expect(result).toEqual({
-      type: "FeatureCollection",
-      licence:
-        "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-      features: [],
-    });
+    expect(result).toEqual([]);
   });
 
   it("should return empty response if query is blank", async () => {
-    const result = await search("");
-    expect(result).toEqual({
-      type: "FeatureCollection",
-      licence:
-        "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-      features: [],
-    });
+    const result = await search("     ");
+    expect(result).toEqual([]);
   });
 
   it("should throw if api call status not ok", async () => {
