@@ -14,5 +14,11 @@
       "binding": "BUCKET_GEO",
       "bucket_name": "programas-fibra-geo"
     }
-  ]
+  ],
+  "kv_namespaces": [
+		{
+			"binding": "PROJECTS",
+			"id": "7e8b779284134b108916b8ee6f3a5614"
+		}
+	]
 }
