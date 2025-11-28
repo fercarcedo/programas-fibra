@@ -83,7 +83,7 @@ function App() {
       ? [
           new H3HexagonLayer({
             id: "hexagon-layer",
-            data: "https://programas-fibra.fercarcedo.workers.dev/data/aggregated-ae9af1d73c.json",
+            data: "/data/aggregated-ae9af1d73c.json",
             extruded: false,
             getHexagon: (d) => d.h3Index,
             getElevation: 0,
