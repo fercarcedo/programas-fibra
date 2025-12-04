@@ -94,9 +94,7 @@ function App() {
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: [
-              "https://programas-fibra-tile-server.fercarcedo.workers.dev/output-9f4202d6a0/{z}/{x}/{y}.mvt",
-            ],
+            data: ["/tiles/output-9f4202d6a0/{z}/{x}/{y}"],
             minZoom: 0,
             maxZoom: 15,
             filled: true,
@@ -144,7 +142,7 @@ function App() {
             protomaps: {
               type: "vector",
               tiles: [
-                "https://programas-fibra-tile-server.fercarcedo.workers.dev/map-3a858e9500/{z}/{x}/{y}.mvt",
+                `${window.location.origin}/tiles/map-3a858e9500/{z}/{x}/{y}`,
               ],
               maxzoom: 15,
             },
