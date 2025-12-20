@@ -37,10 +37,18 @@ def read_awarded_areas(file_path: str) -> ProgramAreas:
         project_to_grantee=dict(zip(projects, grantees)),
     )
 
+def get_area(record: dict) -> str:
+    properties = record["properties"]
+    if "CodigoZona" in properties:
+        return properties["CodigoZona"]
+    if "CodZona" in properties:
+        return properties["CodZona"]
+    return properties["Cod_Zona"]
 
 def filter_awarded_areas(f: BinaryIO, awarded_areas: ProgramAreas) -> Generator[dict[str, Any], None, None]:
     records = ijson.items(f, "features.item")
-    return (r for r in records if r["properties"]["CodigoZona"] in awarded_areas.area_to_project)
+    
+    return (r for r in records if get_area(r) in awarded_areas.area_to_project)
 
 
 def write_awarded_areas(f: TextIO, areas: list[dict[str, Any]]):
@@ -65,7 +73,7 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas, program_
                     autonomous_community=(properties := area['properties']).get('Comunidad_') or properties.get('CCAA'),
                     province=properties['Provincia'],
                     municipality=properties['Municipio'],
-                    area_code=(code := properties.get('CodigoZona') or properties.get('Cod_Zona')),
+                    area_code=(code := properties.get('CodigoZona') or properties.get('Cod_Zona') or properties.get("CodZona")),
                     building_count=properties.get('UIs'),
                     house_count=properties.get('Viviendas') or properties.get('Viv_Zona'),
                     town=properties.get('Nombre_ESP'),
