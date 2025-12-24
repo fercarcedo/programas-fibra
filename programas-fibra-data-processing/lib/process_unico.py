@@ -37,15 +37,14 @@ def read_awarded_areas(file_path: str) -> ProgramAreas:
         project_to_grantee=dict(zip(projects, grantees)),
     )
 
-def get_area(record: dict) -> str:
+def get_area_code(record: dict) -> str:
     properties = record["properties"]
-    if "CodigoZona" in properties:
-        return properties["CodigoZona"]
-    if "CodZona" in properties:
-        return properties["CodZona"]
-    if "Cod_Zona" in properties:
-        return properties["Cod_Zona"]
-    return properties["Codigo_Zon"]
+    return (
+        properties.get("CodigoZona") or
+        properties.get("CodZona") or
+        properties.get("Cod_Zona") or
+        properties.get("Codigo_Zon")
+    )
 
 def remove_area_type_suffix(area_code: str) -> str:
     if area_code.endswith(("-B", "-G")):
@@ -54,7 +53,7 @@ def remove_area_type_suffix(area_code: str) -> str:
     return area_code
 
 def is_awarded(record: dict, awarded_map: dict[str, str]):
-    area = get_area(record)
+    area = get_area_code(record)
     
     return remove_area_type_suffix(area) in awarded_map
 
@@ -86,7 +85,7 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas, program_
                     autonomous_community=(properties := area['properties']).get('Comunidad_') or properties.get('CCAA'),
                     province=properties['Provincia'],
                     municipality=properties['Municipio'],
-                    area_code=(code := properties.get('CodigoZona') or properties.get('Cod_Zona') or properties.get("CodZona")) or properties.get("Codigo_Zon"),
+                    area_code=(code := get_area_code(area)),
                     building_count=properties.get('UIs'),
                     house_count=properties.get('Viviendas') or properties.get('Viv_Zona'),
                     town=properties.get('Nombre_ESP'),
