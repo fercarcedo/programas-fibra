@@ -1,5 +1,6 @@
 import type { IRequest } from "itty-router";
 import type { ProjectService } from "../../application/services/project_service";
+import { toWebResponse } from "../mapper/project_mapper";
 
 export interface GetProjectRouterRequest extends IRequest {
   params: {
@@ -16,7 +17,8 @@ export async function getProject(request: GetProjectRouterRequest, projectServic
     return new Response('Not found', { status: 404 });
   }
 
-  return new Response(JSON.stringify(project), {
+  const projectResponse = toWebResponse(project);
+  return new Response(JSON.stringify(projectResponse), {
     headers: {
       'content-type': 'application/json; charset=UTF-8',
       'cache-control': 'public, max-age=86400',
