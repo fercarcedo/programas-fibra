@@ -94,7 +94,7 @@ function App() {
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: ["/tiles/output-9f4202d6a0/{z}/{x}/{y}"],
+            data: ["/tiles/output-10dcd48293/{z}/{x}/{y}"],
             minZoom: 0,
             maxZoom: 15,
             filled: true,
