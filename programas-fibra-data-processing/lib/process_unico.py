@@ -43,12 +43,25 @@ def get_area(record: dict) -> str:
         return properties["CodigoZona"]
     if "CodZona" in properties:
         return properties["CodZona"]
-    return properties["Cod_Zona"]
+    if "Cod_Zona" in properties:
+        return properties["Cod_Zona"]
+    return properties["Codigo_Zon"]
+
+def remove_area_type_suffix(area_code: str) -> str:
+    if area_code.endswith(("-B", "-G")):
+        return area_code[:-2]
+    
+    return area_code
+
+def is_awarded(record: dict, awarded_map: dict[str, str]):
+    area = get_area(record)
+    
+    return remove_area_type_suffix(area) in awarded_map
 
 def filter_awarded_areas(f: BinaryIO, awarded_areas: ProgramAreas) -> Generator[dict[str, Any], None, None]:
     records = ijson.items(f, "features.item")
     
-    return (r for r in records if get_area(r) in awarded_areas.area_to_project)
+    return (r for r in records if is_awarded(r, awarded_areas.area_to_project))
 
 
 def write_awarded_areas(f: TextIO, areas: list[dict[str, Any]]):
@@ -73,11 +86,11 @@ def map_areas(areas: list[dict[str, Any]], program_areas: ProgramAreas, program_
                     autonomous_community=(properties := area['properties']).get('Comunidad_') or properties.get('CCAA'),
                     province=properties['Provincia'],
                     municipality=properties['Municipio'],
-                    area_code=(code := properties.get('CodigoZona') or properties.get('Cod_Zona') or properties.get("CodZona")),
+                    area_code=(code := properties.get('CodigoZona') or properties.get('Cod_Zona') or properties.get("CodZona")) or properties.get("Codigo_Zon"),
                     building_count=properties.get('UIs'),
                     house_count=properties.get('Viviendas') or properties.get('Viv_Zona'),
                     town=properties.get('Nombre_ESP'),
-                    project=(proj := program_areas.area_to_project[code]),
+                    project=(proj := program_areas.area_to_project[remove_area_type_suffix(code)]),
                     grantee=program_areas.project_to_grantee[proj],
                     program_name=program_name,
                 )).__dict__, 
