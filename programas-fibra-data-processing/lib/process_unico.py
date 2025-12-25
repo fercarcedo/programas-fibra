@@ -26,7 +26,12 @@ def read_awarded_areas(file_path: str) -> ProgramAreas:
     excel_df = pandas.read_excel(file_path, sheet_name=1, header=None)
     excel_projects_df = pandas.read_excel(file_path, sheet_name=0, header=None)
 
-    area_codes = excel_df[AREA_CODES_COLUMN_INDEX].dropna().iloc[1:]
+    area_codes_column = excel_df[AREA_CODES_COLUMN_INDEX].dropna()
+    if area_codes_column.iloc[0] != "Código INE de la ESP":
+        area_codes = area_codes_column.iloc[1:]
+    else:
+        area_codes = excel_df[AREA_CODES_COLUMN_INDEX + 1].dropna().iloc[1:]
+
     area_projects = excel_df[PROJECTS_COLUMN_INDEX].dropna().iloc[5:]
 
     projects = excel_projects_df[PROJECTS_COLUMN_INDEX].dropna().iloc[5:]

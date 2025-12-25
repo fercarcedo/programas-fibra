@@ -12,6 +12,10 @@ tippecanoe -z18 --projection=EPSG:4326 -o unico2022.pmtiles -l output unico2022.
 ogr2ogr -f GeoJSON -t_srs EPSG:4326 ZonasBG_Resultado.geojson '/home/fer/Ficheros_programas_fibra/UNICO_2021/ZonasBG_Resultado.shp'
 uv run main.py unico -e ZonasBG_Resultado.geojson -a '/home/fer/Ficheros_programas_fibra/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2021_19-12-2025.xlsx' -o unico2021.geojson -p "UNICO 2021"
 tippecanoe -z18 --projection=EPSG:4326 -o unico2021.pmtiles -l output unico2021.geojson --force
+ogrmerge.py -single -f GeoJSON -t_srs EPSG:4326 -o Zonas_2020.geojson '/home/fer/Ficheros_programas_fibra/PEBA_2020/_shapefile/*.shp'
+# We use unico with PEBA 2020 and 2021 because both have a UNICO-like syntax and an areas file
+uv run main.py unico -e Zonas_2020.geojson -a '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2021.xlsx' -o peba2021.geojson -p "PEBA 2021"
+uv run main.py unico -e Zonas_2020.geojson -a '/home/fer/Ficheros_programas_fibra/Relacion_proyectos_aprobados_2020.xlsx' -o peba2020.geojson -p "PEBA 2020"
 uv run main.py peba -f '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2019.xlsx' -e ENTIDADES.csv -o peba2019.geojson -p "PEBA 2019"
 uv run main.py peba -f '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2018.xlsx' -e ENTIDADES.csv -o peba2018.geojson -p "PEBA 2018"
 uv run main.py peba -f '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2017.xlsx' -e ENTIDADES.csv -o peba2017.geojson -p "PEBA 2017"
