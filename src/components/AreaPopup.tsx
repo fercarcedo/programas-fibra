@@ -101,7 +101,12 @@ function AreaPopup(props: AreaPopupProps) {
             />
             <AreaPropertyRow name="PROVINCIA" value={props.data.province} />
             <AreaPropertyRow name="MUNICIPIO" value={props.data.municipality} />
-            <AreaPropertyRow name="CÓDIGO ZONA" value={props.data.area_code} />
+            {props.data.area_code && (
+              <AreaPropertyRow
+                name="CÓDIGO ZONA"
+                value={props.data.area_code}
+              />
+            )}
             {props.data.building_count && (
               <AreaPropertyRow
                 name="EDIFICIOS ZONA"
