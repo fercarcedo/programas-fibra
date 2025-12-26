@@ -5,7 +5,7 @@ import os
 
 # --- Configuration ---
 # Set the input and output file paths
-input_geojson_file = 'centroids.out.geojson'
+input_geojson_file = 'centroids.merged.geojson'
 output_json_file = 'h3_aggregated.json'
 
 # Set the desired H3 resolution.
