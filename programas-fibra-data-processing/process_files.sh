@@ -32,6 +32,7 @@ tippecanoe -z18 --projection=EPSG:4326 -o peba2014.pmtiles -l output peba2014.ge
 uv run main.py peba -f '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2013.xlsx' -e ENTIDADES.csv -o peba2013.geojson -p "PEBA 2013"
 tippecanoe -z18 --projection=EPSG:4326 -o peba2013.pmtiles -l output peba2013.geojson --force
 tile-join -o merged.pmtiles unico2024.pmtiles unico2023.pmtiles unico2022.pmtiles unico2021.pmtiles peba2021.pmtiles peba2020.pmtiles peba2019.pmtiles peba2018.pmtiles peba2017.pmtiles peba2016.pmtiles peba2015.pmtiles peba2014.pmtiles peba2013.pmtiles --force
+mv merged.pmtiles output-$(sha256sum merged.pmtiles | cut -d ' ' -f 1 | cut -c 1-10).pmtiles
 ogrmerge.py -single -overwrite_ds -o centroids.merged.geojson \
     centroids.unico2024.geojson \
     centroids.unico2023.geojson \
@@ -47,3 +48,4 @@ ogrmerge.py -single -overwrite_ds -o centroids.merged.geojson \
     centroids.peba2014.geojson \
     centroids.peba2013.geojson
 uv run generate_hexagons.py
+mv h3_aggregated.json aggregated-$(sha256sum h3_aggregated.json | cut -d ' ' -f 1 | cut -c 1-10).json

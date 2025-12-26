@@ -28,7 +28,6 @@ with open(input_geojson_file, 'r') as f:
 # Process each feature in the GeoJSON
 for feature in geojson_data['features']:
     # Get coordinates and properties from the feature
-    print(feature['geometry']['coordinates'])
     longitude, latitude = feature['geometry']['coordinates']
     properties = feature.get('properties', {})
     grantee = properties.get('grantee')
