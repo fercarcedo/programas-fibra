@@ -107,13 +107,13 @@ function AreaPopup(props: AreaPopupProps) {
                 value={props.data.area_code}
               />
             )}
-            {props.data.building_count && (
+            {!!props.data.building_count && (
               <AreaPropertyRow
                 name="EDIFICIOS ZONA"
                 value={props.data.building_count.toString()}
               />
             )}
-            {props.data.house_count && (
+            {!!props.data.house_count && (
               <AreaPropertyRow
                 name="VIVIENDAS ZONA"
                 value={props.data.house_count.toString()}
