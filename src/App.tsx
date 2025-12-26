@@ -94,7 +94,7 @@ function App() {
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: ["/tiles/output-10dcd48293/{z}/{x}/{y}"],
+            data: ["/tiles/output-b354d88ef6/{z}/{x}/{y}"],
             minZoom: 0,
             maxZoom: 15,
             filled: true,
@@ -123,6 +123,46 @@ function App() {
             getLineColor: [254, 0, 0, 255],
             lineWidthMinPixels: 0.5,
             onClick: handleLayerClick,
+            pointType: "icon",
+            iconAtlas:
+              "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
+            iconMapping: {
+              marker: {
+                x: 0,
+                y: 0,
+                width: 128,
+                height: 128,
+                anchorY: 128,
+                mask: true,
+              },
+            },
+            getIcon: () => "marker",
+            getIconSize: 100,
+            iconSizeScale: 1,
+            iconBillboard: true,
+            iconSizeUnits: "meters",
+            iconSizeMinPixels: 20,
+            iconSizeMaxPixels: 200,
+            pointRadiusMinPixels: 20,
+            getIconColor: (feature) => {
+              const grantee: string = feature.properties.grantee;
+              const fillAlpha = 255;
+              switch (grantee) {
+                case "TELEFONICA DE ESPAÑA, S.A.":
+                  return [1, 157, 244, fillAlpha];
+                case "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.":
+                  return [255, 94, 14, fillAlpha];
+                case "AVATEL TELECOM S.A.":
+                  return [160, 94, 181, fillAlpha];
+                case "ADAMO TELECOM IBERIA SA":
+                  return [43, 195, 110, fillAlpha];
+                case "ASTEO RED NEUTRA SL":
+                  return [36, 114, 183, fillAlpha];
+                case "VENTO REDE, S.L.":
+                  return [59, 156, 63, fillAlpha];
+              }
+              return [255, 0, 0, fillAlpha];
+            },
           }),
         ];
 
