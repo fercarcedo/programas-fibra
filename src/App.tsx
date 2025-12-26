@@ -85,9 +85,19 @@ function App() {
             id: "hexagon-layer",
             data: "/data/aggregated-0413b8769b.json",
             extruded: false,
+            beforeId: "places_locality",
             getHexagon: (d) => d.h3Index,
             getElevation: 0,
-            getFillColor: (d) => [255, (1 - d.totalCount / 500) * 255, 0],
+            getFillColor: (d) => {
+              const ratio = Math.sqrt(d.totalCount / 500);
+              const clampedRatio = Math.min(ratio, 1);
+
+              return [255, (1 - clampedRatio) * 255, 0, 180];
+            },
+            parameters: {
+              blendFunc: [0, 768],
+              blendEquation: 32774,
+            },
           }),
         ]
       : [
