@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import "./App.css";
 import Map, {
   GeolocateControl,
@@ -6,9 +6,8 @@ import Map, {
   useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
-import maplibregl, { type Map as MapLibreMap } from "maplibre-gl";
+import { type Map as MapLibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
 import type { MapViewState, PickingInfo } from "@deck.gl/core";
@@ -40,14 +39,6 @@ function DeckGLOverlay(props: MapboxOverlayProps) {
 }
 
 function App() {
-  useEffect(() => {
-    let protocol = new Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
-    return () => {
-      maplibregl.removeProtocol("pmtiles");
-    };
-  }, []);
-
   const handleMapLoad = useCallback((event: MapEvent) => {
     const map = event.target as MapLibreMap;
 
