@@ -6,6 +6,8 @@ import { useState, type ReactNode } from "react";
 export type AreaPopupProps = {
   latitude: number;
   longitude: number;
+  centroidLatitude: number;
+  centroidLongitude: number;
   data: AreaProperties;
   onClose: () => void;
 };
@@ -134,6 +136,20 @@ function AreaPopup(props: AreaPopupProps) {
                 value={props.data.exception_zone_name}
               />
             )}
+            <tr>
+              <td colSpan={2} className="pb-4">
+                <div className="flex justify-center">
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${props.centroidLatitude},${props.centroidLongitude}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Ver en Maps
+                  </a>
+                </div>
+              </td>
+            </tr>
             <AreaPropertyRow
               name="PROYECTO"
               value={props.data.project}

@@ -18,6 +18,7 @@ import type { MapboxOverlayProps } from "@deck.gl/mapbox";
 import type { Feature, Geometry } from "geojson";
 import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
+import centroid from "@turf/centroid";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
@@ -29,6 +30,8 @@ const INITIAL_VIEW_STATE: MapViewState = {
 interface PopupInfo {
   longitude: number;
   latitude: number;
+  centroidLongitude: number;
+  centroidLatitude: number;
   data: AreaProperties;
 }
 
@@ -55,9 +58,14 @@ function App() {
 
   const handleLayerClick = (info: PickingInfo<Feature<Geometry, any>>) => {
     if (info.object && info.coordinate) {
+      const polygonCentroid = centroid(info.object);
+      const [lon, lat] = polygonCentroid.geometry.coordinates;
+
       setPopupInfo({
         longitude: info.coordinate[0],
         latitude: info.coordinate[1],
+        centroidLongitude: lon,
+        centroidLatitude: lat,
         data: info.object.properties,
       });
     } else {
@@ -216,6 +224,8 @@ function App() {
           <AreaPopup
             latitude={popupInfo.latitude}
             longitude={popupInfo.longitude}
+            centroidLatitude={popupInfo.centroidLatitude}
+            centroidLongitude={popupInfo.centroidLongitude}
             data={popupInfo.data}
             onClose={() => setPopupInfo(null)}
           />
