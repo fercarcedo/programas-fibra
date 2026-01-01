@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import Map, {
   GeolocateControl,
@@ -10,7 +10,7 @@ import { type Map as MapLibreMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
-import type { MapViewState, PickingInfo } from "@deck.gl/core";
+import { type MapViewState, type PickingInfo } from "@deck.gl/core";
 
 import { H3HexagonLayer, MVTLayer } from "@deck.gl/geo-layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -76,6 +76,17 @@ function App() {
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    document.fonts.load("24px 'Material Icons'").then(() => {
+      setFontLoaded(true);
+    });
+  }, []);
+
+  const MARKER_ICON_SIZE_METERS = 100;
+  const MARKER_SIZE_MIN_PIXELS = 20;
+  const MARKER_SIZE_MAX_PIXELS = 200;
 
   const mapLayers =
     viewState.zoom < 9
@@ -105,12 +116,15 @@ function App() {
             sourceLayer: "output",
             data: ["/tiles/output-2fc8a9b91c/{z}/{x}/{y}"],
             minZoom: 0,
-            maxZoom: 15,
+            maxZoom: 18,
             filled: true,
             stroked: true,
             pickable: true,
             autoHighlight: true,
-            getFillColor: (feature) => {
+            getFillColor: (feature: any) => {
+              if (feature.properties.type == "town") {
+                return [0, 0, 0, 0];
+              }
               const grantee: string = feature.properties.grantee;
               const fillAlpha = 128;
               switch (grantee) {
@@ -132,30 +146,21 @@ function App() {
             getLineColor: [254, 0, 0, 255],
             lineWidthMinPixels: 0.5,
             onClick: handleLayerClick,
-            pointType: "icon",
-            iconAtlas:
-              "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
-            iconMapping: {
-              marker: {
-                x: 0,
-                y: 0,
-                width: 128,
-                height: 128,
-                anchorY: 128,
-                mask: true,
-              },
-            },
-            getIcon: () => "marker",
-            getIconSize: 100,
-            iconSizeScale: 1,
-            iconBillboard: true,
-            iconSizeUnits: "meters",
-            iconSizeMinPixels: 20,
-            iconSizeMaxPixels: 200,
-            pointRadiusMinPixels: 20,
-            getIconColor: (feature) => {
+            pointType: "circle+text",
+            getPointRadius: MARKER_ICON_SIZE_METERS / 2,
+            getTextSize: MARKER_ICON_SIZE_METERS,
+            radiusUnits: "meters",
+            pointRadiusMinPixels: MARKER_SIZE_MIN_PIXELS / 2,
+            pointRadiusMaxPixels: MARKER_SIZE_MAX_PIXELS / 2,
+            getText: () => "\ue0c8",
+            textFontFamily: "Material Icons",
+            textCharacterSet: ["\ue0c8"],
+            textSizeUnits: "meters",
+            textSizeMinPixels: MARKER_SIZE_MIN_PIXELS,
+            textSizeMaxPixels: MARKER_SIZE_MAX_PIXELS,
+            getTextColor: (feature: any) => {
               const grantee: string = feature.properties.grantee;
-              const fillAlpha = 255;
+              const fillAlpha = 128;
               switch (grantee) {
                 case "TELEFONICA DE ESPAÑA, S.A.":
                   return [1, 157, 244, fillAlpha];
@@ -171,6 +176,11 @@ function App() {
                   return [59, 156, 63, fillAlpha];
               }
               return [255, 0, 0, fillAlpha];
+            },
+            getTextAnchor: "middle",
+            getTextAlignmentBaseline: "center",
+            updateTriggers: {
+              getText: fontLoaded,
             },
           }),
         ];
