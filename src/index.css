@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 body {
-  height: 100vh;
+  height: 100vh; /* Fallback for older browsers */
+  height: 100dvh;
   margin: 0;
   padding: 0;
 }
