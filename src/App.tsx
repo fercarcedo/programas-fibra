@@ -129,10 +129,39 @@ function App() {
               const fillAlpha = 128;
               switch (grantee) {
                 case "TELEFONICA DE ESPAÑA, S.A.":
+                case "TELEFÓNICA DE ESPAÑA S.A.":
                   return [1, 157, 244, fillAlpha];
                 case "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.":
+                case "ORANGE ESPAGNE S.A.":
                   return [255, 94, 14, fillAlpha];
                 case "AVATEL TELECOM S.A.":
+                case "AVATEL & WIKIKER TELECOM S.L.":
+                case "WIKIKER BROADBAND, S.L.":
+                case "TELEAST DIGITAL, S.L.":
+                case "TVHORADADA MULTIMEDIA, S.L.":
+                case "TVHORADADA MAR MENOR, S.L.":
+                case "CIUDAD SIN CABLES TELECOM SL":
+                case "TELPLAY S.L.":
+                case "CABLEUNIÓN MEDIA, S.L.":
+                case "CABLEMURCIA S.L":
+                case "A2Z TELECOMUNICACIONES, S.L.":
+                case "LEBRIJA TV, S.L.":
+                case "FIBRAMED NETWORKS, S.L.":
+                case "WIFIBYTES, S.L.":
+                case "WIVA TELECOM, S.L.":
+                case "UNION DE REDES DE FIBRA OPTICA, SL":
+                case "TELE ALHAMA, S.L.":
+                case "TELEDISTRIBUCIÓN TOTANA S.L.":
+                case "CABLE ALBUDEITE S.L.":
+                case "REDFIBRA COMUNICACIONES SL":
+                case "ALBACETE SISTEMAS Y SERVICIOS S.L.":
+                case "WIFINITY GLOBAL NETWORK, S.L.":
+                case "OPEGAL TELECOMUNICACIONS S.L.":
+                case "SERVICIO TELEC. PUENTE GENIL":
+                case "RUSCABLE S.L.":// La Cala fibra sl ?
+                case "WIFI LA VALL SL":
+                case "VOZPLUS TELECOMUNICACIONES, S.L.L.":
+                case "INGERTV":
                   return [160, 94, 181, fillAlpha];
                 case "ADAMO TELECOM IBERIA SA":
                   return [43, 195, 110, fillAlpha];
@@ -140,8 +169,24 @@ function App() {
                   return [36, 114, 183, fillAlpha];
                 case "VENTO REDE, S.L.":
                   return [59, 156, 63, fillAlpha];
+                case "MASMOVIL BROADBAND S.A.UNIPERSONAL":
+                case "MASMOVIL BROADBAND SA":
+                case "EMBOU NUEVAS TECNOLOGIAS SL.":
+                case "MAS MOVIL TELECOM 3.0 S.A.":
+                case "XTRA TELECOM, S.A.U":
+                case "MASMOVIL IBERCOM SA":
+                  return [255, 222, 33, fillAlpha];
+                case "TELECABLE DE ASTURIAS, S.A":
+                case "R CABLE Y TELECOMUNICACIONES GALICIA, S.A.":
+                case "EUSKALTEL":
+                case "EUSKALTEL, S.A.":
+                  return [0, 85, 120, fillAlpha];
+                case "VODAFONE ESPAÑA S.A.":
+                  return [230, 0, 0, fillAlpha];
+                case "LYNTIA NETWORKS, S.A.":
+                  return [230, 0, 126, fillAlpha];
               }
-              return [255, 0, 0, fillAlpha];
+              return [112, 128, 144, fillAlpha];
             },
             getLineColor: [254, 0, 0, 255],
             lineWidthMinPixels: 0.5,
@@ -163,6 +208,7 @@ function App() {
               const fillAlpha = 128;
               switch (grantee) {
                 case "TELEFONICA DE ESPAÑA, S.A.":
+                case "TELEFÓNICA DE ESPAÑA S.A.":
                   return [1, 157, 244, fillAlpha];
                 case "ORANGE ESPAÑA COMUNICACIONES FIJAS S.L.U.":
                   return [255, 94, 14, fillAlpha];
