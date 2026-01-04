@@ -19,7 +19,7 @@ import type { Feature, Geometry } from "geojson";
 import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
 import centroid from "@turf/centroid";
-import { getOperatorColor } from "./map/colors";
+import { getOperatorColor, getProgramColor } from "./map/colors";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
@@ -128,8 +128,10 @@ function App() {
               }
               return getOperatorColor(feature.properties.grantee, 128);
             },
-            getLineColor: [254, 0, 0, 255],
+            getLineColor: (feature: any) => getProgramColor(feature.properties.program_name, 128),
             lineWidthMinPixels: 0.5,
+            lineWidthUnits: "meters",
+            getLineWidth: 2,
             onClick: handleLayerClick,
             pointType: "circle+text",
             getPointRadius: MARKER_ICON_SIZE_METERS / 2,

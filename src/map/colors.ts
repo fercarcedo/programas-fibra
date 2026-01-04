@@ -14,6 +14,22 @@ const OPERATOR_COLORS: Record<string, [number, number, number]> = {
   OTHER:    [112, 128, 144]
 };
 
+const PROGRAM_COLORS: Record<string, [number, number, number]> = {
+  PEBA_2013: [255, 255, 255],
+  PEBA_2014: [60, 60, 60],
+  PEBA_2015: [255, 235, 0],
+  PEBA_2016: [180, 255, 0],
+  PEBA_2017: [255, 100, 200],
+  PEBA_2018: [0, 255, 255],
+  PEBA_2019: [180, 0, 0],
+  PEBA_2020: [140, 0, 255],
+  PEBA_2021: [150, 75, 0],
+  UNICO_2021: [0, 150, 80],
+  UNICO_2022: [255, 180, 0],
+  UNICO_2023: [0, 50, 200],
+  UNICO_2024: [255, 0, 255]
+};
+
 const NAME_TO_OPERATOR: Record<string, string> = {
   'TELEFONICA DE ESPAÑA, S.A.': 'TELEFONICA',
   'TELEFÓNICA DE ESPAÑA S.A.': 'TELEFONICA',
@@ -76,3 +92,12 @@ export const getOperatorColor = (grantee: string, alpha: number = 255): RGBA => 
 
   return [...baseColor, alpha];
 };
+
+export const getProgramColor = (programName: string, alpha: number = 255): RGBA => {
+  const mappedProgramName = programName.toUpperCase()
+    .replace(" ", "_");
+
+  const baseColor = PROGRAM_COLORS[mappedProgramName];
+
+  return [...baseColor, alpha];
+}
