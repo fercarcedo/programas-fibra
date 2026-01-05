@@ -85,17 +85,18 @@ function AreaPopup(props: AreaPopupProps) {
   return (
     <Popup
       className="z-50 min-w-[280px] p-2"
+      maxWidth="none"
       latitude={props.latitude}
       longitude={props.longitude}
       onClose={props.onClose}
       closeOnClick={false}
     >
       <div>
-        <h2 className="text-lg font-semibold">{props.data.grantee}</h2>
+        <h2 className="text-lg font-semibold max-w-[240px]">{props.data.grantee}</h2>
         <h3 className="text-base font-medium pb-4">
           {props.data.program_name}
         </h3>
-        <table className="w-full">
+        <table className="w-full max-w-[240px]">
           <tbody>
             <AreaPropertyRow
               name="COMUNIDAD AUTÓNOMA"
