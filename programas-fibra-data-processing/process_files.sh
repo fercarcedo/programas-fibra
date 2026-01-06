@@ -14,7 +14,7 @@ tippecanoe -z18 --projection=EPSG:4326 -o unico2021.pmtiles -l -no-feature-limit
 ogrmerge.py -single -f GeoJSON -t_srs EPSG:4326 -o Zonas_2020.geojson '/home/fer/Ficheros_programas_fibra/PEBA_2020/_shapefile/*.shp'
 # We use unico with PEBA 2020 and 2021 because both have a UNICO-like syntax and an areas file
 uv run main.py unico -e Zonas_2020.geojson -a '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2021.xlsx' -o peba2021.geojson -p "PEBA 2021"
-tippecanoe -z18 --projection=EPSG:4326 -o peba2021.pmtiles -l output --no-clipping --drop-rate=0 --no-feature-limit --no-tile-size-limit -r1 peba2021.geojson --force
+tippecanoe -z18 -Z1 --projection=EPSG:4326 -o peba2021.pmtiles -l output --no-clipping --drop-rate=0 --no-feature-limit --no-tile-size-limit -r1 peba2021.geojson --force
 uv run main.py unico -e Zonas_2020.geojson -a '/home/fer/Ficheros_programas_fibra/Relacion_proyectos_aprobados_2020.xlsx' -o peba2020.geojson -p "PEBA 2020"
 tippecanoe -z18 --projection=EPSG:4326 -o peba2020.pmtiles -l output --no-clipping --drop-rate=0 --no-feature-limit --no-tile-size-limit -r1 peba2020.geojson --force
 uv run main.py peba -f '/home/fer/Ficheros_programas_fibra/Relacion-proyectos-aprobados-2019.xlsx' -e ENTIDADES.csv -o peba2019.geojson -p "PEBA 2019"
