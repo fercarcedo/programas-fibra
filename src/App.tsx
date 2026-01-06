@@ -179,7 +179,14 @@ function App() {
             ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
           ],
         }}
-        attributionControl={false}
+        attributionControl={{
+          customAttribution: [
+            '<a href="https://protomaps.com/" target="_blank">© Protomaps</a>',
+            '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
+            '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx">Datos: SETELECO</a>'
+          ].join(' | '),
+          compact: true
+        }}
         renderWorldCopies={false}
         maxBounds={[-19.116211, 26.824071, 7.954102, 44.527843]}
         dragRotate={false}
