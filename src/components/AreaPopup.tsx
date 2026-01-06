@@ -185,10 +185,12 @@ function AreaPopup(props: AreaPopupProps) {
                         name="TECNOLOGÍA"
                         value={data.technology}
                       />
-                      <AreaPropertyRow
-                        name="FECHA LÍMITE"
-                        value={data.deadline}
-                      />
+                      {data.deadline && (
+                        <AreaPropertyRow
+                          name="FECHA LÍMITE"
+                          value={data.deadline}
+                        />
+                      )}
                     </tbody>
                   </table>
                 </div>

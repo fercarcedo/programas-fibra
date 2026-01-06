@@ -10,6 +10,6 @@ export function toDomain(infra: ProjectKV): Project {
         loan: infra.loan,
         funding_percentage: infra.funding_percentage,
         technology: infra.technology,
-        deadline: new Date(infra.deadline),
+        deadline: infra.deadline ? new Date(infra.deadline) : null,
     }
 }

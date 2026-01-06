@@ -6,5 +6,5 @@ export interface ProjectWebResponse {
     loan: string | null;
     funding_percentage: string;
     technology: string;
-    deadline: string;
+    deadline: string | null;
 }

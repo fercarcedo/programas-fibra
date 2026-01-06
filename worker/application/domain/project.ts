@@ -1,4 +1,4 @@
-export type ProjectStatus = 
+export type ProjectStatus =
     | 'cancelled'
     | 'in_progress'
     | 'finished';
@@ -11,5 +11,5 @@ export interface Project {
     loan: number | null;
     funding_percentage: number;
     technology: string;
-    deadline: Date;
+    deadline: Date | null;
 }
