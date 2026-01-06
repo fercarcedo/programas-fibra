@@ -78,9 +78,13 @@ function AreaPropertyRow(props: AreaPropertyRowProps) {
 function AreaPopup(props: AreaPopupProps) {
   const { isPending, error, data } = useProject(props.data.project);
 
-  console.log(isPending);
-  console.log(error);
-  console.log(data);
+  if (isPending) {
+    return <span>Cargando...</span>;
+  }
+
+  if (error) {
+    return <span>Error al cargar los datos del proyecto</span>;
+  }
 
   return (
     <Popup
