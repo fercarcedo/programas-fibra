@@ -94,7 +94,7 @@ function App() {
       ? [
           new H3HexagonLayer({
             id: "hexagon-layer",
-            data: "/data/aggregated-0413b8769b.json",
+            data: "/data/aggregated-b7e4607988.json",
             extruded: false,
             beforeId: "places_locality",
             getHexagon: (d) => d.h3Index,
@@ -115,7 +115,7 @@ function App() {
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: ["/tiles/output-2fc8a9b91c/{z}/{x}/{y}"],
+            data: ["/tiles/output-b018afb40a/{z}/{x}/{y}"],
             minZoom: 0,
             maxZoom: 18,
             filled: true,
