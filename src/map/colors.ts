@@ -101,3 +101,11 @@ export const getProgramColor = (programName: string, alpha: number = 255): RGBA 
 
   return [...baseColor, alpha];
 }
+
+export const getOperatorColors = (): Record<string, [number, number, number]> => {
+  return OPERATOR_COLORS;
+}
+
+export const getProgramColors = (): Record<string, [number, number, number]> => {
+  return PROGRAM_COLORS;
+}
