@@ -20,6 +20,7 @@ import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
 import centroid from "@turf/centroid";
 import { getOperatorColor, getProgramColor } from "./map/colors";
+import LegendControl from "./components/LegendControl";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
@@ -78,6 +79,7 @@ function App() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
 
   useEffect(() => {
     document.fonts.load("24px 'Material Icons'").then(() => {
@@ -203,6 +205,7 @@ function App() {
         />
         <NavigationControl position="top-left" showCompass={false} />
         <GeolocateControl position="top-left" showUserLocation={false} />
+        <LegendControl position="top-right" isOpen={legendOpen} onClick={() => {setLegendOpen(!legendOpen)}} />
 
         {mapLoaded && <DeckGLOverlay layers={[mapLayers]} interleaved={true} />}
 
