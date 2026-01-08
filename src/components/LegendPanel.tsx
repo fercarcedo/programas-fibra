@@ -32,7 +32,7 @@ const VisualGuide = () => (
     <div className="flex items-center gap-4">
       <div className="relative w-10 h-10 flex-shrink-0 bg-orange-500 border-[3px] border-magenta-500 rounded-md shadow-sm" title="Representación de polígonos" />
       <div className="text-[11px] text-blue-900 leading-tight">
-        <p className="font-bold mb-0.5">Zonas (Polígonos) - Plan UNICO</p>
+        <p className="font-bold mb-0.5">Zonas (Polígonos)</p>
         <p className="opacity-80">Relleno: Operador | Borde: Programa</p>
       </div>
     </div>
@@ -49,7 +49,7 @@ const VisualGuide = () => (
         </span>
       </div>
       <div className="text-[11px] text-blue-900 leading-tight">
-        <p className="font-bold mb-0.5">Localidades (Puntos) - Plan PEBA</p>
+        <p className="font-bold mb-0.5">Localidades (Puntos)</p>
         <p className="opacity-80">Pin: Operador | Círculo: Programa</p>
       </div>
     </div>
@@ -103,7 +103,7 @@ const LegendPanel = ({onClose}: LegendPanelProps) => {
       }
     };
     return <motion.div
-        initial={isMobile ? "closed" : "closed"}
+        initial="closed"
         animate={isMobile
           ? (isExpanded ? "expanded" : "collapsed")
           : "open"
