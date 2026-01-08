@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { getOperatorColors, getProgramColors } from "../map/colors";
+import { useState } from "react";
 
 const OPERATOR_LEGENDS: Record<string, string> = {
   TELEFONICA: "Movistar",
@@ -87,17 +88,64 @@ const ProgramLegend = () => (
 );
 
 const LegendPanel = ({onClose}: LegendPanelProps) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const variants = {
+      mobile: {
+        closed: { y: windowHeight },
+        collapsed: { y: windowHeight * 0.4 },
+        expanded: { y: 0 }
+      },
+      desktop: {
+        closed: { x: "100%", y: 0 },
+        open: { x: 0, y: 0 }
+      }
+    };
     return <motion.div
-        initial={{ y: '100%', x: 0 }}
-        animate={{ y: 0, x: 0 }}
-        exit={{ y: '100%', x: 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="absolute bottom-0 left-0 right-0 z-[60] bg-white rounded-t-2xl shadow-2xl overflow-hidden
-                    md:top-0 md:right-0 md:left-auto md:bottom-0 md:w-80 md:rounded-t-none md:rounded-l-2xl"
+        initial={isMobile ? "closed" : "closed"}
+        animate={isMobile
+          ? (isExpanded ? "expanded" : "collapsed")
+          : "open"
+        }
+        exit="closed"
+        variants={isMobile ? variants.mobile : variants.desktop}
+
+        transition={{
+          type: "spring",
+          damping: 30,
+          stiffness: 300,
+          mass: 0.8
+        }}
+
+        drag={isMobile ? "y" : false}
+        dragConstraints={{ top: 0, bottom: windowHeight }}
+        dragElastic={0.05}
+        onDragEnd={(_, info) => {
+          if (!isMobile) return;
+          const dragDistance = info.offset.y;
+          const dragVelocity = info.velocity.y;
+
+          if (dragDistance < -100 || dragVelocity < -500) setIsExpanded(true);
+          else if (dragDistance > 100 || dragVelocity > 500) {
+            if (isExpanded) setIsExpanded(false);
+            else onClose();
+          }
+        }}
+
+        className="absolute bottom-0 left-0 right-0 z-[60] bg-white rounded-t-3xl shadow-2xl
+                    flex flex-col h-[100dvh]
+                    md:h-full md:top-0 md:bottom-0 md:right-0 md:left-auto md:w-80 md:rounded-t-none md:rounded-l-3xl overflow-hidden"
         >
+        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto my-3 md:hidden flex-shrink-0" />
+
         <LegendHeader onClose={onClose} />
 
-        <div className="p-4 overflow-y-auto max-h-[40vh] md:max-h-screen space-y-6 pb-10">
+        <div className="flex-1 overflow-y-auto p-5 space-y-8"
+          onPointerDown={(e) => isMobile && e.stopPropagation()}
+          style={{
+            paddingBottom: isMobile && !isExpanded ? "calc(40vh + 20px)" : "20px"
+          }}>
             <VisualGuide />
             <OperatorLegend />
             <ProgramLegend />
