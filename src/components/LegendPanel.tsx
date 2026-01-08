@@ -33,7 +33,8 @@ const VisualGuide = () => (
       <div className="relative w-10 h-10 flex-shrink-0 bg-orange-500 border-[3px] border-magenta-500 rounded-md shadow-sm" title="Representación de polígonos" />
       <div className="text-[11px] text-blue-900 leading-tight">
         <p className="font-bold mb-0.5">Zonas (Polígonos)</p>
-        <p className="opacity-80">Relleno: Operador | Borde: Programa</p>
+        <p className="opacity-80">Relleno: Operador</p>
+        <p className="opacity-80">Borde: Programa</p>
       </div>
     </div>
 
@@ -50,7 +51,8 @@ const VisualGuide = () => (
       </div>
       <div className="text-[11px] text-blue-900 leading-tight">
         <p className="font-bold mb-0.5">Localidades (Puntos)</p>
-        <p className="opacity-80">Pin: Operador | Círculo: Programa</p>
+        <p className="opacity-80">Pin: Operador</p>
+        <p className="opacity-80">Círculo: Programa</p>
       </div>
     </div>
   </div>
@@ -123,6 +125,7 @@ const LegendPanel = ({onClose}: LegendPanelProps) => {
         dragElastic={0.05}
         onDragEnd={(_, info) => {
           if (!isMobile) return;
+
           const dragDistance = info.offset.y;
           const dragVelocity = info.velocity.y;
 
