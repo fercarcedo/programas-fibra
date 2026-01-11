@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { motion, useDragControls } from "motion/react";
 import { getOperatorColors, getProgramColors } from "../map/colors";
 import { useState } from "react";
 
@@ -91,6 +91,7 @@ const ProgramLegend = () => (
 
 const LegendPanel = ({onClose}: LegendPanelProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const dragControls = useDragControls();
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
     const variants = {
@@ -115,24 +116,31 @@ const LegendPanel = ({onClose}: LegendPanelProps) => {
 
         transition={{
           type: "spring",
-          damping: 30,
-          stiffness: 300,
-          mass: 0.8
+          damping: 35,
+          stiffness: 350,
+          mass: 0.5
         }}
 
         drag={isMobile ? "y" : false}
+        dragControls={dragControls}
         dragConstraints={{ top: 0, bottom: windowHeight }}
-        dragElastic={0.05}
+        dragListener={false}
+        dragElastic={0.2}
         onDragEnd={(_, info) => {
           if (!isMobile) return;
 
-          const dragDistance = info.offset.y;
-          const dragVelocity = info.velocity.y;
+          const velocity = info.velocity.y;
+          const offset = info.offset.y;
 
-          if (dragDistance < -100 || dragVelocity < -500) setIsExpanded(true);
-          else if (dragDistance > 100 || dragVelocity > 500) {
-            if (isExpanded) setIsExpanded(false);
-            else onClose();
+          if (velocity < -300 || offset < -50) {
+            setIsExpanded(true);
+          }
+          else if (velocity > 300 || offset > 50) {
+            if (isExpanded) {
+              setIsExpanded(false);
+            } else {
+              onClose();
+            }
           }
         }}
 
@@ -140,14 +148,25 @@ const LegendPanel = ({onClose}: LegendPanelProps) => {
                     flex flex-col h-[100dvh]
                     md:h-full md:top-0 md:bottom-0 md:right-0 md:left-auto md:w-80 md:rounded-t-none md:rounded-l-3xl overflow-hidden"
         >
-        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto my-3 md:hidden flex-shrink-0" />
+        {isMobile && <div
+          onPointerDown={(e) => dragControls.start(e)}
+          className="flex-shrink-0 w-full pt-4 pb-2 cursor-grab active:cursor-grabbing touch-none"
+          style={{ touchAction: 'none' }}
+        >
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto" />
+        </div>}
 
-        <LegendHeader onClose={onClose} />
+        <div
+            onPointerDown={(e) => dragControls.start(e)}
+            className="touch-none"
+            style={{ touchAction: 'none' }}
+          >
+            <LegendHeader onClose={onClose} />
+          </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-8"
-          onPointerDown={(e) => isMobile && e.stopPropagation()}
+        <div className="flex-1 overflow-y-auto p-5 space-y-8 touch-pan-y"
           style={{
-            paddingBottom: isMobile && !isExpanded ? "calc(40vh + 20px)" : "20px"
+            paddingBottom: isMobile && !isExpanded ? "calc(40dvh + 20px)" : "20px"
           }}>
             <VisualGuide />
             <OperatorLegend />
