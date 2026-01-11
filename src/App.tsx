@@ -119,7 +119,7 @@ function App() {
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: ["/tiles/output-b018afb40a/{z}/{x}/{y}"],
+            data: ["https://tiles.programasfibra.es/output-b018afb40a/{z}/{x}/{y}"],
             minZoom: 0,
             maxZoom: 18,
             filled: true,
@@ -174,7 +174,7 @@ function App() {
             protomaps: {
               type: "vector",
               tiles: [
-                `${window.location.origin}/tiles/map-3a858e9500/{z}/{x}/{y}`,
+                "https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}",
               ],
               maxzoom: 15,
             },
