@@ -167,9 +167,9 @@ function App() {
         mapStyle={{
           version: 8,
           glyphs:
-            "/map-assets/fonts/v1/{fontstack}/{range}.pbf",
+            `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
           sprite:
-            "/map-assets/sprites/v4.1/grayscale",
+            `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
           sources: {
             protomaps: {
               type: "vector",
