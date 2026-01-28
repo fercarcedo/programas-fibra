@@ -98,7 +98,7 @@ function App() {
       ? [
           new H3HexagonLayer({
             id: "hexagon-layer",
-            data: "/data/aggregated-b7e4607988.json",
+            data: "/data/aggregated-a8ecc1b703.json",
             extruded: false,
             beforeId: "places_locality",
             getHexagon: (d) => d.h3Index,

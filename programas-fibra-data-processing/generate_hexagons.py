@@ -31,6 +31,7 @@ for feature in geojson_data['features']:
     longitude, latitude = feature['geometry']['coordinates']
     properties = feature.get('properties', {})
     grantee = properties.get('grantee')
+    program = properties.get('program_name')
 
     # Convert the coordinates to an H3 index
     h3_index = h3.latlng_to_cell(latitude, longitude, H3_RESOLUTION)
@@ -40,16 +41,18 @@ for feature in geojson_data['features']:
         h3_aggregations[h3_index] = {
             'h3Index': h3_index,
             'totalCount': 0,
-            'granteeCounts': {}
+            'counts': {}
         }
+
+    # Increment the nested counts by grantee and program
+    if grantee:
+        counts = h3_aggregations[h3_index]['counts']
+        if grantee not in counts:
+            counts[grantee] = {}
+        counts[grantee][program] = counts[grantee].get(program, 0) + 1
 
     # Increment the total count for the hexagon
     h3_aggregations[h3_index]['totalCount'] += 1
-
-    # Increment the grantee-specific count
-    if grantee:
-        grantee_counts = h3_aggregations[h3_index]['granteeCounts']
-        grantee_counts[grantee] = grantee_counts.get(grantee, 0) + 1
 
 # Convert the dictionary values to a list of objects
 aggregated_data_list = list(h3_aggregations.values())
