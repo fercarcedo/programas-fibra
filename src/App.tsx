@@ -187,7 +187,7 @@ function App() {
           customAttribution: [
             '<a href="https://protomaps.com/" target="_blank">© Protomaps</a>',
             '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
-            '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx">Datos: SETELECO</a>'
+            '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx" target="_blank">Datos: SETELECO</a>'
           ].join(' | '),
           compact: true
         }}
