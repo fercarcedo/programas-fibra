@@ -2,8 +2,13 @@ import h3
 import geojson
 import json
 import os
+import argparse
 
 # --- Configuration ---
+parser = argparse.ArgumentParser(description='Generate H3 hexagon aggregations from GeoJSON data')
+parser.add_argument('--projects-status', type=str, help='Path to JSON file with project status and deadline data', required=True)
+args = parser.parse_args()
+
 # Set the input and output file paths
 input_geojson_file = 'centroids.merged.geojson'
 output_json_file = 'h3_aggregated.json'
@@ -11,6 +16,16 @@ output_json_file = 'h3_aggregated.json'
 # Set the desired H3 resolution.
 # Resolution 5 is approximately a 10km hexagon radius.
 H3_RESOLUTION = 5
+
+# Load project status data
+projects_status = {}
+if args.projects_status:
+    if os.path.exists(args.projects_status):
+        with open(args.projects_status, 'r') as f:
+            projects_status = json.load(f)
+        print(f"Loaded project status data from '{args.projects_status}'")
+    else:
+        print(f"Warning: Project status file '{args.projects_status}' not found")
 
 # --- Data Aggregation ---
 # Dictionary to store the aggregated data
@@ -32,6 +47,7 @@ for feature in geojson_data['features']:
     properties = feature.get('properties', {})
     grantee = properties.get('grantee')
     program = properties.get('program_name')
+    project = properties.get('project')
 
     # Convert the coordinates to an H3 index
     h3_index = h3.latlng_to_cell(latitude, longitude, H3_RESOLUTION)
@@ -49,7 +65,21 @@ for feature in geojson_data['features']:
         counts = h3_aggregations[h3_index]['counts']
         if grantee not in counts:
             counts[grantee] = {}
-        counts[grantee][program] = counts[grantee].get(program, 0) + 1
+
+        # Initialize program entry with status counts
+        if program not in counts[grantee]:
+            counts[grantee][program] = {
+                'total': 0,
+                'statuses': {}
+            }
+
+        counts[grantee][program]['total'] += 1
+
+        # Track status count if project info is available
+        if project and project in projects_status:
+            status = projects_status[project].get('status')
+            if status:
+                counts[grantee][program]['statuses'][status] = counts[grantee][program]['statuses'].get(status, 0) + 1
 
     # Increment the total count for the hexagon
     h3_aggregations[h3_index]['totalCount'] += 1
