@@ -1,8 +1,9 @@
 from infrastructure.repositories.kv_program_repository import KVProgramRepository
 from unittest.mock import Mock, AsyncMock, patch
 from domain.program_data import ProjectData, ProgramStatus
+from domain.projects_status import ProjectsStatus
 from infrastructure.entity.project_entity import ProjectEntity, ProgramStatus as ProgramStatusEntity
-from datetime import date
+from datetime import date, datetime, timezone
 import pytest
 import json
 
@@ -46,7 +47,7 @@ async def test_put_project_puts_project_as_json(to_entity_mock):
     mock_config.get = AsyncMock(return_value="Foo")
     mock_config.put = AsyncMock()
     mock_env.PROJECTS = mock_config
-    
+
 
     repository = KVProgramRepository(mock_env)
 
@@ -78,4 +79,119 @@ async def test_put_project_puts_project_as_json(to_entity_mock):
 
     mock_config.put.assert_called_once_with(project.project, json.dumps(project_entity.to_dict()))
 
+@patch("infrastructure.repositories.kv_program_repository.datetime")
+@patch("infrastructure.repositories.kv_program_repository.project_status_to_entity")
+@patch("infrastructure.repositories.kv_program_repository.projects_status_to_dict")
+async def test_put_projects_status_puts_status_as_json(projects_status_to_dict_mock, project_status_to_entity_mock, datetime_mock):
+    mock_env = Mock()
+    mock_config = Mock()
+    mock_config.put = AsyncMock()
+    mock_env.PROJECTS = mock_config
+
+    repository = KVProgramRepository(mock_env)
+
+    projects_status = {
+        "TSI-061400-2019-0023": {"status": "in_progress", "deadline": "25/02/2026"},
+        "TSI-061400-2019-0024": {"status": "finished", "deadline": "31/12/2024"}
+    }
+    projects_status_entity = Mock()
+    status_dict = {
+        "TSI-061400-2019-0023": {"status": "in_progress", "deadline": "25/02/2026"},
+        "TSI-061400-2019-0024": {"status": "finished", "deadline": "31/12/2024"}
+    }
+
+    project_status_to_entity_mock.return_value = projects_status_entity
+    projects_status_to_dict_mock.return_value = status_dict
+
+    fixed_datetime = datetime(2026, 2, 25, 20, 51, 57, tzinfo=timezone.utc)
+    datetime_mock.now.return_value = fixed_datetime
+
+    await repository.put_projects_status(projects_status)
+
+    assert mock_config.put.call_count == 2
+    first_call = mock_config.put.call_args_list[0]
+    assert first_call[0][0] == "projects-status"
+    assert first_call[0][1] == json.dumps(status_dict)
+
+    second_call = mock_config.put.call_args_list[1]
+    assert second_call[0][0] == "projects-status:last-modified"
+    assert second_call[0][1] == "Wed, 25 Feb 2026 20:51:57 GMT"
+
+@patch("infrastructure.repositories.kv_program_repository.from_entity")
+async def test_find_projects_returns_list_of_projects(from_entity_mock):
+    mock_env = Mock()
+    mock_config = Mock()
+
+    mock_key_item_1 = Mock()
+    mock_key_item_1.name = "TSI-061400-2021-0001"
+
+    mock_key_item_2 = Mock()
+    mock_key_item_2.name = "TSI-061400-2021-0002"
+
+    mock_list_result = Mock()
+    mock_list_result.keys = [mock_key_item_1, mock_key_item_2]
+
+    project_entity_1 = ProjectEntity(
+        status=ProgramStatusEntity.FINISHED,
+        eligible_budget=1000,
+        funding=800,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2024, 12, 31),
+    )
     
+    project_entity_2 = ProjectEntity(
+        status=ProgramStatusEntity.IN_PROGRESS,
+        eligible_budget=2000,
+        funding=1600,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2025, 12, 31),
+    )
+
+    mock_config.list = AsyncMock(return_value=mock_list_result)
+    mock_config.get = AsyncMock(side_effect=[
+        json.dumps(project_entity_1.to_dict()),
+        json.dumps(project_entity_2.to_dict())
+    ])
+    mock_env.PROJECTS = mock_config
+
+    repository = KVProgramRepository(mock_env)
+
+    project_1 = ProjectData(
+        project="TSI-061400-2021-0001",
+        status=ProgramStatus.FINISHED,
+        eligible_budget=1000,
+        funding=800,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2024, 12, 31),
+    )
+    project_2 = ProjectData(
+        project="TSI-061400-2021-0002",
+        status=ProgramStatus.IN_PROGRESS,
+        eligible_budget=2000,
+        funding=1600,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2025, 12, 31),
+    )
+
+    from_entity_mock.side_effect = [project_1, project_2]
+
+    result = await repository.find_projects()
+
+    assert len(result) == 2
+    assert result[0] == project_1
+    assert result[1] == project_2
+    mock_config.list.assert_called_once_with(prefix="TSI-")
+    assert mock_config.get.call_count == 2
+

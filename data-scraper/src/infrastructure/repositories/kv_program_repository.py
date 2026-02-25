@@ -1,6 +1,12 @@
+from datetime import datetime, timezone
+from email.utils import format_datetime
+
 from domain.repositories.program_repository import ProgramRepository
 from domain.program_data import ProjectData
-from infrastructure.repositories.mapper.project_mapper import to_entity
+from domain.projects_status import ProjectsStatus
+from infrastructure.entity.projects_status_entity import projects_status_to_dict
+from infrastructure.repositories.mapper.project_mapper import from_entity, to_entity
+from infrastructure.repositories.mapper.project_status_mapper import to_entity as project_status_to_entity
 import json
 
 class KVProgramRepository(ProgramRepository):
@@ -21,5 +27,19 @@ class KVProgramRepository(ProgramRepository):
 
     async def put_project(self, project: ProjectData):
         project_entity = to_entity(project)
-        print(project_entity)
         await self.env.PROJECTS.put(project.project, json.dumps(project_entity.to_dict()))
+
+    async def put_projects_status(self, projects_status: ProjectsStatus):
+        projects_status_entity = project_status_to_entity(projects_status)
+        summary_string = json.dumps(projects_status_to_dict(projects_status_entity))
+        await self.env.PROJECTS.put("projects-status", summary_string)
+        last_modified = format_datetime(datetime.now(timezone.utc), usegmt=True)
+        await self.env.PROJECTS.put("projects-status:last-modified", last_modified)
+
+    async def find_projects(self) -> list[ProjectData]:
+        project_codes = await self.env.PROJECTS.list(prefix="TSI-")
+        return [
+            from_entity(await self.env.PROJECTS.get(key_item.name, "json"), key_item.name)
+            for key_item in project_codes.keys
+        ]
+
