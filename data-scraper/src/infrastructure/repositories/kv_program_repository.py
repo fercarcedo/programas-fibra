@@ -37,9 +37,16 @@ class KVProgramRepository(ProgramRepository):
         await self.env.PROJECTS.put("projects-status:last-modified", last_modified)
 
     async def find_projects(self) -> list[ProjectData]:
-        project_codes = await self.env.PROJECTS.list(prefix="TSI-")
-        return [
-            from_entity(await self.env.PROJECTS.get(key_item.name, "json"), key_item.name)
-            for key_item in project_codes.keys
-        ]
+        projects = []
+        cursor = None
+        
+        while cursor is not None or not projects:
+            result = await self.env.PROJECTS.list(prefix="TSI-", cursor=cursor)
+            projects.extend([
+                from_entity(await self.env.PROJECTS.get(key_item.name, "json"), key_item.name)
+                for key_item in result.keys
+            ])
+            cursor = result.cursor
+        
+        return projects
 
