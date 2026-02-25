@@ -33,12 +33,12 @@ class ProjectEntity:
     @classmethod
     def from_dict(cls, data: dict[str, any]):
         return cls(
-            status=ProgramStatus[data["status"]],
+            status=ProgramStatus[data["status"].upper()],
             eligible_budget=data["eligible_budget"],
             funding=data["funding"],
             subsidy=data["subsidy"],
             loan=data["loan"],
             funding_percentage=data["funding_percentage"],
             technology=data["technology"],
-            deadline=datetime.fromisoformat(data["deadline"]) if data["deadline"] else None
+            deadline=datetime.fromisoformat(data["deadline"]).date() if data["deadline"] else None
         )

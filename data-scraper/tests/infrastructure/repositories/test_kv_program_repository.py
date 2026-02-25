@@ -117,8 +117,9 @@ async def test_put_projects_status_puts_status_as_json(projects_status_to_dict_m
     assert second_call[0][0] == "projects-status:last-modified"
     assert second_call[0][1] == "Wed, 25 Feb 2026 20:51:57 GMT"
 
+@patch("infrastructure.repositories.kv_program_repository.ProjectEntity")
 @patch("infrastructure.repositories.kv_program_repository.from_entity")
-async def test_find_projects_returns_list_of_projects(from_entity_mock):
+async def test_find_projects_returns_list_of_projects(from_entity_mock, project_entity_mock):
     mock_env = Mock()
     mock_config = Mock()
 
@@ -130,7 +131,7 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock):
 
     mock_list_result = Mock()
     mock_list_result.keys = [mock_key_item_1, mock_key_item_2]
-    mock_list_result.cursor = None
+    mock_list_result.list_complete = True
 
     project_entity_1 = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
@@ -160,6 +161,8 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock):
         json.dumps(project_entity_2.to_dict())
     ])
     mock_env.PROJECTS = mock_config
+
+    project_entity_mock.from_dict = Mock(side_effect=[project_entity_1, project_entity_2])
 
     repository = KVProgramRepository(mock_env)
 
@@ -196,8 +199,9 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock):
     mock_config.list.assert_called_once_with(prefix="TSI-", cursor=None)
     assert mock_config.get.call_count == 2
 
+@patch("infrastructure.repositories.kv_program_repository.ProjectEntity")
 @patch("infrastructure.repositories.kv_program_repository.from_entity")
-async def test_find_projects_handles_pagination(from_entity_mock):
+async def test_find_projects_handles_pagination(from_entity_mock, project_entity_mock):
     mock_env = Mock()
     mock_config = Mock()
 
@@ -212,11 +216,12 @@ async def test_find_projects_handles_pagination(from_entity_mock):
 
     mock_list_result_1 = Mock()
     mock_list_result_1.keys = [mock_key_item_1, mock_key_item_2]
+    mock_list_result_1.list_complete = False
     mock_list_result_1.cursor = "next_cursor"
 
     mock_list_result_2 = Mock()
     mock_list_result_2.keys = [mock_key_item_3]
-    mock_list_result_2.cursor = None
+    mock_list_result_2.list_complete = True
 
     project_entity_1 = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
@@ -258,6 +263,8 @@ async def test_find_projects_handles_pagination(from_entity_mock):
         json.dumps(project_entity_3.to_dict())
     ])
     mock_env.PROJECTS = mock_config
+
+    project_entity_mock.from_dict = Mock(side_effect=[project_entity_1, project_entity_2, project_entity_3])
 
     repository = KVProgramRepository(mock_env)
 

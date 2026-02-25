@@ -4,6 +4,7 @@ from email.utils import format_datetime
 from domain.repositories.program_repository import ProgramRepository
 from domain.program_data import ProjectData
 from domain.projects_status import ProjectsStatus
+from infrastructure.entity.project_entity import ProjectEntity
 from infrastructure.entity.projects_status_entity import projects_status_to_dict
 from infrastructure.repositories.mapper.project_mapper import from_entity, to_entity
 from infrastructure.repositories.mapper.project_status_mapper import to_entity as project_status_to_entity
@@ -39,14 +40,17 @@ class KVProgramRepository(ProgramRepository):
     async def find_projects(self) -> list[ProjectData]:
         projects = []
         cursor = None
-        
-        while cursor is not None or not projects:
+        list_complete = False
+
+        while not list_complete:
             result = await self.env.PROJECTS.list(prefix="TSI-", cursor=cursor)
             projects.extend([
-                from_entity(await self.env.PROJECTS.get(key_item.name, "json"), key_item.name)
+                from_entity(ProjectEntity.from_dict(json.loads(await self.env.PROJECTS.get(key_item.name))), key_item.name)
                 for key_item in result.keys
             ])
-            cursor = result.cursor
-        
+
+            list_complete = getattr(result, 'list_complete', True)
+            cursor = getattr(result, 'cursor', None)
+
         return projects
 
