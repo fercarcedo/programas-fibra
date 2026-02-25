@@ -31,15 +31,16 @@ class DataScraperWorkflow(WorkflowEntrypoint):
             await self.rebuild_status_summary_use_case.execute()
 
         updated_programs_dict = await check_updated_programs_step()
-        for i, program_dict in enumerate(updated_programs_dict):
-            @step.do(f'process-program-{program_dict["program_name"]}')
-            async def process_program():
-                program_data = await self.process_programs_use_case.execute(ProgramUpdateResult(**program_dict))
-                return to_js(program_data.to_dict(), dict_converter=Object.fromEntries)
+        if len(updated_programs_dict) > 0:
+            for i, program_dict in enumerate(updated_programs_dict):
+                @step.do(f'process-program-{program_dict["program_name"]}')
+                async def process_program():
+                    program_data = await self.process_programs_use_case.execute(ProgramUpdateResult(**program_dict))
+                    return to_js(program_data.to_dict(), dict_converter=Object.fromEntries)
 
-            await process_program()
+                await process_program()
 
-            if i < len(updated_programs_dict) - 1:
-                await step.sleep(f"delay-{updated_programs_dict[i + 1]["program_name"]}", "1 minute")
+                if i < len(updated_programs_dict) - 1:
+                    await step.sleep(f"delay-{updated_programs_dict[i + 1]["program_name"]}", "1 minute")
 
-        await rebuild_status_summary_step()
+            await rebuild_status_summary_step()
