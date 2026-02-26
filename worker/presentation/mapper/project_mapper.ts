@@ -1,4 +1,4 @@
-import type { Project, ProjectStatus } from "../../application/domain/project";
+import type { Project } from "../../application/domain/project";
 import type { ProjectAwardInfoWebResponse, ProjectWebResponse } from "../dto/project_web_response";
 
 const euroFormat = new Intl.NumberFormat("es-ES", {
@@ -15,7 +15,7 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
 
 export function toWebResponse(project: Project): ProjectWebResponse {
     return {
-        status: mapStatus(project.status),
+        status: project.status,
         eligible_budget: euroFormat.format(project.eligible_budget),
         funding: euroFormat.format(project.funding),
         subsidy: project.subsidy ? euroFormat.format(project.subsidy) : null,
@@ -39,16 +39,4 @@ export function toProjectAwardInfoWebResponse(project: Project): ProjectAwardInf
 
 export function mapDeadline(deadline: Date | null): string | null {
   return deadline ? dateFormat.format(new Date(deadline)) : null;
-}
-
-export function mapStatus(status: ProjectStatus): string {
-  if (status == 'cancelled') {
-    return 'CANCELADO';
-  }
-
-  if (status == 'finished') {
-    return 'FINALIZADO';
-  }
-
-  return 'EN EJECUCIÓN';
 }

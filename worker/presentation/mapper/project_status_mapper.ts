@@ -1,10 +1,10 @@
 import type { ProjectsStatus, ProjectStatusInfo } from "../../application/domain/project";
 import type { ProjectsStatusInfoWebResponse, ProjectsStatusWebResponse } from "../dto/projects_status_web_response";
-import { mapDeadline, mapStatus } from "./project_mapper";
+import { mapDeadline } from "./project_mapper";
 
 function toProjectStatusInfoWebResponse(info: ProjectStatusInfo): ProjectsStatusInfoWebResponse {
     return {
-        status: mapStatus(info.status),
+        status: info.status,
         deadline: mapDeadline(info.deadline),
     };
 }

@@ -1,5 +1,6 @@
 import { getOperatorColors, getProgramColors } from "../map/colors";
 import { BottomSheet } from "./BottomSheet";
+import { useProjectsStatus } from "../api/projects";
 
 const OPERATOR_LEGENDS: Record<string, string> = {
   TELEFONICA: "Movistar",
@@ -17,11 +18,17 @@ const OPERATOR_LEGENDS: Record<string, string> = {
 
 export type LegendPanelProps = {
   onClose: () => void;
+  selectedOperators: Set<string>;
+  setSelectedOperators: (operators: Set<string>) => void;
+  selectedPrograms: Set<string>;
+  setSelectedPrograms: (programs: Set<string>) => void;
+  selectedStatus: string;
+  setSelectedStatus: (status: string) => void;
 };
 
-const LegendHeader = ({onClose}: LegendPanelProps) => (
+const LegendHeader = ({ onClose }: { onClose: () => void }) => (
     <div className="p-4 border-b flex justify-between items-center bg-gray-50">
-        <h2 className="font-bold text-gray-800">Leyenda</h2>
+        <h2 className="font-bold text-gray-800">Leyenda y filtros</h2>
         <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded">✕</button>
     </div>
 )
@@ -57,7 +64,18 @@ const VisualGuide = () => (
   </div>
 );
 
-const OperatorLegend = () => (
+const OperatorLegend = ({ selectedOperators, setSelectedOperators }: { selectedOperators: Set<string>; setSelectedOperators: (operators: Set<string>) => void }) => {
+  const handleChange = (operatorKey: string) => {
+    const newSelected = new Set(selectedOperators);
+    if (newSelected.has(operatorKey)) {
+      newSelected.delete(operatorKey);
+    } else {
+      newSelected.add(operatorKey);
+    }
+    setSelectedOperators(newSelected);
+  };
+
+  return (
     <div>
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Operadores</h3>
         <div className="grid grid-cols-1 gap-2">
@@ -65,6 +83,7 @@ const OperatorLegend = () => (
                 const legend = OPERATOR_LEGENDS[name];
                 return (
                     <div key={legend} className="flex items-center gap-3">
+                        <input type="checkbox" checked={selectedOperators.has(name)} onChange={() => handleChange(name)} />
                         <div className="w-4 h-4 rounded shadow-sm" style={{ background: `rgb(${rgb.join(',')})` }}></div>
                         <span className="text-sm text-gray-700">{legend}</span>
                     </div>
@@ -72,30 +91,78 @@ const OperatorLegend = () => (
             })}
         </div>
     </div>
-);
+  );
+};
 
-const ProgramLegend = () => (
+const ProgramLegend = ({ selectedPrograms, setSelectedPrograms }: { selectedPrograms: Set<string>; setSelectedPrograms: (programs: Set<string>) => void }) => {
+  const handleChange = (programKey: string) => {
+    const newSelected = new Set(selectedPrograms);
+    if (newSelected.has(programKey)) {
+      newSelected.delete(programKey);
+    } else {
+      newSelected.add(programKey);
+    }
+    setSelectedPrograms(newSelected);
+  };
+
+  return (
     <div>
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Programas</h3>
         <div className="space-y-2">
             {Object.entries(getProgramColors()).map(([year, rgb]) => (
             <div key={year} className="flex items-center gap-3">
+                <input type="checkbox" checked={selectedPrograms.has(year)} onChange={() => handleChange(year)} />
                 <div className="w-5 h-5 bg-gray-50 border-[3px] rounded-sm shadow-sm" style={{ borderColor: `rgb(${rgb.join(',')})` }}></div>
                 <span className="text-sm text-gray-700">{year.replace('_', ' ')}</span>
             </div>
             ))}
         </div>
     </div>
-);
+  );
+};
 
-const LegendPanel = ({ onClose }: LegendPanelProps) => {
+const StatusFilter = ({ selectedStatus, setSelectedStatus }: { selectedStatus: string; setSelectedStatus: (status: string) => void }) => {
+  const { isLoading } = useProjectsStatus();
+  const statuses = [
+    { value: "in_progress", label: "EN EJECUCIÓN" },
+    { value: "finished", label: "FINALIZADO" },
+    { value: "cancelled", label: "CANCELADO" }
+  ];
+
+  return (
+    <div className="mb-4">
+      <label htmlFor="status-select" className="block text-sm font-medium text-gray-700 mb-2">
+        Estado
+      </label>
+      <select
+        id="status-select"
+        value={selectedStatus}
+        disabled={isLoading}
+        onChange={(e) => setSelectedStatus(e.target.value)}
+        className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:opacity-60"
+      >
+        <option value="">TODOS</option>
+        {statuses.map(status => {
+          return (
+            <option key={status.value} value={status.value}>
+              {status.label}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+};
+
+const LegendPanel = ({ onClose, selectedOperators, setSelectedOperators, selectedPrograms, setSelectedPrograms, selectedStatus, setSelectedStatus }: LegendPanelProps) => {
   return (
     <BottomSheet
         onClose={onClose}
         header={<LegendHeader onClose={onClose} />}>
         <VisualGuide />
-        <OperatorLegend />
-        <ProgramLegend />
+        <StatusFilter selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />
+        <OperatorLegend selectedOperators={selectedOperators} setSelectedOperators={setSelectedOperators} />
+        <ProgramLegend selectedPrograms={selectedPrograms} setSelectedPrograms={setSelectedPrograms} />
     </BottomSheet>
   );
 };
