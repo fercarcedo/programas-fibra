@@ -100,15 +100,7 @@ function AreaPopup(props: AreaPopupProps) {
     data: projectsStatusData
   } = useProjectsStatus();
 
-  if (isPending || isPendingProjectsStatus) {
-    return <span>Cargando...</span>;
-  }
-
-  if (error || projectsStatusError) {
-    return <span>Error al cargar los datos del proyecto</span>;
-  }
-
-  const projectStatus = getProjectStatus(props.data.project, projectsStatusData);
+  const projectStatus = projectsStatusData ? getProjectStatus(props.data.project, projectsStatusData) : null;
 
   return (
     <Popup
@@ -184,9 +176,9 @@ function AreaPopup(props: AreaPopupProps) {
               value={props.data.project}
               expandable={true}
             >
-              {isPending ? (
+              {(isPending || isPendingProjectsStatus) ? (
                 <p>Cargando...</p>
-              ) : (
+              ) : (error || projectsStatusError) ? (<span>Error al cargar los datos del proyecto</span>) : (
                 <div className="p-4 bg-gray-50 border-t">
                   <table className="w-full">
                     <tbody>
