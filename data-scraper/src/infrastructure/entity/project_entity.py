@@ -9,6 +9,8 @@ class ProgramStatus(Enum):
 
 @dataclass
 class ProjectEntity:
+    grantee: str
+    program_name: str
     status: ProgramStatus
     eligible_budget: float
     funding: float
@@ -20,6 +22,8 @@ class ProjectEntity:
 
     def to_dict(self) -> dict[str, any]:
         return {
+            "grantee": self.grantee,
+            "program_name": self.program_name,
             "status": self.status.value,
             "eligible_budget": self.eligible_budget,
             "funding": self.funding,
@@ -33,6 +37,8 @@ class ProjectEntity:
     @classmethod
     def from_dict(cls, data: dict[str, any]):
         return cls(
+            grantee=data["grantee"],
+            program_name=data["program_name"],
             status=ProgramStatus[data["status"].upper()],
             eligible_budget=data["eligible_budget"],
             funding=data["funding"],

@@ -53,6 +53,8 @@ async def test_put_project_puts_project_as_json(to_entity_mock):
 
     project = ProjectData(
         project="TSI-061400-2021-0041",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.FINISHED,
         eligible_budget=5228554,
         funding=4147227,
@@ -64,6 +66,8 @@ async def test_put_project_puts_project_as_json(to_entity_mock):
     )
     project_entity = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=5228554,
         funding=4147227,
         subsidy=None,
@@ -77,7 +81,7 @@ async def test_put_project_puts_project_as_json(to_entity_mock):
 
     await repository.put_project(project)
 
-    mock_config.put.assert_called_once_with(project.project, json.dumps(project_entity.to_dict()))
+    mock_config.put.assert_called_once_with(project.project, json.dumps(project_entity.to_dict(), ensure_ascii=False))
 
 @patch("infrastructure.repositories.kv_program_repository.datetime")
 @patch("infrastructure.repositories.kv_program_repository.project_status_to_entity")
@@ -135,6 +139,8 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock, project_
 
     project_entity_1 = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=1000,
         funding=800,
         subsidy=None,
@@ -143,9 +149,11 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock, project_
         technology="FTTH",
         deadline=date(2024, 12, 31),
     )
-    
+
     project_entity_2 = ProjectEntity(
         status=ProgramStatusEntity.IN_PROGRESS,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=2000,
         funding=1600,
         subsidy=None,
@@ -168,6 +176,8 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock, project_
 
     project_1 = ProjectData(
         project="TSI-061400-2021-0001",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.FINISHED,
         eligible_budget=1000,
         funding=800,
@@ -179,6 +189,8 @@ async def test_find_projects_returns_list_of_projects(from_entity_mock, project_
     )
     project_2 = ProjectData(
         project="TSI-061400-2021-0002",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.IN_PROGRESS,
         eligible_budget=2000,
         funding=1600,
@@ -225,6 +237,8 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
 
     project_entity_1 = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=1000,
         funding=800,
         subsidy=None,
@@ -233,9 +247,11 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
         technology="FTTH",
         deadline=date(2024, 12, 31),
     )
-    
+
     project_entity_2 = ProjectEntity(
         status=ProgramStatusEntity.IN_PROGRESS,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=2000,
         funding=1600,
         subsidy=None,
@@ -247,6 +263,8 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
 
     project_entity_3 = ProjectEntity(
         status=ProgramStatusEntity.FINISHED,
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         eligible_budget=3000,
         funding=2400,
         subsidy=None,
@@ -270,6 +288,8 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
 
     project_1 = ProjectData(
         project="TSI-061400-2021-0001",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.FINISHED,
         eligible_budget=1000,
         funding=800,
@@ -281,6 +301,8 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
     )
     project_2 = ProjectData(
         project="TSI-061400-2021-0002",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.IN_PROGRESS,
         eligible_budget=2000,
         funding=1600,
@@ -292,6 +314,8 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
     )
     project_3 = ProjectData(
         project="TSI-061400-2021-0003",
+        grantee="TELEFONICA DE ESPAÑA, S.A.",
+        program_name="UNICO 2021",
         status=ProgramStatus.FINISHED,
         eligible_budget=3000,
         funding=2400,
@@ -315,3 +339,88 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
     mock_config.list.assert_any_call(prefix="TSI-", cursor="next_cursor")
     assert mock_config.get.call_count == 3
 
+
+async def test_put_aggregated_validates_project_belongs_to_hexagon():
+    mock_env = Mock()
+    mock_bucket = Mock()
+    mock_env.BUCKET_GEO = mock_bucket
+
+    # Mock aggregated.json response
+    aggregated_data = [
+        {
+            "h3Index": "852834b7fffffff",
+            "totalCount": 2,
+            "counts": {
+                "TELEFONICA": {
+                    "UNICO 2021": {
+                        "total": 0,
+                        "statuses": {}
+                    }
+                }
+            }
+        }
+    ]
+    
+    # Mock hexagons_projects.json response with point counts
+    hexagons_projects = {
+        "852834b7fffffff": {
+            "TSI-061400-2021-0001": 3,
+            "TSI-061400-2021-0002": 5
+        }
+    }
+
+    mock_aggregated = AsyncMock()
+    mock_aggregated.text = AsyncMock(return_value=json.dumps(aggregated_data))
+    
+    mock_hexagons = AsyncMock()
+    mock_hexagons.text = AsyncMock(return_value=json.dumps(hexagons_projects))
+    
+    mock_bucket.get = AsyncMock(side_effect=[mock_aggregated, mock_hexagons])
+    mock_bucket.put = AsyncMock()
+
+    repository = KVProgramRepository(mock_env)
+
+    # Create projects - one in hexagon, one NOT in hexagon
+    project_1 = ProjectData(
+        project="TSI-061400-2021-0001",
+        grantee="TELEFONICA",
+        program_name="UNICO 2021",
+        status=ProgramStatus.FINISHED,
+        eligible_budget=1000,
+        funding=800,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2024, 12, 31),
+    )
+    
+    project_2 = ProjectData(
+        project="TSI-061400-2021-0999",  # Not in hexagon
+        grantee="TELEFONICA",
+        program_name="UNICO 2021",
+        status=ProgramStatus.IN_PROGRESS,
+        eligible_budget=2000,
+        funding=1600,
+        subsidy=None,
+        loan=None,
+        funding_percentage=80,
+        technology="FTTH",
+        deadline=date(2025, 12, 31),
+    )
+
+    await repository.put_aggregated([project_1, project_2])
+
+    # Verify bucket.get was called twice (aggregated.json and hexagons_projects.json)
+    assert mock_bucket.get.call_count == 2
+    
+    # Verify put was called once with updated data
+    mock_bucket.put.assert_called_once()
+    
+    # Check that only project_1 was counted (project_2 is not in hexagon)
+    call_args = mock_bucket.put.call_args
+    updated_data = json.loads(call_args[0][1])
+    
+    assert updated_data[0]["counts"]["TELEFONICA"]["UNICO 2021"]["total"] == 3
+    assert "finished" in updated_data[0]["counts"]["TELEFONICA"]["UNICO 2021"]["statuses"]
+    assert updated_data[0]["counts"]["TELEFONICA"]["UNICO 2021"]["statuses"]["finished"] == 3

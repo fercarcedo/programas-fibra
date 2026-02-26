@@ -7,6 +7,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
     projects=[
         ProjectData(
             project="TSI-061400-2021-0041",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=5228554,
             funding=4147227,
@@ -18,6 +20,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0054",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=7035949,
             funding=3173402,
@@ -29,6 +33,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0040",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=4876479,
             funding=3901183,
@@ -40,6 +46,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0091",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=11924429,
             funding=7249265,
@@ -51,6 +59,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0023",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=4587066,
             funding=3031282,
@@ -62,6 +72,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0098",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=7834330,
             funding=3364876,
@@ -73,6 +85,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0090",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=9027088,
             funding=7221670,
@@ -84,6 +98,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0125",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=11383166,
             funding=5081954,
@@ -95,6 +111,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0096",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=9629063,
             funding=4241381,
@@ -106,6 +124,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0095",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=8113333,
             funding=6352970,
@@ -117,6 +137,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0006",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=8327205,
             funding=6661764,
@@ -128,6 +150,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0122",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=24189466,
             funding=12230668,
@@ -139,6 +163,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0046",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=5023163,
             funding=3838550,
@@ -150,6 +176,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0104",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=3756597,
             funding=2670469,
@@ -161,6 +189,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0116",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=3797899,
             funding=2951006,
@@ -172,6 +202,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0028",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=7361816,
             funding=4529453,
@@ -183,6 +215,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0042",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=12362719,
             funding=8115376,
@@ -194,6 +228,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0051",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=25287563,
             funding=7552390,
@@ -205,6 +241,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0103",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=32371245,
             funding=11294597,
@@ -216,6 +254,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0033",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=5843247,
             funding=3729300,
@@ -227,6 +267,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0111",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=15474318,
             funding=6654586,
@@ -238,6 +280,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0118",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=3543443,
             funding=1137929,
@@ -249,6 +293,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0127",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=18539999,
             funding=6077103,
@@ -260,6 +306,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0119",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=8388187,
             funding=2546906,
@@ -271,6 +319,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0055",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=11271478,
             funding=6771468,
@@ -282,6 +332,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0011",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=2272077,
             funding=1817661,
@@ -293,6 +345,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0080",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=7617700,
             funding=2910321,
@@ -304,6 +358,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0082",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=5291911,
             funding=1549871,
@@ -315,6 +371,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0017",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=2790398,
             funding=2232318,
@@ -326,6 +384,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0009",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=2322960,
             funding=1753298,
@@ -337,6 +397,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0049",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=10709543,
             funding=4261687,
@@ -348,6 +410,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0089",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=11924429,
             funding=9520708,
@@ -359,6 +423,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0108",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=18286273,
             funding=7714929,
@@ -370,6 +436,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0050",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=8236675,
             funding=6342240,
@@ -381,6 +449,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0121",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=22699199,
             funding=11247613,
@@ -392,6 +462,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0061",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=12439110,
             funding=5643677,
@@ -403,6 +475,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0110",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=28604683,
             funding=13804350,
@@ -414,6 +488,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0008",
+            grantee="AVATEL TELECOM S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=3496775,
             funding=2797420,
@@ -425,6 +501,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0052",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=9112032,
             funding=4404053,
@@ -436,6 +514,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0081",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=4469994,
             funding=3497951,
@@ -447,6 +527,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0132",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=16382816,
             funding=10183767,
@@ -458,6 +540,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0053",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=2973156,
             funding=2358405,
@@ -469,6 +553,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0112",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=6357874,
             funding=3270081,
@@ -480,6 +566,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0120",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=7021663,
             funding=3582013,
@@ -491,6 +579,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0101",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=18681317,
             funding=9686678,
@@ -502,6 +592,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0029",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=1758314,
             funding=1293485,
@@ -513,6 +605,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0037",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=860002,
             funding=369383,
@@ -524,6 +618,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0114",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=1669132,
             funding=1320562,
@@ -535,6 +631,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0093",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=3881634,
             funding=1835471,
@@ -546,6 +644,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0113",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.IN_PROGRESS,
             eligible_budget=4396039,
             funding=1991117,
@@ -557,6 +657,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0084",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.FINISHED,
             eligible_budget=10285,
             funding=4890,
@@ -568,6 +670,8 @@ UNICO_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061400-2021-0083",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="UNICO 2021",
             status=ProgramStatus.CANCELLED,
             eligible_budget=12687,
             funding=9398,

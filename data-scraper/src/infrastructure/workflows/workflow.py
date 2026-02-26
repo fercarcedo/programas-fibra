@@ -3,6 +3,7 @@ from dataclasses import asdict
 from application.use_cases.check_updated_programs_use_case import CheckUpdatedProgramsUseCase
 from application.use_cases.process_programs_use_case import ProcessProgramsUseCase
 from application.use_cases.rebuild_status_summary_use_case import RebuildStatusSummaryUseCase
+from application.use_cases.update_aggregated_use_case import UpdateAggregatedUseCase
 from domain.program_update_result import ProgramUpdateResult
 from infrastructure.readers.xlsx_sheet_file_reader import XlsxSheetFileReader
 from infrastructure.repositories.kv_config_repository import KVConfigRepository
@@ -18,6 +19,7 @@ class DataScraperWorkflow(WorkflowEntrypoint):
         self.check_updated_programs_use_case = CheckUpdatedProgramsUseCase(config_repository, program_repository)
         self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader, program_repository)
         self.rebuild_status_summary_use_case = RebuildStatusSummaryUseCase(program_repository)
+        self.update_aggregated_use_case = UpdateAggregatedUseCase(program_repository)
         self.env = env
 
     async def run(self, event, step):
@@ -29,6 +31,10 @@ class DataScraperWorkflow(WorkflowEntrypoint):
         @step.do('rebuild-status-summary')
         async def rebuild_status_summary_step():
             await self.rebuild_status_summary_use_case.execute()
+
+        @step.do('update-aggregated')
+        async def update_aggregated_step():
+            await self.update_aggregated_use_case.execute()
 
         updated_programs_dict = await check_updated_programs_step()
         if len(updated_programs_dict) > 0:
@@ -44,3 +50,4 @@ class DataScraperWorkflow(WorkflowEntrypoint):
                     await step.sleep(f"delay-{updated_programs_dict[i + 1]["program_name"]}", "1 minute")
 
             await rebuild_status_summary_step()
+            await update_aggregated_step()

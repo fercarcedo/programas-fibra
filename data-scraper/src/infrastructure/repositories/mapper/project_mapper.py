@@ -5,6 +5,8 @@ from infrastructure.entity.project_entity import ProjectEntity, ProgramStatus as
 
 def to_entity(project: ProjectData) -> ProjectEntity:
     return ProjectEntity(
+        grantee=project.grantee,
+        program_name=project.program_name,
         status=ProgramStatusEntity[project.status.name.upper()],
         eligible_budget=project.eligible_budget,
         funding=project.funding,
@@ -18,6 +20,8 @@ def to_entity(project: ProjectData) -> ProjectEntity:
 def from_entity(entity: ProjectEntity, project_code: str) -> ProjectData:
     return ProjectData(
         project=project_code,
+        grantee=entity.grantee,
+        program_name=entity.program_name,
         status=ProgramStatus[entity.status.name.upper()],
         eligible_budget=entity.eligible_budget,
         funding=entity.funding,

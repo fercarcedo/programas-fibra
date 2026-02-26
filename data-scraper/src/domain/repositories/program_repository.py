@@ -22,3 +22,7 @@ class ProgramRepository(ABC):
     @abstractmethod
     async def put_projects_status(projects_status: ProjectsStatus):
         pass
+
+    @abstractmethod
+    async def put_aggregated(self, projects_data: list[ProjectData]):
+        pass

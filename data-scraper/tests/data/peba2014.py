@@ -6,6 +6,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
     projects=[
          ProjectData(
            project='TSI-061000-2014-001',
+           grantee='CONECTA-3 TELECOM S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=52896.0,
            funding=9826.2,
@@ -17,6 +19,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-002',
+           grantee='WIFIBYTES, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=100946.0,
            funding=15596.85,
@@ -28,6 +32,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-003',
+           grantee='GARTEL TELEFONÍA Y COMUNICACIÓN, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=80000.0,
            funding=13905.67,
@@ -39,6 +45,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-004',
+           grantee='GARTEL TELEFONÍA Y COMUNICACIÓN, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=51877.05,
            funding=9017.31,
@@ -50,6 +58,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-006',
+           grantee='DIGITAL GARAGE, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=101242.0,
            funding=18807.17,
@@ -61,6 +71,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-007',
+           grantee='TELE-SATÉLITE DE MAZARRÓN S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=184968.0,
            funding=37906.66,
@@ -72,6 +84,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-008',
+           grantee='WIFIBALEARES S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=414904.0,
            funding=85028.87,
@@ -83,6 +97,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-012',
+           grantee='TELPLAY S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=238045.0,
            funding=44220.32,
@@ -94,6 +110,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-013',
+           grantee='CABLEUNIÓN MEDIA, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=151486.0,
            funding=31044.98,
@@ -105,6 +123,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-014',
+           grantee='TVHORADADA MULTIMEDIA, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=123493.0,
            funding=22940.61,
@@ -116,6 +136,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-015',
+           grantee='TVHORADADA MULTIMEDIA, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=123493.0,
            funding=22940.61,
@@ -127,6 +149,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-017',
+           grantee='MAGTEL COMUNICACIONES AVANZADAS, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2845905.0,
            funding=849121.3,
@@ -138,6 +162,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-022',
+           grantee='CABLEMURCIA S.L',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=99000.0,
            funding=20288.7,
@@ -149,6 +175,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-023',
+           grantee='MAGTEL COMUNICACIONES AVANZADAS, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1037496.0,
            funding=309553.54,
@@ -160,6 +188,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-024',
+           grantee='MISMENET TELECOMUNICACIONES, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=20733.0,
            funding=3853.26,
@@ -171,6 +201,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-027',
+           grantee='A2Z TELECOMUNICACIONES, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=215043.0,
            funding=39947.36,
@@ -182,6 +214,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-028',
+           grantee='ESTABANELL Y PAHISA ENERGIA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=1653654.0,
            funding=272526.29,
@@ -193,6 +227,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-032',
+           grantee='MAGTEL COMUNICACIONES AVANZADAS, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1716464.0,
            funding=512134.5,
@@ -204,6 +240,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-034',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1961831.2,
            funding=402050.33,
@@ -215,6 +253,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-035',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=15937.0,
            funding=3266.07,
@@ -226,6 +266,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-038',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=229520.0,
            funding=47036.97,
@@ -237,6 +279,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-039',
+           grantee='TELECOMUNICACIONES CALASPARRA S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=34980.0,
            funding=7168.67,
@@ -248,6 +292,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-040',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2771028.0,
            funding=567884.09,
@@ -259,6 +305,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-041',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=65429.0,
            funding=13408.76,
@@ -270,6 +318,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-043',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2995065.6,
            funding=613797.51,
@@ -281,6 +331,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-044',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2642860.0,
            funding=541617.82,
@@ -292,6 +344,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-045',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=3109223.2,
            funding=637192.54,
@@ -303,6 +357,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-046',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2755684.0,
            funding=564739.54,
@@ -314,6 +370,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-047',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=3200000.0,
            funding=655796.0,
@@ -325,6 +383,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-048',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=298427.0,
            funding=61158.51,
@@ -336,6 +396,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-050',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=344475.0,
            funding=70595.42,
@@ -347,6 +409,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-051',
+           grantee='ADAMO TELECOM IBERIA SA',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=85461.81,
            funding=12338.32,
@@ -358,6 +422,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-052',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=21016.0,
            funding=4306.94,
@@ -369,6 +435,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-054',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=3032928.8,
            funding=621557.06,
@@ -380,6 +448,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-055',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2367352.8,
            funding=485156.41,
@@ -391,6 +461,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-056',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=602802.0,
            funding=123535.96,
@@ -402,6 +474,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-057',
+           grantee='TELE BULLAS S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=29657.0,
            funding=6077.8,
@@ -413,6 +487,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061000-2014-058',
+           grantee='TELEFONICA DE ESPAÑA, S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=12234.0,
            funding=2507.17,
@@ -424,6 +500,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-001',
+           grantee='TELE CARAVACA, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=41000.0,
            funding=7616.33,
@@ -435,6 +513,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-002',
+           grantee='AIRE NETWORKS DEL MEDITERRANEO, S.L.U.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=2129423.0,
            funding=395571.2,
@@ -446,6 +526,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-005',
+           grantee='AIRE NETWORKS DEL MEDITERRANEO, S.L.U.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=3300375.0,
            funding=613092.51,
@@ -457,6 +539,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-009',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=396292.57,
            funding=73617.09,
@@ -468,6 +552,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-010',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=54712.05,
            funding=10163.56,
@@ -479,6 +565,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-011',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1781470.31,
            funding=330933.94,
@@ -490,6 +578,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-012',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=361305.29,
            funding=67117.7,
@@ -501,6 +591,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-013',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=64062.7,
            funding=11900.58,
@@ -512,6 +604,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-014',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=903607.82,
            funding=167858.26,
@@ -523,6 +617,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-015',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=472085.47,
            funding=87696.73,
@@ -534,6 +630,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-016',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1181917.51,
            funding=219558.32,
@@ -545,6 +643,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-017',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=1104625.45,
            funding=205200.2,
@@ -556,6 +656,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-018',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=586311.74,
            funding=108915.9,
@@ -567,6 +669,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-019',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=458713.82,
            funding=85212.73,
@@ -578,6 +682,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061100-2014-020',
+           grantee='ORANGE ESPAGNE S.A.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=427197.27,
            funding=79358.07,
@@ -589,6 +695,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-001',
+           grantee='RUSCABLE S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=101970.0,
            funding=30424.39,
@@ -600,6 +708,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-002',
+           grantee='TELEAST DIGITAL, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=176536.8,
            funding=32794.27,
@@ -611,6 +721,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-003',
+           grantee='TVHORADADA MAR MENOR, S.L.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=172136.33,
            funding=31976.82,
@@ -622,6 +734,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-004',
+           grantee='AIRE NETWORKS DEL MEDITERRANEO, S.L.U.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=220329.0,
            funding=40929.3,
@@ -633,6 +747,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-006',
+           grantee='TELECOLOR COX, C.B.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=35125.0,
            funding=6524.99,
@@ -644,6 +760,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-007',
+           grantee='TELECOLOR COX, C.B.',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.CANCELLED,
            eligible_budget=35125.0,
            funding=6524.99,
@@ -655,6 +773,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-008',
+           grantee='RADIOCABLE INGENIEROS SL',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=23584.0,
            funding=3877.85,
@@ -666,6 +786,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-009',
+           grantee='RADIOCABLE INGENIEROS SL',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=32923.0,
            funding=5413.43,
@@ -677,6 +799,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-010',
+           grantee='RADIOCABLE INGENIEROS SL',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=30655.0,
            funding=5040.51,
@@ -688,6 +812,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-011',
+           grantee='RADIOCABLE INGENIEROS SL',
+           program_name='PEBA-NGA 2014',
            status=ProgramStatus.FINISHED,
            eligible_budget=7811.0,
            funding=1284.33,
@@ -699,6 +825,8 @@ PEBA_2014_EXPECTED_PROGRAM_DATA = ProgramData(
        ),
        ProjectData(
            project='TSI-061200-2014-012',
+           grantee="LORCA TV SOL S.L.",
+           program_name="PEBA-NGA 2014",
            status=ProgramStatus.CANCELLED,
            eligible_budget=50415.0,
            funding=14340.78,

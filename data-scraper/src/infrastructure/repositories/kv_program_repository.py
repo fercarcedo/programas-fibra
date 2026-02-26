@@ -28,7 +28,7 @@ class KVProgramRepository(ProgramRepository):
 
     async def put_project(self, project: ProjectData):
         project_entity = to_entity(project)
-        await self.env.PROJECTS.put(project.project, json.dumps(project_entity.to_dict()))
+        await self.env.PROJECTS.put(project.project, json.dumps(project_entity.to_dict(), ensure_ascii=False))
 
     async def put_projects_status(self, projects_status: ProjectsStatus):
         projects_status_entity = project_status_to_entity(projects_status)
@@ -53,4 +53,50 @@ class KVProgramRepository(ProgramRepository):
             cursor = getattr(result, 'cursor', None)
 
         return projects
+
+    async def put_aggregated(self, projects_data: list[ProjectData]):
+        aggregated = await self.env.BUCKET_GEO.get("aggregated.json")
+        if not aggregated:
+            return
+
+        aggregated_data = json.loads(await aggregated.text())
+
+        hexagons_projects_data = await self.env.BUCKET_GEO.get("hexagons_projects.json")
+        hexagons_projects = {}
+        if hexagons_projects_data:
+            hexagons_projects = json.loads(await hexagons_projects_data.text())
+
+        projects_map = {project.project: project for project in projects_data}
+
+        for item in aggregated_data:
+            for grantee, programs in item.get("counts", {}).items():
+                for program_name, program_info in programs.items():
+                    program_info["statuses"].clear()
+                    program_info["total"] = 0
+
+        for item in aggregated_data:
+            h3_index = item.get("h3Index")
+            projects_in_hex = hexagons_projects.get(h3_index, {})
+
+            for project_id, point_count in projects_in_hex.items():
+                if project_id not in projects_map:
+                    continue
+
+                project = projects_map[project_id]
+                grantee = project.grantee
+                program_name = project.program_name
+
+                if not grantee or not program_name:
+                    continue
+
+                if grantee in item.get("counts", {}) and program_name in item["counts"][grantee]:
+                    program_info = item["counts"][grantee][program_name]
+                    status_str = project.status.value if hasattr(project.status, "value") else str(project.status)
+
+                    if status_str not in program_info["statuses"]:
+                        program_info["statuses"][status_str] = 0
+                    program_info["statuses"][status_str] += point_count
+                    program_info["total"] += point_count
+
+        await self.env.BUCKET_GEO.put("aggregated.json", json.dumps(aggregated_data, ensure_ascii=False))
 
