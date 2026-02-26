@@ -110,7 +110,7 @@ export const getProgramColors = (): Record<string, [number, number, number]> => 
   return PROGRAM_COLORS;
 }
 
-export const getOperatorNames = (operator: string): List<string> => {
+export const getOperatorNames = (operator: string): string[] => {
   return Object.entries(NAME_TO_OPERATOR).reduce<string[]>((acc, [key, value]) => {
     if (value === operator) {
       acc.push(key);

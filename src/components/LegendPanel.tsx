@@ -1,6 +1,8 @@
 import { getOperatorColors, getProgramColors } from "../map/colors";
 import { BottomSheet } from "./BottomSheet";
 import { useProjectsStatus } from "../api/projects";
+import type { ProjectStatus } from "../api/projects/types";
+import { STATUS_LABELS } from "../constants/project_status";
 
 const OPERATOR_LEGENDS: Record<string, string> = {
   TELEFONICA: "Movistar",
@@ -22,7 +24,7 @@ export type LegendPanelProps = {
   setSelectedOperators: (operators: Set<string>) => void;
   selectedPrograms: Set<string>;
   setSelectedPrograms: (programs: Set<string>) => void;
-  selectedStatus: string;
+  selectedStatus: string | null;
   setSelectedStatus: (status: string) => void;
 };
 
@@ -121,13 +123,12 @@ const ProgramLegend = ({ selectedPrograms, setSelectedPrograms }: { selectedProg
   );
 };
 
-const StatusFilter = ({ selectedStatus, setSelectedStatus }: { selectedStatus: string; setSelectedStatus: (status: string) => void }) => {
+const StatusFilter = ({ selectedStatus, setSelectedStatus }: { selectedStatus: string | null; setSelectedStatus: (status: string) => void }) => {
   const { isLoading } = useProjectsStatus();
-  const statuses = [
-    { value: "in_progress", label: "EN EJECUCIÓN" },
-    { value: "finished", label: "FINALIZADO" },
-    { value: "cancelled", label: "CANCELADO" }
-  ];
+  const statusOptions = Object.entries(STATUS_LABELS).map(([value, label]) => ({
+    value: value as ProjectStatus,
+    label,
+  }));
 
   return (
     <div className="mb-4">
@@ -136,13 +137,13 @@ const StatusFilter = ({ selectedStatus, setSelectedStatus }: { selectedStatus: s
       </label>
       <select
         id="status-select"
-        value={selectedStatus}
+        value={selectedStatus ?? ""}
         disabled={isLoading}
         onChange={(e) => setSelectedStatus(e.target.value)}
         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:opacity-60"
       >
         <option value="">TODOS</option>
-        {statuses.map(status => {
+        {statusOptions.map(status => {
           return (
             <option key={status.value} value={status.value}>
               {status.label}

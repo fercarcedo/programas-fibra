@@ -25,7 +25,6 @@ import LegendControl from "./components/LegendControl";
 import { AnimatePresence } from 'motion/react';
 import LegendPanel from "./components/LegendPanel";
 import { useProjectsStatus } from "./api/projects";
-import type { ProjectStatus } from "./api/projects/types";
 
 const INITIAL_VIEW_STATE: MapViewState = {
   latitude: 40.413401,
