@@ -7,7 +7,7 @@ export class R2GeoDataRepository implements GeoDataRepository {
   constructor(env: Env) {
     this.env = env;
   }
-    
+
   async getData(key: string): Promise<ReadableStream | null> {
     const object = await this.env.BUCKET_GEO.get(key);
     if (object == null) {

@@ -8,13 +8,16 @@ const mockRepository: ProjectRepository = {
     if (key === 'TSI-061000-2019-0001') {
       return buildProject();
     }
+    if (key === 'TSI-061000-2015-114') {
+      return buildProject();
+    }
     return null;
   })
 }
 
 describe('Project service', () => {
   beforeEach(() => {
-    vi.clearAllMocks(); 
+    vi.clearAllMocks();
   });
 
   it('should return data', async () => {
@@ -40,5 +43,28 @@ describe('Project service', () => {
 
     expect(project).toBeNull();
     expect(mockRepository.getProject).not.toHaveBeenCalled();
+  });
+
+  it('should normalize project code with leading zeros if original not found', async () => {
+    const service = new ProjectService(mockRepository);
+    const project = await service.getProject('TSI-061000-2015-0114');
+    const expectedProject = buildProject();
+
+    expect(project).toEqual(expectedProject);
+    // Should first try the original, then the normalized
+    expect(mockRepository.getProject).toHaveBeenCalledTimes(2);
+    expect(mockRepository.getProject).toHaveBeenNthCalledWith(1, 'TSI-061000-2015-0114');
+    expect(mockRepository.getProject).toHaveBeenNthCalledWith(2, 'TSI-061000-2015-114');
+  });
+
+  it('should use original if it exists in repository', async () => {
+    const service = new ProjectService(mockRepository);
+    const project = await service.getProject('TSI-061000-2019-0001');
+    const expectedProject = buildProject();
+
+    expect(project).toEqual(expectedProject);
+    // Should only call once since original exists
+    expect(mockRepository.getProject).toHaveBeenCalledTimes(1);
+    expect(mockRepository.getProject).toHaveBeenCalledWith('TSI-061000-2019-0001');
   });
 });

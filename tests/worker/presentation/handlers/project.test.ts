@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { getProject, type GetProjectRouterRequest } from "@worker/presentation/handlers/project";
+import { ProjectHandler, type GetProjectRouterRequest } from "@worker/presentation/handlers/project";
 import type { ProjectService } from "@worker/application/services/project_service";
 import { buildProject } from "../../data/builders/project.builder";
 
@@ -10,17 +10,20 @@ const mockProjectService: ProjectService = {
     }
     return null;
   }),
+  getProjectsStatus: vi.fn(),
+  getProjectsStatusLastModified: vi.fn(),
 };
 
 describe('Project handler', () => {
   it('should return project', async () => {
+    const handler = new ProjectHandler();
     const request = {
       params: {
         id: 'TSI-061000-2019-0001'
       },
     } as GetProjectRouterRequest;
 
-    const response = await getProject(request, mockProjectService);
+    const response = await handler.getProject(request, mockProjectService);
 
     expect(response.status).toEqual(200);
     const contentType = response.headers.get('Content-Type');
@@ -31,13 +34,14 @@ describe('Project handler', () => {
   });
 
   it('should return 404 when service returns no data', async () => {
+    const handler = new ProjectHandler();
     const request = {
       params: {
         id: 'TSI-otherid'
       },
     } as GetProjectRouterRequest;
 
-    const response = await getProject(request, mockProjectService);
+    const response = await handler.getProject(request, mockProjectService);
 
     expect(response.status).toEqual(404);
   });

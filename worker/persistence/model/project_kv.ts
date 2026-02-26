@@ -1,4 +1,4 @@
-export type ProjectStatusKV = 
+export type ProjectStatusKV =
     | 'cancelled'
     | 'in_progress'
     | 'finished';
@@ -11,5 +11,5 @@ export interface ProjectKV {
     loan: number | null;
     funding_percentage: number;
     technology: string;
-    deadline: string;
+    deadline: string | null;
 }
