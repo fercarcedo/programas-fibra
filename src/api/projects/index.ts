@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectsStatusSummary } from "./types";
+import type { ProjectAward, ProjectsStatusSummary } from "./types";
 
 export function useProject(id: string) {
   return useQuery({
@@ -7,6 +7,15 @@ export function useProject(id: string) {
     staleTime: 86400 * 1000,
     queryFn: () =>
       fetch(`/api/projects/${id}`).then((res) => res.json()),
+  })
+}
+
+export function useProjectAward(id: string) {
+  return useQuery({
+    queryKey: [`projectAward${id}`],
+    staleTime: Infinity,
+    queryFn: () =>
+      fetch(`/api/projects/${id}/award`).then((res) => res.json()) as Promise<ProjectAward>,
   })
 }
 
