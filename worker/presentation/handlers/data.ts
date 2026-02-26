@@ -16,10 +16,18 @@ export async function getData(request: GetDataRouterRequest, geoDataService: Geo
     return new Response('Not found', { status: 404 });
   }
 
+  const ifNoneMatch = request.headers.get("If-None-Match");
+  const etag = await geoDataService.getETag(key);
+
+  if (ifNoneMatch && etag && ifNoneMatch === etag) {
+    return new Response(null, { status: 304 });
+  }
+
   return new Response(object, {
     headers: {
       'content-type': 'application/json; charset=UTF-8',
-      'cache-control': 'public, max-age=31536000, immutable',
+      'etag': etag!,
+      'cache-control': 'no-cache',
     },
   });
 }

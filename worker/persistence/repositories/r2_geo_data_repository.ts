@@ -15,4 +15,12 @@ export class R2GeoDataRepository implements GeoDataRepository {
     }
     return object.body;
   }
+
+  async getETag(key: string): Promise<string | null> {
+    const headResponse = await this.env.BUCKET_GEO.head(key);
+    if (headResponse == null) {
+      return null;
+    }
+    return headResponse.httpEtag;
+  }
 }

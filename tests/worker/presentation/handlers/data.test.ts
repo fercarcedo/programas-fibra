@@ -9,6 +9,12 @@ const mockGeoDataService: GeoDataService = {
     }
     return null;
   }),
+  getETag: vi.fn(async (key: string) => {
+    if (key === 'aggregated-first.json') {
+      return '"abc123def456"';
+    }
+    return null;
+  }),
 };
 
 describe('Data handler', () => {
@@ -17,7 +23,15 @@ describe('Data handler', () => {
       params: {
         key: 'aggregated-first.json'
       },
-    } as GetDataRouterRequest;
+      headers: {
+        get: vi.fn((name: string) => {
+          if (name === 'If-None-Match') {
+            return null;
+          }
+          return null;
+        }),
+      },
+    } as unknown as GetDataRouterRequest;
 
     const response = await getData(request, mockGeoDataService);
 
@@ -25,7 +39,9 @@ describe('Data handler', () => {
     const contentType = response.headers.get('Content-Type');
     expect(contentType).toContain('application/json');
     const cacheControl = response.headers.get('Cache-Control');
-    expect(cacheControl).toEqual('public, max-age=31536000, immutable');
+    expect(cacheControl).toEqual('no-cache');
+    const etag = response.headers.get('ETag');
+    expect(etag).toEqual('"abc123def456"');
     expect(mockGeoDataService.getData).toHaveBeenCalledWith("aggregated-first.json");
   });
 
@@ -34,7 +50,12 @@ describe('Data handler', () => {
       params: {
         key: 'aggregated-notfound.json'
       },
-    } as GetDataRouterRequest;
+      headers: {
+        get: vi.fn((name: string) => {
+          return null;
+        }),
+      },
+    } as unknown as GetDataRouterRequest;
 
     const response = await getData(request, mockGeoDataService);
 

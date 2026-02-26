@@ -65,7 +65,7 @@ export class ProjectHandler {
     return new Response(JSON.stringify(projectsWebResponse), {
       headers: {
         'content-type': 'application/json; charset=UTF-8',
-        "last-modified": lastModified || new Date().toUTCString(),
+        'last-modified': lastModified || new Date().toUTCString(),
         'cache-control': 'no-cache',
       },
     });
