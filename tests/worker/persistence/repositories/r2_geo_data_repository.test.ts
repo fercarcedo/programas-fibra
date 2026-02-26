@@ -7,7 +7,7 @@ const mockEnv: Env = {
   BUCKET_GEO: {
     get: vi.fn(async (key: string) => {
       if (key === 'aggregated-first.json') {
-        return createJsonMock({ data: 'test-data' }); 
+        return createJsonMock({ data: 'test-data' });
       }
     })
   }

@@ -1,5 +1,5 @@
-import type { Project, ProjectStatus } from "../../application/domain/project";
-import type { ProjectWebResponse } from "../dto/project_web_response";
+import type { Project } from "../../application/domain/project";
+import type { ProjectAwardInfoWebResponse, ProjectWebResponse } from "../dto/project_web_response";
 
 const euroFormat = new Intl.NumberFormat("es-ES", {
   style: 'currency',
@@ -15,25 +15,28 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
 
 export function toWebResponse(project: Project): ProjectWebResponse {
     return {
-        status: mapStatus(project.status),
+        status: project.status,
         eligible_budget: euroFormat.format(project.eligible_budget),
         funding: euroFormat.format(project.funding),
         subsidy: project.subsidy ? euroFormat.format(project.subsidy) : null,
         loan: project.loan ? euroFormat.format(project.loan) : null,
         funding_percentage: `${project.funding_percentage}%`,
         technology: project.technology,
-        deadline: project.deadline ? dateFormat.format(new Date(project.deadline)) : null,
+        deadline: mapDeadline(project.deadline),
     }
 }
 
-function mapStatus(status: ProjectStatus): string {
-  if (status == 'cancelled') {
-    return 'CANCELADO';
-  }
+export function toProjectAwardInfoWebResponse(project: Project): ProjectAwardInfoWebResponse {
+  return {
+        eligible_budget: euroFormat.format(project.eligible_budget),
+        funding: euroFormat.format(project.funding),
+        subsidy: project.subsidy ? euroFormat.format(project.subsidy) : null,
+        loan: project.loan ? euroFormat.format(project.loan) : null,
+        funding_percentage: `${project.funding_percentage}%`,
+        technology: project.technology,
+    }
+}
 
-  if (status == 'finished') {
-    return 'FINALIZADO';
-  }
-
-  return 'EN EJECUCIÓN';
+export function mapDeadline(deadline: Date | null): string | null {
+  return deadline ? dateFormat.format(new Date(deadline)) : null;
 }

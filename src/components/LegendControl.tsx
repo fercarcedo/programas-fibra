@@ -45,7 +45,7 @@ function LegendControl(props: LegendControlProps) {
       type="button"
       className="custom-legend-btn"
       onClick={props.onClick}
-      title="Leyenda y capas"
+      title="Leyenda y filtros"
       style={{
         width: '29px',
         height: '29px',

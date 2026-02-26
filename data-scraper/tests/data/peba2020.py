@@ -7,6 +7,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
     projects=[
         ProjectData(
             project="TSI-061300-2020-0025",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=4403453,
             funding=3059017,
@@ -18,6 +20,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0027",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=6348516,
             funding=4428599,
@@ -29,6 +33,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0030",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=994166,
             funding=745624,
@@ -40,6 +46,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0031",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=1779745,
             funding=828356,
@@ -51,6 +59,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0034",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=865449,
             funding=462916,
@@ -62,6 +72,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0036",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=4068719,
             funding=2796508,
@@ -73,6 +85,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0037",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=1331225,
             funding=854664,
@@ -84,6 +98,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0039",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=2380066,
             funding=1633209,
@@ -95,6 +111,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0048",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=4882522,
             funding=3834567,
@@ -106,6 +124,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0063",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=2330455,
             funding=1864364,
@@ -117,6 +137,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0064",
+            grantee="TELEFONICA DE ESPAÑA, S.A.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=2581609,
             funding=2065287,
@@ -128,6 +150,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0070",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=12900030,
             funding=7095016,
@@ -139,6 +163,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0072",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=6039846,
             funding=2141208,
@@ -150,6 +176,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0074",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=7965353,
             funding=2743896,
@@ -161,6 +189,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0075",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=8917858,
             funding=6078869,
@@ -172,6 +202,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0076",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=10306328,
             funding=7210000,
@@ -183,6 +215,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0079",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=8149999,
             funding=5670000,
@@ -194,6 +228,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0085",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=6011240,
             funding=3085590,
@@ -205,6 +241,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0086",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=2502756,
             funding=1400000,
@@ -216,6 +254,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0088",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=4970876,
             funding=2053556,
@@ -227,6 +267,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0089",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=7497091,
             funding=4932900,
@@ -238,6 +280,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0091",
+            grantee="OPERADORA IBERICA DE REDES Y SERVICIOS DE TELECOMUNICACIONES S.L.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=6951827,
             funding=3823504,
@@ -249,6 +293,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0092",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=1511527,
             funding=854443,
@@ -260,6 +306,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0094",
+            grantee="ANTENAS Y SISTEMAS DE COMUNICACIONES, S.L",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=5000001,
             funding=3500000,
@@ -271,6 +319,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0095",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=3500245,
             funding=2366000,
@@ -282,6 +332,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0096",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=1843330,
             funding=1268802,
@@ -293,6 +345,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0098",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=9095196,
             funding=2567840,
@@ -304,6 +358,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0099",
+            grantee="FIBRA MEDIOS TELECOM S.L.",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=4893444,
             funding=3425410,
@@ -315,6 +371,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0103",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=7601104,
             funding=2005716,
@@ -326,6 +384,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0104",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=7540097,
             funding=1827944,
@@ -337,6 +397,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0105",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=10753680,
             funding=4275705,
@@ -348,6 +410,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0107",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=12523778,
             funding=9021273,
@@ -359,6 +423,8 @@ PEBA_2020_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061300-2020-0108",
+            grantee="ADAMO TELECOM IBERIA SA",
+            program_name="PEBA-NGA 2020",
             status=ProgramStatus.FINISHED,
             eligible_budget=7491480,
             funding=5853870,

@@ -1,7 +1,8 @@
 import { Popup } from "react-map-gl/maplibre";
 import type { AreaProperties } from "../api/areas/types";
-import { useProject } from "../api/projects";
+import { useProjectAward, useProjectsStatus } from "../api/projects";
 import { useState, type ReactNode } from "react";
+import type { ProjectsStatusSummary } from "../api/projects/types";
 
 export type AreaPopupProps = {
   latitude: number;
@@ -75,16 +76,38 @@ function AreaPropertyRow(props: AreaPropertyRowProps) {
   );
 }
 
-function AreaPopup(props: AreaPopupProps) {
-  const { isPending, error, data } = useProject(props.data.project);
 
-  if (isPending) {
+const getProjectStatus = (id: string, projectsStatusData: ProjectsStatusSummary) => {
+  if (projectsStatusData[id]) return projectsStatusData[id];
+
+  const parts = id.split('-');
+  if (parts.length > 0) {
+    parts[parts.length - 1] = parts[parts.length - 1].replace(/^0+/, '');
+    const normalizedId = parts.join('-');
+
+    return projectsStatusData[normalizedId];
+  }
+
+  return undefined;
+};
+
+function AreaPopup(props: AreaPopupProps) {
+  const { isPending, error, data } = useProjectAward(props.data.project);
+  const {
+    isPending: isPendingProjectsStatus,
+    error: projectsStatusError,
+    data: projectsStatusData
+  } = useProjectsStatus();
+
+  if (isPending || isPendingProjectsStatus) {
     return <span>Cargando...</span>;
   }
 
-  if (error) {
+  if (error || projectsStatusError) {
     return <span>Error al cargar los datos del proyecto</span>;
   }
+
+  const projectStatus = getProjectStatus(props.data.project, projectsStatusData);
 
   return (
     <Popup
@@ -161,12 +184,14 @@ function AreaPopup(props: AreaPopupProps) {
               expandable={true}
             >
               {isPending ? (
-                <p>Loading...</p>
+                <p>Cargando...</p>
               ) : (
                 <div className="p-4 bg-gray-50 border-t">
                   <table className="w-full">
                     <tbody>
-                      <AreaPropertyRow name="ESTADO" value={data.status} />
+                      {projectStatus?.status && (
+                        <AreaPropertyRow name="ESTADO" value={projectStatus.status} />
+                      )}
                       <AreaPropertyRow
                         name="PRESUPUESTO FINANCIABLE"
                         value={data.eligible_budget}
@@ -189,10 +214,10 @@ function AreaPopup(props: AreaPopupProps) {
                         name="TECNOLOGÍA"
                         value={data.technology}
                       />
-                      {data.deadline && (
+                      {projectStatus?.deadline && (
                         <AreaPropertyRow
                           name="FECHA LÍMITE"
-                          value={data.deadline}
+                          value={projectStatus.deadline}
                         />
                       )}
                     </tbody>

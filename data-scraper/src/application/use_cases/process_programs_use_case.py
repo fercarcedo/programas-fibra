@@ -22,7 +22,7 @@ class ProcessProgramsUseCase:
         sheet_data = self.sheet_reader.read(response_bytes)
         header_index, header = self._get_header_row(sheet_data)
 
-        projects = self._process_sheet_data(sheet_data, header_index, header)
+        projects = self._process_sheet_data(sheet_data, header_index, header, program.program_name)
         for project in projects:
             await self.program_repository.put_project(project)
         await self.program_repository.put_last_update(program.program_name, int(time.time()))
@@ -31,7 +31,7 @@ class ProcessProgramsUseCase:
     def _not_none_cells(self, row: list[str]) -> list[str]:
         return [cell for cell in row if cell is not None]
 
-    def _process_sheet_data(self, sheet_data: list[list[str]], header_index: int, header: list[str]) -> list[ProjectData]:
+    def _process_sheet_data(self, sheet_data: list[list[str]], header_index: int, header: list[str], program_name: str) -> list[ProjectData]:
         result = []
         for index in range(header_index + 1, len(sheet_data)):
             if len(self._not_none_cells(header)) - len(self._not_none_cells(sheet_data[index])) <= 1:
@@ -46,8 +46,11 @@ class ProcessProgramsUseCase:
                     eligible_budget_value = self._get_eligible_budget_from_row(row)
                     funding_value = self._get_funding_value_from_row(row, subsidy, loan)
                     funding_percentage = self._get_funding_percentage_from_row(row, funding_value, eligible_budget_value)
+                    grantee = row['RAZON SOCIAL'] if 'RAZON SOCIAL' in row else row['OPERADOR DE TELECOMUNICACIONES']
                     project_data = ProjectData(
                         project=project,
+                        grantee=grantee,
+                        program_name=program_name,
                         status=self._get_status_from_Row(row['SITUACIÓN']),
                         eligible_budget=round(eligible_budget_value, 2),
                         funding=round(funding_value, 2),

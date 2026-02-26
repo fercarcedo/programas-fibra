@@ -13,3 +13,12 @@ export interface Project {
     technology: string;
     deadline: Date | null;
 }
+
+export interface ProjectStatusInfo {
+    status: ProjectStatus;
+    deadline: Date | null;
+}
+
+export interface ProjectsStatus {
+    [projectId: string]: ProjectStatusInfo;
+}

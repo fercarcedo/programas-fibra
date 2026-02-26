@@ -6,6 +6,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
     projects=[
         ProjectData(
             project="TSI-061000-2013-001",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1419829.0,
             funding=1419829.0,
@@ -17,6 +19,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-002",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1345815.0,
             funding=1345811.0,
@@ -28,6 +32,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-003",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1734742.0,
             funding=1734742.0,
@@ -39,6 +45,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-004",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=3999766.0,
             funding=3999766.0,
@@ -50,6 +58,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-005",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1114907.0,
             funding=1114907.0,
@@ -61,6 +71,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-006",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=2006505.0,
             funding=2006505.0,
@@ -72,6 +84,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-007",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=950587.0,
             funding=950587.0,
@@ -83,6 +97,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-008",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=2296869.0,
             funding=2296869.0,
@@ -94,6 +110,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-009",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=3951773.0,
             funding=3951773.0,
@@ -105,6 +123,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-010",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1879352.0,
             funding=1879352.0,
@@ -116,6 +136,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-011",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.CANCELLED,
             eligible_budget=1275185.0,
             funding=1275185.0,
@@ -127,6 +149,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-012",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=3241108.0,
             funding=3241108.0,
@@ -138,6 +162,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-013",
+            grantee="MAGTEL COMUNICACIONES AVANZADAS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=2687983.0,
             funding=2687983.0,
@@ -149,6 +175,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-014",
+            grantee="R CABLE Y TELECOMUNICACIONES GALICIA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=2925056.0,
             funding=2925055.0,
@@ -160,6 +188,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-015",
+            grantee="R CABLE Y TELECOMUNICACIONES GALICIA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=3305717.0,
             funding=3305716.0,
@@ -171,6 +201,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-016",
+            grantee="INFOTELECOM NETWORKS S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=312147.0,
             funding=312147.0,
@@ -182,6 +214,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-017",
+            grantee="SKYNETLINK INFORMÁTICA Y REDES S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=119055.0,
             funding=80499.0,
@@ -193,6 +227,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-020",
+            grantee="LORCA TV SOL S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=80960.0,
             funding=75293.0,
@@ -204,6 +240,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-018",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=109618.0,
             funding=109617.0,
@@ -215,6 +253,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-019",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=47535.0,
             funding=47533.0,
@@ -226,6 +266,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-021",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=134759.0,
             funding=134758.0,
@@ -237,6 +279,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-022",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=404686.0,
             funding=404685.0,
@@ -248,6 +292,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-023",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=365181.0,
             funding=365180.0,
@@ -259,6 +305,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-024",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=245959.0,
             funding=245958.0,
@@ -270,6 +318,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061000-2013-025",
+            grantee="TELEFÓNICA DE ESPAÑA S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=295693.0,
             funding=295691.0,
@@ -281,6 +331,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061200-2013-006",
+            grantee="WIMAX ON LINE S.L.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=126000.0,
             funding=114333.0,
@@ -292,6 +344,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061200-2013-007",
+            grantee="CONSORCIO DE TELECOMUNICACIONES AVANZADAS S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=39760.0,
             funding=39760.0,
@@ -303,6 +357,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061200-2013-008",
+            grantee="CONSORCIO DE TELECOMUNICACIONES AVANZADAS S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=39760.0,
             funding=39760.0,
@@ -314,6 +370,8 @@ PEBA_2013_EXPECTED_PROGRAM_DATA = ProgramData(
         ),
         ProjectData(
             project="TSI-061200-2013-009",
+            grantee="CONSORCIO DE TELECOMUNICACIONES AVANZADAS S.A.",
+            program_name="PEBA-NGA 2013",
             status=ProgramStatus.FINISHED,
             eligible_budget=39760.0,
             funding=39760.0,

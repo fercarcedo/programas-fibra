@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from datetime import date
+from datetime import date, datetime
 
 class ProgramStatus(Enum):
     IN_PROGRESS = "in_progress"
@@ -9,6 +9,8 @@ class ProgramStatus(Enum):
 
 @dataclass
 class ProjectEntity:
+    grantee: str
+    program_name: str
     status: ProgramStatus
     eligible_budget: float
     funding: float
@@ -20,6 +22,8 @@ class ProjectEntity:
 
     def to_dict(self) -> dict[str, any]:
         return {
+            "grantee": self.grantee,
+            "program_name": self.program_name,
             "status": self.status.value,
             "eligible_budget": self.eligible_budget,
             "funding": self.funding,
@@ -29,3 +33,18 @@ class ProjectEntity:
             "technology": self.technology,
             "deadline": self.deadline.isoformat() if self.deadline else None,
         }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, any]):
+        return cls(
+            grantee=data["grantee"],
+            program_name=data["program_name"],
+            status=ProgramStatus[data["status"].upper()],
+            eligible_budget=data["eligible_budget"],
+            funding=data["funding"],
+            subsidy=data["subsidy"],
+            loan=data["loan"],
+            funding_percentage=data["funding_percentage"],
+            technology=data["technology"],
+            deadline=datetime.fromisoformat(data["deadline"]).date() if data["deadline"] else None
+        )
