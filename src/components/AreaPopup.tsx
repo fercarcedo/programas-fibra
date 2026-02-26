@@ -3,6 +3,7 @@ import type { AreaProperties } from "../api/areas/types";
 import { useProjectAward, useProjectsStatus } from "../api/projects";
 import { useState, type ReactNode } from "react";
 import type { ProjectsStatusSummary } from "../api/projects/types";
+import { STATUS_LABELS } from "../constants/project_status";
 
 export type AreaPopupProps = {
   latitude: number;
@@ -190,7 +191,7 @@ function AreaPopup(props: AreaPopupProps) {
                   <table className="w-full">
                     <tbody>
                       {projectStatus?.status && (
-                        <AreaPropertyRow name="ESTADO" value={projectStatus.status} />
+                        <AreaPropertyRow name="ESTADO" value={STATUS_LABELS[projectStatus.status]} />
                       )}
                       <AreaPropertyRow
                         name="PRESUPUESTO FINANCIABLE"
