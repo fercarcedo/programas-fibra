@@ -1,5 +1,5 @@
 export const STATUS_LABELS: Record<string, string> = {
-  in_progress: "EN EJECUCIÓN",
-  finished: "FINALIZADO",
-  cancelled: "CANCELADO"
+  in_progress: "En ejecución",
+  finished: "Finalizado",
+  cancelled: "Cancelado"
 };

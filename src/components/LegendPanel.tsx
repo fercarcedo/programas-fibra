@@ -142,7 +142,7 @@ const StatusFilter = ({ selectedStatus, setSelectedStatus }: { selectedStatus: s
         onChange={(e) => setSelectedStatus(e.target.value)}
         className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:opacity-60"
       >
-        <option value="">TODOS</option>
+        <option value="">Todos</option>
         {statusOptions.map(status => {
           return (
             <option key={status.value} value={status.value}>

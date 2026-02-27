@@ -4,7 +4,7 @@ import type { Env } from '../../types';
 import { toDomain } from "../mapper/project_mapper";
 import { toDomain as toProjectStatusInfoDomain } from "../mapper/project_status_mapper";
 import type { ProjectKV } from "../model/project_kv";
-import { ProjectStatusInfoKV, type ProjectsStatusInfoKV, type ProjectStatusInfoKVMetadata } from "../model/project_status_kv";
+import { type ProjectsStatusInfoKV } from "../model/project_status_kv";
 
 export class KVProjectRepository implements ProjectRepository {
   private env: Env;

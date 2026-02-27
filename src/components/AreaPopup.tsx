@@ -4,6 +4,7 @@ import { useProjectAward, useProjectsStatus } from "../api/projects";
 import { useState, type ReactNode } from "react";
 import type { ProjectsStatusSummary } from "../api/projects/types";
 import { STATUS_LABELS } from "../constants/project_status";
+import { normalizeGeoName } from "../formatters/normalizeGeoName";
 
 export type AreaPopupProps = {
   latitude: number;
@@ -100,6 +101,10 @@ function AreaPopup(props: AreaPopupProps) {
     data: projectsStatusData
   } = useProjectsStatus();
 
+  const autonomousCommunity = normalizeGeoName(props.data.autonomous_community);
+  const province = normalizeGeoName(props.data.province);
+  const town = normalizeGeoName(props.data.town);
+
   const projectStatus = projectsStatusData ? getProjectStatus(props.data.project, projectsStatusData) : null;
 
   return (
@@ -119,41 +124,41 @@ function AreaPopup(props: AreaPopupProps) {
         <table className="w-full max-w-[240px]">
           <tbody>
             <AreaPropertyRow
-              name="COMUNIDAD AUTÓNOMA"
-              value={props.data.autonomous_community}
+              name="Comunidad Autónoma"
+              value={autonomousCommunity}
             />
-            <AreaPropertyRow name="PROVINCIA" value={props.data.province} />
-            <AreaPropertyRow name="MUNICIPIO" value={props.data.municipality} />
+            <AreaPropertyRow name="Provincia" value={province} />
+            <AreaPropertyRow name="Municipio" value={props.data.municipality} />
             {props.data.area_code && (
               <AreaPropertyRow
-                name="CÓDIGO ZONA"
+                name="Código zona"
                 value={props.data.area_code}
               />
             )}
             {!!props.data.building_count && (
               <AreaPropertyRow
-                name="EDIFICIOS ZONA"
+                name="Edificios zona"
                 value={props.data.building_count.toString()}
               />
             )}
             {!!props.data.house_count && (
               <AreaPropertyRow
-                name="VIVIENDAS ZONA"
+                name="Viviendas zona"
                 value={props.data.house_count.toString()}
               />
             )}
             {props.data.town && (
-              <AreaPropertyRow name="LOCALIDAD" value={props.data.town} />
+              <AreaPropertyRow name="Localidad" value={town} />
             )}
             {props.data.exception_zone_code && (
               <AreaPropertyRow
-                name="CÓDIGO ZONA DE EXCEPCIÓN"
+                name="Código zona de excepción"
                 value={props.data.exception_zone_code}
               />
             )}
             {props.data.exception_zone_name && (
               <AreaPropertyRow
-                name="NOMBRE ZONA DE EXCEPCIÓN"
+                name="Nombre zona de excepción"
                 value={props.data.exception_zone_name}
               />
             )}
@@ -172,7 +177,7 @@ function AreaPopup(props: AreaPopupProps) {
               </td>
             </tr>
             <AreaPropertyRow
-              name="PROYECTO"
+              name="Proyecto"
               value={props.data.project}
               expandable={true}
             >
@@ -183,33 +188,33 @@ function AreaPopup(props: AreaPopupProps) {
                   <table className="w-full">
                     <tbody>
                       {projectStatus?.status && (
-                        <AreaPropertyRow name="ESTADO" value={STATUS_LABELS[projectStatus.status]} />
+                        <AreaPropertyRow name="Estado" value={STATUS_LABELS[projectStatus.status]} />
                       )}
                       <AreaPropertyRow
-                        name="PRESUPUESTO FINANCIABLE"
+                        name="Presupuesto financiable"
                         value={data.eligible_budget}
                       />
-                      <AreaPropertyRow name="AYUDA" value={data.funding} />
+                      <AreaPropertyRow name="Ayuda" value={data.funding} />
                       {data.subsidy && (
                         <AreaPropertyRow
-                          name="SUBVENCIÓN"
+                          name="Subvención"
                           value={data.subsidy}
                         />
                       )}
                       {data.loan && (
-                        <AreaPropertyRow name="PRÉSTAMO" value={data.loan} />
+                        <AreaPropertyRow name="Préstamo" value={data.loan} />
                       )}
                       <AreaPropertyRow
-                        name="PORCENTAJE DE FINANCIACIÓN"
+                        name="Porcentaje de financiación"
                         value={data.funding_percentage}
                       />
                       <AreaPropertyRow
-                        name="TECNOLOGÍA"
+                        name="Tecnología"
                         value={data.technology}
                       />
                       {projectStatus?.deadline && (
                         <AreaPropertyRow
-                          name="FECHA LÍMITE"
+                          name="Fecha límite"
                           value={projectStatus.deadline}
                         />
                       )}
