@@ -119,5 +119,5 @@ export const getOperatorKey = (grantee: string): string => {
   if (!grantee) return "OTHER";
 
   const upperName = grantee.toUpperCase();
-  return NAME_TO_OPERATOR[upperName] || "OTHER";
+  return NAME_TO_OPERATOR[upperName.trim()] || "OTHER";
 };
