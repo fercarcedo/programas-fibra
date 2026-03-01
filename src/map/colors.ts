@@ -81,13 +81,7 @@ const NAME_TO_OPERATOR: Record<string, string> = {
 };
 
 export const getOperatorColor = (grantee: string, alpha: number = 255): RGBA => {
-  if (!grantee) return [...OPERATOR_COLORS.GENERIC, alpha];
-
-  const upperName = grantee.toUpperCase();
-
-  const match = Object.keys(NAME_TO_OPERATOR).find(keyword => upperName === keyword);
-
-  const colorKey = match ? NAME_TO_OPERATOR[match] : 'OTHER';
+  const colorKey = getOperatorKey(grantee);
   const baseColor = OPERATOR_COLORS[colorKey];
 
   return [...baseColor, alpha];
@@ -118,3 +112,10 @@ export const getOperatorNames = (operator: string): string[] => {
     return acc;
   }, []);
 }
+
+export const getOperatorKey = (grantee: string): string => {
+  if (!grantee) return "OTHER";
+
+  const upperName = grantee.toUpperCase();
+  return NAME_TO_OPERATOR[upperName] || "OTHER";
+};

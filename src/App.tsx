@@ -20,7 +20,7 @@ import type { Feature, Geometry } from "geojson";
 import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
 import centroid from "@turf/centroid";
-import { getOperatorColor, getProgramColor, getOperatorNames } from "./map/colors";
+import { getOperatorColor, getOperatorKey, getProgramColor } from "./map/colors";
 import LegendControl from "./components/LegendControl";
 import { AnimatePresence } from 'motion/react';
 import LegendPanel from "./components/LegendPanel";
@@ -87,9 +87,6 @@ function App() {
   const [selectedOperators, setSelectedOperators] = useState<Set<string>>(new Set());
   const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(new Set());
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const selectedOperatorsNames = new Set(
-    Array.from(selectedOperators).map(op => getOperatorNames(op)).flat()
-  );
   const { data: statusSummary } = useProjectsStatus();
 
   useEffect(() => {
@@ -122,7 +119,7 @@ function App() {
     // Iterate over the grantees (keys of 'counts')
     for (const opName in d.counts) {
       // 1. Check Operator Filter
-      const opVisible = selectedOperators.size === 0 || selectedOperatorsNames.has(opName);
+      const opVisible = selectedOperators.size === 0 || selectedOperators.has(getOperatorKey(opName));
 
       if (opVisible) {
         const programs = d.counts[opName];
@@ -220,8 +217,8 @@ function App() {
             getTextAlignmentBaseline: "center",
             extensions: [new DataFilterExtension({filterSize: 1})],
             getFilterValue: (feature: any) => {
-              const enabledOperator = selectedOperatorsNames.size === 0 ||
-                                      selectedOperatorsNames.has(feature.properties.grantee);
+              const enabledOperator = selectedOperators.size === 0 ||
+                                      selectedOperators.has(getOperatorKey(feature.properties.grantee));
 
               const enabledProgram = selectedPrograms.size === 0 ||
                                     selectedPrograms.has(feature.properties.program_name?.toUpperCase().replace(" ", "_"));
