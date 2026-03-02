@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Map, {
   GeolocateControl,
@@ -6,7 +6,7 @@ import Map, {
   useControl,
 } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
-import { type Map as MapLibreMap } from "maplibre-gl";
+import { type Map as MapLibreMap, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
@@ -87,6 +87,7 @@ function App() {
   const [selectedOperators, setSelectedOperators] = useState<Set<string>>(new Set());
   const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(new Set());
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [basemap, setBasemap] = useState<"map" | "satellite">("map");
   const { data: statusSummary } = useProjectsStatus();
 
   useEffect(() => {
@@ -242,35 +243,132 @@ function App() {
           }),
         ];
 
+  const mapStyle = useMemo<StyleSpecification>(() => {
+    const protomapsLayers = layers("protomaps", namedFlavor("grayscale"), { lang: "es" });
+    const satelliteUnderlayLayerIds = new Set([
+      "background",
+      "earth",
+      "landuse_beach",
+    ]);
+
+    const satelliteUnderlayLayers = protomapsLayers.filter((layer) =>
+      satelliteUnderlayLayerIds.has(layer.id)
+    );
+
+    const satelliteWaterMaskLayers = protomapsLayers
+      .filter((layer) =>
+        layer.id === "water" || layer.id === "water_stream" || layer.id === "water_river"
+      )
+      .map((layer) => {
+        if (layer.type === "fill") {
+          return {
+            ...layer,
+            paint: {
+              ...(layer.paint ?? {}),
+              "fill-color": "rgba(35, 70, 104, 0.96)",
+            },
+          };
+        }
+
+        if (layer.type === "line") {
+          return {
+            ...layer,
+            paint: {
+              ...(layer.paint ?? {}),
+              "line-color": "rgba(84, 136, 185, 0.95)",
+            },
+          };
+        }
+
+        return layer;
+      });
+
+    const protomapsLabelLayers = protomapsLayers
+      .filter((layer) => layer.type === "symbol" && layer.id.startsWith("places_"))
+      .map((layer) => ({
+        ...layer,
+        paint: {
+          ...(layer.paint ?? {}),
+          "text-halo-color": "rgba(0,0,0,0.92)",
+          "text-halo-width": 1.8,
+          "text-halo-blur": 0.6,
+          "text-color": "rgba(255,255,255,0.98)",
+        },
+      }));
+
+    if (basemap === "satellite") {
+      return {
+        version: 8 as const,
+        glyphs:
+          `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
+        sprite:
+          `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
+        sources: {
+          protomaps: {
+            type: "vector" as const,
+            tiles: [
+              "https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}",
+            ],
+            maxzoom: 15,
+          },
+          "ign-pnoa": {
+            type: "raster" as const,
+            tiles: ["https://tiles.programasfibra.es/ign-pnoa/{z}/{x}/{y}"],
+            tileSize: 256,
+            maxzoom: 19,
+          },
+        },
+        layers: [
+          ...satelliteUnderlayLayers,
+          {
+            id: "ign-pnoa-raster",
+            type: "raster" as const,
+            source: "ign-pnoa",
+            paint: {
+              "raster-resampling": "linear",
+              "raster-fade-duration": 160,
+              "raster-brightness-min": 0.02,
+              "raster-brightness-max": 0.98,
+              "raster-opacity": 0.985,
+            },
+          },
+          ...satelliteWaterMaskLayers,
+          ...protomapsLabelLayers,
+        ],
+      } as StyleSpecification;
+    }
+
+    return {
+      version: 8 as const,
+      glyphs:
+        `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
+      sprite:
+        `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
+      sources: {
+        protomaps: {
+          type: "vector" as const,
+          tiles: [
+            "https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}",
+          ],
+          maxzoom: 15,
+        },
+      },
+      layers: [...protomapsLayers],
+    } as StyleSpecification;
+  }, [basemap]);
+
   return (
     <div className="app">
       <Map
         {...viewState}
         onMove={(e) => setViewState(e.viewState)}
         style={{ width: "100%", height: "100%" }}
-        mapStyle={{
-          version: 8,
-          glyphs:
-            `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
-          sprite:
-            `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
-          sources: {
-            protomaps: {
-              type: "vector",
-              tiles: [
-                "https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}",
-              ],
-              maxzoom: 15,
-            },
-          },
-          layers: [
-            ...layers("protomaps", namedFlavor("grayscale"), { lang: "es" }),
-          ],
-        }}
+        mapStyle={mapStyle}
         attributionControl={{
           customAttribution: [
             '<a href="https://protomaps.com/" target="_blank">© Protomaps</a>',
             '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
+            '<a href="https://www.ign.es/" target="_blank">IGN PNOA</a>',
             '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx" target="_blank">Datos: SETELECO</a>'
           ].join(' | '),
           compact: true
@@ -291,7 +389,13 @@ function App() {
         />
         <NavigationControl position="top-left" showCompass={false} />
         <GeolocateControl position="top-left" showUserLocation={false} />
-        <LegendControl position="top-right" isOpen={isLegendOpen} onClick={() => {setLegendOpen(!isLegendOpen)}} />
+        <LegendControl
+          position="top-right"
+          isOpen={isLegendOpen}
+          basemap={basemap}
+          onBasemapToggle={() => setBasemap(basemap === "map" ? "satellite" : "map")}
+          onClick={() => {setLegendOpen(!isLegendOpen)}}
+        />
 
         <AnimatePresence>
           {isLegendOpen && <LegendPanel onClose={() => setLegendOpen(false)} selectedOperators={selectedOperators} setSelectedOperators={setSelectedOperators} selectedPrograms={selectedPrograms} setSelectedPrograms={setSelectedPrograms} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
