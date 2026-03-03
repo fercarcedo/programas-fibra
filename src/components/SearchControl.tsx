@@ -60,7 +60,7 @@ function SearchControl(props: SearchControlProps) {
           try {
             const results = await search(config.query.toString());
             return featuresFromSearchResults(results);
-          } catch (e) {
+          } catch {
             console.log("Error while searching");
             return featuresFromSearchResults([]);
           }

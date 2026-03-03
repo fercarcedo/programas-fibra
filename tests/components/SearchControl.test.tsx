@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { useControl } from "react-map-gl/maplibre";
 import { render } from "@testing-library/react";
 import SearchControl from "../../src/components/SearchControl";
@@ -22,8 +22,11 @@ const mockGeocoderInstance = {
 };
 
 vi.mock("@maplibre/maplibre-gl-geocoder", () => {
+  function MockMaplibreGeocoder() {
+    return mockGeocoderInstance;
+  }
   return {
-    default: vi.fn(() => mockGeocoderInstance),
+    default: vi.fn(MockMaplibreGeocoder),
   };
 });
 

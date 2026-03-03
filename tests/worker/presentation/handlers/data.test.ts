@@ -51,7 +51,7 @@ describe('Data handler', () => {
         key: 'aggregated-notfound.json'
       },
       headers: {
-        get: vi.fn((name: string) => {
+        get: vi.fn(() => {
           return null;
         }),
       },

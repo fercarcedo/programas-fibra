@@ -41,6 +41,26 @@ interface PopupInfo {
   data: AreaProperties;
 }
 
+interface AggregatedProgramData {
+  total: number;
+  statuses?: Record<string, number>;
+}
+
+interface AggregatedHexagonData {
+  h3Index: string;
+  totalCount: number;
+  counts: Record<string, Record<string, AggregatedProgramData>>;
+}
+
+interface FiberFeatureProperties {
+  type?: string;
+  grantee?: string;
+  program_name?: string;
+  project?: string;
+}
+
+type FiberFeature = Feature<Geometry, FiberFeatureProperties>;
+
 function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
   overlay.setProps(props);
@@ -62,7 +82,7 @@ function App() {
     setMapLoaded(true);
   }, []);
 
-  const handleLayerClick = (info: PickingInfo<Feature<Geometry, any>>) => {
+  const handleLayerClick = (info: PickingInfo<Feature<Geometry, AreaProperties>>) => {
     if (info.object && info.coordinate) {
       const polygonCentroid = centroid(info.object);
       const [lon, lat] = polygonCentroid.geometry.coordinates;
@@ -100,7 +120,12 @@ function App() {
   const MARKER_SIZE_MIN_PIXELS = 20;
   const MARKER_SIZE_MAX_PIXELS = 200;
 
-  const getH3Value = (d: any, selectedOperators: Set<string>, selectedPrograms: Set<string>, selectedStatus: string | null) => {
+  const getH3Value = (
+    d: AggregatedHexagonData,
+    selectedOperators: Set<string>,
+    selectedPrograms: Set<string>,
+    selectedStatus: string | null,
+  ) => {
     const allOpsSize = 11; // Hardcoded or passed from props
     const allProgsSize = 13;
 
@@ -156,9 +181,9 @@ function App() {
             data: "/data/aggregated.json",
             extruded: false,
             beforeId: "places_locality",
-            getHexagon: (d) => d.h3Index,
+            getHexagon: (d: AggregatedHexagonData) => d.h3Index,
             getElevation: 0,
-            getFillColor: (d) => {
+            getFillColor: (d: AggregatedHexagonData) => {
               const val = getH3Value(d, selectedOperators, selectedPrograms, selectedStatus);
 
               if (val === 0) {
@@ -190,13 +215,14 @@ function App() {
             stroked: true,
             pickable: true,
             autoHighlight: true,
-            getFillColor: (feature: any) => {
+            getFillColor: (feature: FiberFeature) => {
               if (feature.properties.type == "town") {
                 return [0, 0, 0, 0];
               }
-              return getOperatorColor(feature.properties.grantee, 128);
+              return getOperatorColor(feature.properties.grantee ?? "", 128);
             },
-            getLineColor: (feature: any) => getProgramColor(feature.properties.program_name, 128),
+            getLineColor: (feature: FiberFeature) =>
+              getProgramColor(feature.properties.program_name ?? "", 128),
             lineWidthMinPixels: 0.5,
             lineWidthUnits: "meters",
             getLineWidth: 2,
@@ -213,22 +239,27 @@ function App() {
             textSizeUnits: "meters",
             textSizeMinPixels: MARKER_SIZE_MIN_PIXELS,
             textSizeMaxPixels: MARKER_SIZE_MAX_PIXELS,
-            getTextColor: (feature: any) => getOperatorColor(feature.properties.grantee, 128),
+            getTextColor: (feature: FiberFeature) =>
+              getOperatorColor(feature.properties.grantee ?? "", 128),
             getTextAnchor: "middle",
             getTextAlignmentBaseline: "center",
             extensions: [new DataFilterExtension({filterSize: 1})],
-            getFilterValue: (feature: any) => {
+            getFilterValue: (feature: FiberFeature) => {
+              const grantee = feature.properties.grantee ?? "";
+              const normalizedProgramName = feature.properties.program_name
+                ?.toUpperCase()
+                .replace(" ", "_");
               const enabledOperator = selectedOperators.size === 0 ||
-                                      selectedOperators.has(getOperatorKey(feature.properties.grantee));
+                                      selectedOperators.has(getOperatorKey(grantee));
 
               const enabledProgram = selectedPrograms.size === 0 ||
-                                    selectedPrograms.has(feature.properties.program_name?.toUpperCase().replace(" ", "_"));
+                                    selectedPrograms.has(normalizedProgramName ?? "");
 
               let enabledProjectStatus = true;
 
               if (selectedStatus && statusSummary) {
                 const projectId = feature.properties.project;
-                const projectData = statusSummary[projectId];
+                const projectData = projectId ? statusSummary[projectId] : undefined;
 
                 enabledProjectStatus = projectData?.status === selectedStatus;
               }
