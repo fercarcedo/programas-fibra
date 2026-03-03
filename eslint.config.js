@@ -1,24 +1,36 @@
 import js from "@eslint/js";
 import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
+import eslintReact from "@eslint-react/eslint-plugin";
+import reactRefresh from "eslint-plugin-react-refresh";
+import { fixupPluginRules } from "@eslint/compat";
 
 export default tseslint.config(
   { ignores: ["dist"] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  // 1. Let the plugin provide its recommended preset directly
+  // This automatically sets up the @eslint-react/dom, /hooks, and /rsc plugins.
+  eslintReact.configs.recommended,
+
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        // v8+ projectService is significantly faster in ESLint 10
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     plugins: {
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      // 2. We only need to manually add the build-specific plugins here
+      "react-refresh": fixupPluginRules(reactRefresh),
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      // 3. Keep your custom refresh rules
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
