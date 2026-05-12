@@ -869,3 +869,24 @@ WPSC.WebPartPage.WebServerRelativeURL = '\u002fbanda-ancha\u002fayudas\u002fUNIC
 
 </html><!--- Representada mediante el perfil de caché: Internet público (totalmente anónimo) en: 2025-10-14T23:10:42 ---->
 """
+
+PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX = """
+<html>
+<body>
+<div class="other-div">
+<p>Some content without the expected layout.</p>
+<p><a class="file xlsx" href="/banda-ancha/ayudas/UNICO-Banda-Ancha/Documents/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2024.xlsx">Relación de proyectos aprobados 2024 [XLSX]</a></p>
+</div>
+</body>
+</html>
+"""
+
+PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX = """
+<html>
+<body>
+<div class="error-page">
+<p>Service temporarily unavailable.</p>
+</div>
+</body>
+</html>
+"""

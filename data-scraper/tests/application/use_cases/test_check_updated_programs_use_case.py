@@ -1,4 +1,4 @@
-from data.page_html import UNICO_2023_PAGE, UNICO_2024_PAGE
+from data.page_html import UNICO_2023_PAGE, UNICO_2024_PAGE, PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX, PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX
 from unittest.mock import Mock, MagicMock, AsyncMock
 import sys
 
@@ -37,6 +37,8 @@ class MockResponse:
     async def text(self):
         return str(self.body)
 
+UNICO_2024_XLSX_URL = "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Documents/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2024.xlsx"
+
 async def mock_fetch(url, **kwargs):
     if url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx":
         return MockResponse(
@@ -48,6 +50,12 @@ async def mock_fetch(url, **kwargs):
             body=UNICO_2024_PAGE,
             status=200
         )
+    elif url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-broken.aspx":
+        return MockResponse(body=PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX, status=200)
+    elif url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-no-xlsx.aspx":
+        return MockResponse(body=PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX, status=200)
+    elif url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-error.aspx":
+        return MockResponse(body="", status=503)
     elif isinstance(url, MockRequest):
         if url.url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Documents/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2023_01_08_2025.xlsx":
             return MockResponse(
@@ -57,7 +65,7 @@ async def mock_fetch(url, **kwargs):
                     'last-modified': 'Fri, 01 Aug 2025 09:09:10 GMT'
                 }
             )
-        elif url.url == "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Documents/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2024.xlsx":
+        elif url.url == UNICO_2024_XLSX_URL:
             return MockResponse(
                 body=None,
                 status=200,
@@ -126,3 +134,68 @@ async def test_execute_with_some_not_updated_projects():
     updated_projects = await use_case.execute()
 
     assert expected_updated_projects == updated_projects
+
+
+async def test_missing_col_contenido_falls_back_to_xlsx_head():
+    url_map = {
+        "UNICO 2024 broken": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-broken.aspx",
+    }
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = url_map
+
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
+
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
+    results = await use_case.execute()
+
+    assert len(results) == 1
+    assert results[0].program_name == "UNICO 2024 broken"
+    assert results[0].file_url == UNICO_2024_XLSX_URL
+    assert results[0].last_updated == 1734421875
+
+
+async def test_missing_xlsx_anchor_skips_program_and_logs(capsys):
+    url_map = {
+        "UNICO 2023": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx",
+        "UNICO 2024 no-xlsx": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-no-xlsx.aspx",
+    }
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = url_map
+
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
+
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
+    results = await use_case.execute()
+
+    assert len(results) == 1
+    assert results[0].program_name == "UNICO 2023"
+
+    captured = capsys.readouterr()
+    assert "[check-updated-programs][ERROR]" in captured.out
+    assert "UNICO 2024 no-xlsx" in captured.out
+    assert "missing xlsx anchor" in captured.out
+
+
+async def test_non_2xx_response_skips_program_and_logs(capsys):
+    url_map = {
+        "UNICO 2023": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx",
+        "UNICO 2024 error": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-error.aspx",
+    }
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = url_map
+
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
+
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
+    results = await use_case.execute()
+
+    assert len(results) == 1
+    assert results[0].program_name == "UNICO 2023"
+
+    captured = capsys.readouterr()
+    assert "[check-updated-programs][ERROR]" in captured.out
+    assert "UNICO 2024 error" in captured.out
+    assert "non-2xx" in captured.out
