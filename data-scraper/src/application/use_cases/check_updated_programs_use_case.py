@@ -5,6 +5,7 @@ import json
 from application.parsers.date_parser import parse_last_updated
 from dataclasses import dataclass
 from domain.program_update_result import ProgramUpdateResult
+from domain.check_updated_programs_result import CheckUpdatedProgramsResult, SkippedProgram
 from domain.repositories.config_repository import ConfigRepository
 from domain.repositories.program_repository import ProgramRepository
 
@@ -13,14 +14,17 @@ class CheckUpdatedProgramsUseCase:
         self.config_repository = config_repository
         self.program_repository = program_repository
 
-    async def execute(self):
+    async def execute(self) -> CheckUpdatedProgramsResult:
+        self._skipped: list[SkippedProgram] = []
         url_map = await self.config_repository.get_fiber_program_to_url_map()
 
         results = [await self._process_url(program_name, url) for program_name, url in url_map.items()]
-        return [r for r in results if r is not None and await self._is_updated(r)]
+        updated = [r for r in results if r is not None and await self._is_updated(r)]
+        return CheckUpdatedProgramsResult(updated=updated, skipped=self._skipped)
 
     def _log_skip(self, program_name: str, url: str, reason: str) -> None:
         print(f"[check-updated-programs][ERROR] program={program_name!r} url={url!r} reason={reason}")
+        self._skipped.append(SkippedProgram(program_name=program_name, url=url, reason=reason))
 
     async def _process_url(self, program_name: str, url: str) -> ProgramUpdateResult | None:
         from bs4 import BeautifulSoup

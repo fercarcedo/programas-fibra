@@ -5,7 +5,8 @@
 	"compatibility_date": "2025-08-01",
 	"compatibility_flags": [
 		"python_workflows",
-		"python_workers"
+		"python_workers",
+		"python_workers_20250116"
 	],
 	"observability": {
 		"enabled": true
@@ -39,5 +40,13 @@
 			"binding": "BUCKET_GEO",
 			"bucket_name": "programas-fibra-geo"
 		},
-	]
+	],
+	"send_email": [
+		{
+			"name": "SEND_EMAIL"
+		}
+	],
+	"vars": {
+		"ALERT_FROM": "alertas@programasfibra.es"
+	}
 }

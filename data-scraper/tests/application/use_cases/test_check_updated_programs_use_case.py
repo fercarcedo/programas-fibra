@@ -10,10 +10,10 @@ class MockRequest:
         self._body = body
         self.json_data = AsyncMock()
         self.text_data = AsyncMock()
-    
+
     async def json(self):
         return self.json_data()
-    
+
     async def text(self):
         return self.text_data()
 
@@ -23,17 +23,17 @@ class MockResponse:
         self.status = status
         self.headers = headers or {}
         self.ok = status < 400
-    
+
     @classmethod
     def json(cls, data, status=200):
         import json
         return cls(json.dumps(data), status=status)
-    
+
     async def json_async(self):
         """For when response.json() is called"""
         import json
         return json.loads(self.body) if isinstance(self.body, str) else self.body
-    
+
     async def text(self):
         return str(self.body)
 
@@ -111,9 +111,11 @@ async def test_execute():
     ]
     use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
 
-    updated_projects = await use_case.execute()
+    result = await use_case.execute()
 
-    assert expected_updated_projects == updated_projects
+    assert result.updated == expected_updated_projects
+    assert result.skipped == []
+
 
 async def test_execute_with_some_not_updated_projects():
     mock_config_repository = MagicMock(spec=ConfigRepository)
@@ -131,9 +133,10 @@ async def test_execute_with_some_not_updated_projects():
     ]
     use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
 
-    updated_projects = await use_case.execute()
+    result = await use_case.execute()
 
-    assert expected_updated_projects == updated_projects
+    assert result.updated == expected_updated_projects
+    assert result.skipped == []
 
 
 async def test_missing_col_contenido_falls_back_to_xlsx_head():
@@ -147,15 +150,16 @@ async def test_missing_col_contenido_falls_back_to_xlsx_head():
     mock_program_repository.get_last_update.return_value = None
 
     use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
-    results = await use_case.execute()
+    result = await use_case.execute()
 
-    assert len(results) == 1
-    assert results[0].program_name == "UNICO 2024 broken"
-    assert results[0].file_url == UNICO_2024_XLSX_URL
-    assert results[0].last_updated == 1734421875
+    assert len(result.updated) == 1
+    assert result.updated[0].program_name == "UNICO 2024 broken"
+    assert result.updated[0].file_url == UNICO_2024_XLSX_URL
+    assert result.updated[0].last_updated == 1734421875
+    assert result.skipped == []
 
 
-async def test_missing_xlsx_anchor_skips_program_and_logs(capsys):
+async def test_missing_xlsx_anchor_skips_program():
     url_map = {
         "UNICO 2023": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx",
         "UNICO 2024 no-xlsx": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-no-xlsx.aspx",
@@ -167,18 +171,17 @@ async def test_missing_xlsx_anchor_skips_program_and_logs(capsys):
     mock_program_repository.get_last_update.return_value = None
 
     use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
-    results = await use_case.execute()
+    result = await use_case.execute()
 
-    assert len(results) == 1
-    assert results[0].program_name == "UNICO 2023"
+    assert len(result.updated) == 1
+    assert result.updated[0].program_name == "UNICO 2023"
 
-    captured = capsys.readouterr()
-    assert "[check-updated-programs][ERROR]" in captured.out
-    assert "UNICO 2024 no-xlsx" in captured.out
-    assert "missing xlsx anchor" in captured.out
+    assert len(result.skipped) == 1
+    assert result.skipped[0].program_name == "UNICO 2024 no-xlsx"
+    assert result.skipped[0].reason == "missing xlsx anchor"
 
 
-async def test_non_2xx_response_skips_program_and_logs(capsys):
+async def test_non_2xx_response_skips_program():
     url_map = {
         "UNICO 2023": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2023-UNICO.aspx",
         "UNICO 2024 error": "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-error.aspx",
@@ -190,12 +193,11 @@ async def test_non_2xx_response_skips_program_and_logs(capsys):
     mock_program_repository.get_last_update.return_value = None
 
     use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository)
-    results = await use_case.execute()
+    result = await use_case.execute()
 
-    assert len(results) == 1
-    assert results[0].program_name == "UNICO 2023"
+    assert len(result.updated) == 1
+    assert result.updated[0].program_name == "UNICO 2023"
 
-    captured = capsys.readouterr()
-    assert "[check-updated-programs][ERROR]" in captured.out
-    assert "UNICO 2024 error" in captured.out
-    assert "non-2xx" in captured.out
+    assert len(result.skipped) == 1
+    assert result.skipped[0].program_name == "UNICO 2024 error"
+    assert "non-2xx" in result.skipped[0].reason

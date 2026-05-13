@@ -16,7 +16,7 @@ class ProcessProgramsUseCase:
         response = await fetch(program.file_url)
 
         if response is None or not response.ok:
-            return None
+            raise RuntimeError(f"Failed to download xlsx for {program.program_name}: status={getattr(response, 'status', 'N/A')}")
 
         response_bytes = await response.bytes()
         sheet_data = self.sheet_reader.read(response_bytes)
