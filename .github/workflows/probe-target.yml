@@ -1,0 +1,96 @@
+name: probe-target
+on: workflow_dispatch
+
+env:
+  PAGE_URL: https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO.aspx
+  XLSX_URL: https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Documents/Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2024.xlsx
+
+jobs:
+  xlsx-direct-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: HEAD the xlsx
+        run: |
+          echo "--- HEAD ${XLSX_URL} ---"
+          curl -I -k -L "${XLSX_URL}" || true
+          echo
+          echo "--- GET with content-type check ---"
+          curl -k -L -o /tmp/x.bin \
+            -w "status=%{http_code} content_type=%{content_type} size=%{size_download} time=%{time_total}s\n" \
+            "${XLSX_URL}"
+          echo "--- first 8 bytes of body (hex) ---"
+          head -c 8 /tmp/x.bin | xxd
+          echo "(xlsx files start with PK = 50 4B; SafeLine challenge HTML starts with <!D = 3C 21 44)"
+
+  wayback-probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: install deps
+        run: pip install requests
+      - name: probe wayback
+        run: |
+          python -u - <<'EOF'
+          import os, re, sys
+          import requests
+
+          PAGE_URL = os.environ["PAGE_URL"]
+          XLSX_URL = os.environ["XLSX_URL"]
+
+          print(f"=== CDX API: all captures for {PAGE_URL} ===")
+          # CDX returns every capture, including non-200 ones, with the captured status code
+          r = requests.get(
+              "https://web.archive.org/cdx/search/cdx",
+              params={
+                  "url": PAGE_URL,
+                  "output": "json",
+                  "fl": "timestamp,statuscode,mimetype,digest,length",
+                  "limit": -20,  # most recent 20
+              },
+              timeout=30,
+          )
+          print(f"http status: {r.status_code}")
+          rows = r.json()
+          if not rows:
+              print("CDX returned NO captures at all for this URL. Save Page Now would be required.")
+              ok_captures = []
+          else:
+              header, *data = rows
+              print(f"columns: {header}")
+              print(f"recent captures ({len(data)}):")
+              for row in data:
+                  print(f"  {row}")
+              ok_captures = [row for row in data if row[1] == "200"]
+              print(f"\ncount of HTTP-200 captures: {len(ok_captures)} (of {len(data)})")
+
+          if not ok_captures:
+              print("\nNo HTTP-200 captures exist. Either IA never crawled this URL successfully, or IA's crawler also gets the SafeLine challenge.")
+              sys.exit(0)
+
+          ts = ok_captures[-1][0]
+          print(f"\n=== fetching most-recent 200 capture ({ts}) ===")
+          raw_url = f"https://web.archive.org/web/{ts}id_/{PAGE_URL}"
+          print(f"GET {raw_url}")
+          r = requests.get(raw_url, timeout=60)
+          print(f"http status: {r.status_code}  size: {len(r.content)} bytes")
+          html = r.text
+
+          print("\n--- markers ---")
+          for marker in ("_spPageContextInfo", "col_contenido", "Fecha de actualización", "/.safeline/"):
+              print(f"  {marker!r}: {'found' if marker in html else 'MISSING'}")
+
+          print("\n--- xlsx link search ---")
+          xlsx_links = re.findall(r'href="([^"]+\.xlsx)"', html, re.IGNORECASE)
+          print(f"found {len(xlsx_links)} .xlsx anchor(s):")
+          for link in xlsx_links[:10]:
+              print(f"  {link}")
+          print(f"\nexpected xlsx filename present in HTML: {XLSX_URL.split('/')[-1] in html}")
+
+          fecha = re.search(r'Fecha de actualizaci[óo]n[^<]*?(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', html)
+          if fecha:
+              print(f"\nlast-update text found: {fecha.group(0)!r}")
+          else:
+              print("\nlast-update text: NOT FOUND in this snapshot")
+          EOF
