@@ -55,6 +55,7 @@
   "overrides": {
     "typescript-eslint": {
       "eslint": "^10.0.2"
-    }
+    },
+    "flatted": "^3.4.2"
   }
 }
