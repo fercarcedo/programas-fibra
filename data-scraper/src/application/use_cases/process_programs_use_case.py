@@ -1,6 +1,6 @@
 from domain.program_update_result import ProgramUpdateResult
 from domain.readers.sheet_file_reader import SheetFileReader
-from workers import fetch
+from domain.fetchers.xlsx_fetcher import XlsxFetcher
 import json
 from domain.program_data import ProgramData, ProgramStatus, ProjectData
 from datetime import datetime, timedelta, date
@@ -8,23 +8,20 @@ from domain.repositories.program_repository import ProgramRepository
 import time
 
 class ProcessProgramsUseCase:
-    def __init__(self, sheet_reader: SheetFileReader, program_repository: ProgramRepository):
+    def __init__(self, sheet_reader: SheetFileReader, program_repository: ProgramRepository, xlsx_fetcher: XlsxFetcher):
         self.sheet_reader = sheet_reader
         self.program_repository = program_repository
+        self.xlsx_fetcher = xlsx_fetcher
 
     async def execute(self, program: ProgramUpdateResult) -> ProgramData:
-        response = await fetch(program.file_url)
-
-        if response is None or not response.ok:
-            raise RuntimeError(f"Failed to download xlsx for {program.program_name}: status={getattr(response, 'status', 'N/A')}")
-
-        response_bytes = await response.bytes()
-        sheet_data = self.sheet_reader.read(response_bytes)
+        xlsx_bytes, digest = await self.xlsx_fetcher.fetch(program.page_url, program.file_url)
+        sheet_data = self.sheet_reader.read(xlsx_bytes)
         header_index, header = self._get_header_row(sheet_data)
 
         projects = self._process_sheet_data(sheet_data, header_index, header, program.program_name)
         for project in projects:
             await self.program_repository.put_project(project)
+        await self.program_repository.put_last_xlsx_digest(program.program_name, digest)
         await self.program_repository.put_last_update(program.program_name, int(time.time()))
         return ProgramData(projects=projects)
 

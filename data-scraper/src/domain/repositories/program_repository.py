@@ -24,5 +24,13 @@ class ProgramRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_last_xlsx_digest(self, program_name: str) -> str | None:
+        pass
+
+    @abstractmethod
+    async def put_last_xlsx_digest(self, program_name: str, digest: str):
+        pass
+
+    @abstractmethod
     async def put_aggregated(self, projects_data: list[ProjectData]):
         pass

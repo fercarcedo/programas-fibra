@@ -21,3 +21,9 @@ uv sync
 
 Then point your editor's Python plugin at the `.venv` directory. You should then have working
 autocomplete and type information in your editor.
+
+## Secrets
+
+One secret must be configured via `wrangler secret put` before deploying:
+
+- `SCRAPEDO_TOKEN` — API token for [scrape.do](https://scrape.do). Used to render program pages and fetch xlsx files via in-browser fetch. Run `wrangler secret put SCRAPEDO_TOKEN` and paste the token when prompted.

@@ -54,6 +54,13 @@ class KVProgramRepository(ProgramRepository):
 
         return projects
 
+    async def get_last_xlsx_digest(self, program_name: str) -> str | None:
+        digest = await self.env.PROJECTS.get(f"programs:{program_name}:xlsx-digest")
+        return digest if digest else None
+
+    async def put_last_xlsx_digest(self, program_name: str, digest: str):
+        await self.env.PROJECTS.put(f"programs:{program_name}:xlsx-digest", digest)
+
     async def put_aggregated(self, projects_data: list[ProjectData]):
         aggregated = await self.env.BUCKET_GEO.get("aggregated.json")
         if not aggregated:

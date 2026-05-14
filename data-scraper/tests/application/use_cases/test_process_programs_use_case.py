@@ -59,18 +59,28 @@ from data.peba2020 import PEBA_2020_DATA, PEBA_2020_EXPECTED_PROGRAM_DATA
 from data.peba2013 import PEBA_2013_DATA, PEBA_2013_EXPECTED_PROGRAM_DATA
 from data.peba2014 import PEBA_2014_DATA, PEBA_2014_EXPECTED_PROGRAM_DATA
 
+MOCK_DIGEST = "TESTDIGEST1234567890"
+
+def _make_mock_xlsx_fetcher(sheet_data: bytes) -> MagicMock:
+    mock_fetcher = MagicMock()
+    mock_fetcher.fetch = AsyncMock(return_value=(sheet_data, MOCK_DIGEST))
+    return mock_fetcher
+
+
 async def test_execute_unico():
     mock_sheet_reader = Mock()
     mock_sheet_reader.read.return_value = UNICO_DATA
 
     mock_program_repository = Mock()
     mock_program_repository.put_last_update = AsyncMock()
+    mock_program_repository.put_last_xlsx_digest = AsyncMock()
     mock_program_repository.put_project = AsyncMock()
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository, _make_mock_xlsx_fetcher(b""))
 
     result = ProgramUpdateResult(
-        file_url="",
+        file_url="https://example.com/file.xlsx",
+        page_url="https://example.com/page",
         program_name="UNICO 2021",
         last_updated=0
     )
@@ -80,6 +90,7 @@ async def test_execute_unico():
         assert data.projects == UNICO_EXPECTED_PROGRAM_DATA.projects
         assert mock_program_repository.put_project.call_count == len(UNICO_EXPECTED_PROGRAM_DATA.projects)
         mock_program_repository.put_project.assert_has_calls([call(project) for project in UNICO_EXPECTED_PROGRAM_DATA.projects])
+        mock_program_repository.put_last_xlsx_digest.assert_called_once_with("UNICO 2021", MOCK_DIGEST)
         mock_program_repository.put_last_update.assert_called_once_with("UNICO 2021", 1699876543)
 
 async def test_execute_peba_2020_2021():
@@ -88,12 +99,14 @@ async def test_execute_peba_2020_2021():
 
     mock_program_repository = Mock()
     mock_program_repository.put_last_update = AsyncMock()
+    mock_program_repository.put_last_xlsx_digest = AsyncMock()
     mock_program_repository.put_project = AsyncMock()
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository, _make_mock_xlsx_fetcher(b""))
 
     result = ProgramUpdateResult(
-        file_url="",
+        file_url="https://example.com/file.xlsx",
+        page_url="https://example.com/page",
         program_name="PEBA-NGA 2020",
         last_updated=0
     )
@@ -103,6 +116,7 @@ async def test_execute_peba_2020_2021():
         assert data.projects == PEBA_2020_EXPECTED_PROGRAM_DATA.projects
         assert mock_program_repository.put_project.call_count == len(PEBA_2020_EXPECTED_PROGRAM_DATA.projects)
         mock_program_repository.put_project.assert_has_calls([call(project) for project in PEBA_2020_EXPECTED_PROGRAM_DATA.projects])
+        mock_program_repository.put_last_xlsx_digest.assert_called_once_with("PEBA-NGA 2020", MOCK_DIGEST)
         mock_program_repository.put_last_update.assert_called_once_with("PEBA-NGA 2020", 1699876543)
 
 async def test_execute_peba_2013():
@@ -111,12 +125,14 @@ async def test_execute_peba_2013():
 
     mock_program_repository = Mock()
     mock_program_repository.put_last_update = AsyncMock()
+    mock_program_repository.put_last_xlsx_digest = AsyncMock()
     mock_program_repository.put_project = AsyncMock()
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository, _make_mock_xlsx_fetcher(b""))
 
     result = ProgramUpdateResult(
-        file_url="",
+        file_url="https://example.com/file.xlsx",
+        page_url="https://example.com/page",
         program_name="PEBA-NGA 2013",
         last_updated=0
     )
@@ -126,6 +142,7 @@ async def test_execute_peba_2013():
         assert data.projects == PEBA_2013_EXPECTED_PROGRAM_DATA.projects
         assert mock_program_repository.put_project.call_count == len(PEBA_2013_EXPECTED_PROGRAM_DATA.projects)
         mock_program_repository.put_project.assert_has_calls([call(project) for project in PEBA_2013_EXPECTED_PROGRAM_DATA.projects])
+        mock_program_repository.put_last_xlsx_digest.assert_called_once_with("PEBA-NGA 2013", MOCK_DIGEST)
         mock_program_repository.put_last_update.assert_called_once_with("PEBA-NGA 2013", 1699876543)
 
 async def test_execute_peba_2014():
@@ -134,12 +151,14 @@ async def test_execute_peba_2014():
 
     mock_program_repository = Mock()
     mock_program_repository.put_last_update = AsyncMock()
+    mock_program_repository.put_last_xlsx_digest = AsyncMock()
     mock_program_repository.put_project = AsyncMock()
 
-    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository)
+    use_case = ProcessProgramsUseCase(mock_sheet_reader, mock_program_repository, _make_mock_xlsx_fetcher(b""))
 
     result = ProgramUpdateResult(
-        file_url="",
+        file_url="https://example.com/file.xlsx",
+        page_url="https://example.com/page",
         program_name="PEBA-NGA 2014",
         last_updated=0
     )
@@ -148,5 +167,6 @@ async def test_execute_peba_2014():
         data = await use_case.execute(result)
         assert mock_program_repository.put_project.call_count == len(PEBA_2014_EXPECTED_PROGRAM_DATA.projects)
         mock_program_repository.put_project.assert_has_calls([call(project) for project in PEBA_2014_EXPECTED_PROGRAM_DATA.projects])
+        mock_program_repository.put_last_xlsx_digest.assert_called_once_with("PEBA-NGA 2014", MOCK_DIGEST)
         mock_program_repository.put_last_update.assert_called_once_with("PEBA-NGA 2014", 1699876543)
         assert data.projects == PEBA_2014_EXPECTED_PROGRAM_DATA.projects

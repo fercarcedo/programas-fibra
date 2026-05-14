@@ -8,7 +8,10 @@ from application.use_cases.update_aggregated_use_case import UpdateAggregatedUse
 from domain.program_update_result import ProgramUpdateResult
 from domain.check_updated_programs_result import SkippedProgram
 from domain.notifications.email_notifier import EmailNotifier
+from infrastructure.clients.scrape_do_client import ScrapeDoClient
+from infrastructure.fetchers.scrape_do_xlsx_fetcher import ScrapeDoXlsxFetcher
 from infrastructure.readers.xlsx_sheet_file_reader import XlsxSheetFileReader
+from infrastructure.renderers.scrape_do_page_renderer import ScrapeDoPageRenderer
 from infrastructure.repositories.kv_config_repository import KVConfigRepository
 from infrastructure.repositories.kv_program_repository import KVProgramRepository
 from infrastructure.notifications.cloudflare_email_notifier import CloudflareEmailNotifier
@@ -43,8 +46,11 @@ class DataScraperWorkflow(WorkflowEntrypoint):
         config_repository = KVConfigRepository(env)
         program_repository = KVProgramRepository(env)
         sheet_reader = XlsxSheetFileReader()
-        self.check_updated_programs_use_case = CheckUpdatedProgramsUseCase(config_repository, program_repository)
-        self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader, program_repository)
+        scrape_do_client = ScrapeDoClient(token=env.SCRAPEDO_TOKEN)
+        page_renderer = ScrapeDoPageRenderer(scrape_do_client)
+        xlsx_fetcher = ScrapeDoXlsxFetcher(scrape_do_client)
+        self.check_updated_programs_use_case = CheckUpdatedProgramsUseCase(config_repository, program_repository, page_renderer, xlsx_fetcher)
+        self.process_programs_use_case = ProcessProgramsUseCase(sheet_reader, program_repository, xlsx_fetcher)
         self.rebuild_status_summary_use_case = RebuildStatusSummaryUseCase(program_repository)
         self.update_aggregated_use_case = UpdateAggregatedUseCase(program_repository)
         self.email_notifier = CloudflareEmailNotifier(env)

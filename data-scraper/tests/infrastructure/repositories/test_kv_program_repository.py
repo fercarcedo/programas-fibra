@@ -340,6 +340,43 @@ async def test_find_projects_handles_pagination(from_entity_mock, project_entity
     assert mock_config.get.call_count == 3
 
 
+async def test_get_last_xlsx_digest_returns_stored_value():
+    mock_env = Mock()
+    mock_config = Mock()
+    mock_config.get = AsyncMock(return_value="ABCDEF1234567890")
+    mock_env.PROJECTS = mock_config
+
+    repository = KVProgramRepository(mock_env)
+    digest = await repository.get_last_xlsx_digest("UNICO 2024")
+
+    assert digest == "ABCDEF1234567890"
+    mock_config.get.assert_called_once_with("programs:UNICO 2024:xlsx-digest")
+
+
+async def test_get_last_xlsx_digest_returns_none_if_empty():
+    mock_env = Mock()
+    mock_config = Mock()
+    mock_config.get = AsyncMock(return_value="")
+    mock_env.PROJECTS = mock_config
+
+    repository = KVProgramRepository(mock_env)
+    digest = await repository.get_last_xlsx_digest("UNICO 2024")
+
+    assert digest is None
+
+
+async def test_put_last_xlsx_digest_stores_value():
+    mock_env = Mock()
+    mock_config = Mock()
+    mock_config.put = AsyncMock()
+    mock_env.PROJECTS = mock_config
+
+    repository = KVProgramRepository(mock_env)
+    await repository.put_last_xlsx_digest("UNICO 2024", "ABCDEF1234567890")
+
+    mock_config.put.assert_called_once_with("programs:UNICO 2024:xlsx-digest", "ABCDEF1234567890")
+
+
 async def test_put_aggregated_validates_project_belongs_to_hexagon():
     mock_env = Mock()
     mock_bucket = Mock()

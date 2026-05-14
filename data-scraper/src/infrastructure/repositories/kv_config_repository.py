@@ -6,5 +6,12 @@ class KVConfigRepository(ConfigRepository):
         self.env = env
         
     async def get_fiber_program_to_url_map(self) -> dict[str, str]:
-        url_map = await self.env.CONFIG.get("workflow:fiber-program-url-map")
-        return json.loads(url_map)
+        raw = await self.env.CONFIG.get("workflow:fiber-program-url-map")
+        entries = json.loads(raw)
+        result = {}
+        for name, value in entries.items():
+            if isinstance(value, str):
+                result[name] = value
+            elif value.get("active", False):
+                result[name] = value["url"]
+        return result
