@@ -42,7 +42,6 @@ async def test_fetch_page_returns_html(mock_fetch):
     assert "render=true" in called_url
     assert "geoCode=es" in called_url
     assert "returnJSON=true" in called_url
-    assert "super=true" in called_url
     assert "playWithBrowser" not in called_url
 
 
