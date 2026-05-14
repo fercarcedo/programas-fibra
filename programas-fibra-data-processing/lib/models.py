@@ -3,9 +3,11 @@ from dataclasses import dataclass
 from abc import abstractmethod
 from typing import Optional
 
+
 class AreaType(StrEnum):
     TOWN = auto()
     AREA = auto()
+
 
 @dataclass
 class AreaProperties:
@@ -32,6 +34,7 @@ class AreaPropertiesArea(AreaProperties):
     @property
     def type(self) -> AreaType:
         return AreaType.AREA
+
 
 @dataclass
 class AreaPropertiesTown(AreaProperties):
