@@ -9,6 +9,9 @@ dependencies = ["webtypy>=0.1.7", "beautifulsoup4>=4.9.3"]
 [dependency-groups]
 dev = ["workers-py", "pytest>=9.0.3", "pytest-asyncio"]
 
+[tool.uv]
+constraint-dependencies = ["pygments>=2.20.0"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src", "tests"]
