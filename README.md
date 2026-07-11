@@ -1,4 +1,4 @@
-# Programas Fibra
+# <img src="public/icon_192.png" width="32" align="center" alt="" /> Programas Fibra
 
 [programasfibra.es](https://programasfibra.es) is a map that shows all Spanish public
 fiber-optic broadband subsidy programs (PEBA and UNICO, 2013–2024) on top of each other,
