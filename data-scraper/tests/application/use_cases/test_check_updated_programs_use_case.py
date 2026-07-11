@@ -1,4 +1,4 @@
-from data.page_html import UNICO_2023_PAGE, UNICO_2024_PAGE, PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX, PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX
+from data.page_html import UNICO_2023_PAGE, UNICO_2024_PAGE, PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX, PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX, UNICO_2021_PAGE_NEW_CMS
 from unittest.mock import MagicMock, AsyncMock, patch
 
 from application.use_cases.check_updated_programs_use_case import CheckUpdatedProgramsUseCase
@@ -17,6 +17,7 @@ _PAGE_HTML_MAP = {
     "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-broken.aspx": PAGE_WITHOUT_COL_CONTENIDO_WITH_XLSX,
     "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-no-xlsx.aspx": PAGE_WITHOUT_COL_CONTENIDO_WITHOUT_XLSX,
     "https://avance.digital.gob.es/banda-ancha/ayudas/UNICO-Banda-Ancha/Paginas/convocatoria-2024-UNICO-error.aspx": RuntimeError("IA renderer error"),
+    "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/ayudas-publicas-unico/convocatoria-2021-unico": UNICO_2021_PAGE_NEW_CMS,
 }
 
 class MockPageRenderer(PageRenderer):
@@ -193,6 +194,35 @@ async def test_missing_xlsx_anchor_skips_program():
     assert len(result.skipped) == 1
     assert result.skipped[0].program_name == "UNICO 2024 no-xlsx"
     assert result.skipped[0].reason == "missing xlsx anchor"
+
+
+async def test_parses_new_cms_page_without_col_contenido_or_file_xlsx_class():
+    url_map = {
+        "UNICO 2021": "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/ayudas-publicas-unico/convocatoria-2021-unico",
+    }
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = url_map
+
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
+    mock_program_repository.get_last_xlsx_digest.return_value = None
+
+    xlsx_fetcher = _make_xlsx_fetcher({})
+
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository, MockPageRenderer(), xlsx_fetcher)
+    result = await use_case.execute()
+
+    assert result.skipped == []
+    assert len(result.updated) == 1
+    updated = result.updated[0]
+    assert updated.program_name == "UNICO 2021"
+    assert updated.file_url == (
+        "https://digital.gob.es/content/dam/portal-mtdfp/avance-digital/telecomunicacion-e-infraestructuras-digitales/"
+        "areas_interes/banda-ancha/banda-ancha/ayudas/unico-5g/documents/"
+        "Relacion_proyectos_aprobados_UNICO_Banda_Ancha_2021_29-04-2026-2.xlsx"
+    )
+    # 29/04/2026, not the decoy "Fecha de actualización" found in the page footer.
+    assert updated.last_updated == 1777420800
 
 
 async def test_renderer_error_skips_program():
