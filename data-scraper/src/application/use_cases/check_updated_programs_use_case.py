@@ -56,13 +56,15 @@ class CheckUpdatedProgramsUseCase:
 
     def _parse_page(self, url: str, html: str) -> tuple[str | None, str | None]:
         soup = BeautifulSoup(html, "html.parser")
-        excel_link = soup.find("a", href=_XLSX_HREF_REGEX)
+        main = soup.find("main")
+        content_div = (main and main.find("div", class_="cmp-text")) or main or soup
+
+        excel_link = content_div.find("a", href=_XLSX_HREF_REGEX)
         if excel_link is None:
             return None, None
         xlsx_url = urljoin(url, excel_link.get("href"))
 
-        content_div = soup.find("main")
-        paragraphs = content_div.find_all("p", string=_DATE_REGEX) if content_div else []
+        paragraphs = content_div.find_all("p", string=_DATE_REGEX)
         if not paragraphs:
             return xlsx_url, None
         match = _DATE_REGEX.search(paragraphs[0].get_text(strip=True))

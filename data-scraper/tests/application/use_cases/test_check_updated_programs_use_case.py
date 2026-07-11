@@ -1,4 +1,4 @@
-from data.page_html import UNICO_2021_PAGE, PEBA_2021_PAGE, PAGE_WITHOUT_MAIN_WITH_XLSX, PAGE_WITHOUT_MAIN_WITHOUT_XLSX
+from data.page_html import UNICO_2021_PAGE, PEBA_2021_PAGE, PAGE_WITHOUT_MAIN_WITH_XLSX, PAGE_WITHOUT_MAIN_WITHOUT_XLSX, PAGE_WITH_DECOYS_OUTSIDE_CMP_TEXT
 from unittest.mock import MagicMock, AsyncMock, patch
 
 from application.use_cases.check_updated_programs_use_case import CheckUpdatedProgramsUseCase
@@ -13,6 +13,7 @@ PEBA_2021_URL = "https://digital.gob.es/telecomunicaciones-infraestructuras-digi
 BROKEN_URL = "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/broken"
 NO_XLSX_URL = "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/no-xlsx"
 ERROR_URL = "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/error"
+DECOYS_URL = "https://digital.gob.es/telecomunicaciones-infraestructuras-digitales/areas-interes/banda-ancha/ayudas-publicas/decoys"
 
 UNICO_2021_XLSX_URL = (
     "https://digital.gob.es/content/dam/portal-mtdfp/avance-digital/telecomunicacion-e-infraestructuras-digitales/"
@@ -34,6 +35,7 @@ _PAGE_HTML_MAP = {
     BROKEN_URL: PAGE_WITHOUT_MAIN_WITH_XLSX,
     NO_XLSX_URL: PAGE_WITHOUT_MAIN_WITHOUT_XLSX,
     ERROR_URL: RuntimeError("IA renderer error"),
+    DECOYS_URL: PAGE_WITH_DECOYS_OUTSIDE_CMP_TEXT,
 }
 
 class MockPageRenderer(PageRenderer):
@@ -229,6 +231,31 @@ async def test_parses_peba_page_without_date_falls_back_to_digest():
     updated = result.updated[0]
     assert updated.program_name == "PEBA 2021"
     assert updated.file_url == PEBA_2021_XLSX_URL
+
+
+async def test_ignores_xlsx_link_and_date_outside_cmp_text():
+    url_map = {
+        "Decoys": DECOYS_URL,
+    }
+    mock_config_repository = MagicMock(spec=ConfigRepository)
+    mock_config_repository.get_fiber_program_to_url_map.return_value = url_map
+
+    mock_program_repository = MagicMock(spec=ProgramRepository)
+    mock_program_repository.get_last_update.return_value = None
+    mock_program_repository.get_last_xlsx_digest.return_value = None
+
+    xlsx_fetcher = _make_xlsx_fetcher({})
+
+    use_case = CheckUpdatedProgramsUseCase(mock_config_repository, mock_program_repository, MockPageRenderer(), xlsx_fetcher)
+    result = await use_case.execute()
+
+    assert result.skipped == []
+    assert len(result.updated) == 1
+    updated = result.updated[0]
+    # Must pick the link/date inside the cmp-text content block, not the
+    # decoy .xlsx link or "Fecha de actualización" in the sidebar nav.
+    assert updated.file_url == "https://digital.gob.es/documents/Relacion_proyectos_aprobados_CORRECT.xlsx"
+    assert updated.last_updated == 1781481600  # 15/06/2026
 
 
 async def test_renderer_error_skips_program():

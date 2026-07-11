@@ -19,6 +19,25 @@ PAGE_WITHOUT_MAIN_WITHOUT_XLSX = """
 </html>
 """
 
+PAGE_WITH_DECOYS_OUTSIDE_CMP_TEXT = """
+<html>
+<body>
+<main class=dintel-container>
+<div class="vertical-menu navigation">
+<nav>
+<a href="/banda-ancha/ayudas/related/Relacion_proyectos_aprobados_OTHER_YEAR.xlsx">Otro año [XLSX]</a>
+<p>Fecha de actualización: 01/01/2000</p>
+</nav>
+</div>
+<div class=text><div class="cmp-text dnt-title-default">
+<p><a href="https://digital.gob.es/documents/Relacion_proyectos_aprobados_CORRECT.xlsx">Relación de proyectos aprobados [XLSX]</a></p>
+<p>Fecha de actualización: 15/06/2026</p>
+</div></div>
+</main>
+</body>
+</html>
+"""
+
 UNICO_2021_PAGE = """
 <!DOCTYPE HTML>
 <html lang="es">
