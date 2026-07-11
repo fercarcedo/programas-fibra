@@ -1,54 +1,56 @@
-# React + TypeScript + Vite
+<div align="center">
+  <img src="public/icon_192.png" width="96" alt="" />
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  # Programas Fibra
+</div>
 
-Currently, two official plugins are available:
+[programasfibra.es](https://programasfibra.es) is a map that shows all Spanish public
+fiber-optic broadband subsidy programs (PEBA and UNICO, 2013–2024) on top of each other,
+so you can check which operator is deploying fiber in a given area and under which
+program.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Data is published by the Ministry across dozens of scattered Excel and shapefile
+releases, one per program per year. This project scrapes, normalizes and merges all of
+them into a single set of vector tiles served by an interactive map.
 
-## Expanding the ESLint configuration
+Want the technical details? I gave a talk about how it's built at T3chFest:
+[watch it on YouTube](https://youtu.be/YzOBWkEtX6M).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Modules
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+This is a monorepo with three independent modules:
+
+### [`/`](.) — Map site (frontend + backend)
+
+The main app: a React + MapLibre/deck.gl map served together with its API, both deployed
+as a single Cloudflare Worker via `@cloudflare/vite-plugin`. The worker exposes the
+project/area data (backed by KV and R2-hosted PMTiles) and serves the built frontend as
+static assets.
+
+```bash
+npm install
+npm run dev      # local dev server (Vite + worker)
+npm test         # vitest
+npm run deploy   # build and wrangler deploy
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### [`data-scraper`](./data-scraper) — Update workflow
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+A Python Cloudflare Workflow, triggered on a weekly cron, that checks the Ministry's
+sources for new or updated program data, downloads it, and updates the KV/R2 data the
+main site reads from. See [`data-scraper/README.md`](./data-scraper/README.md) for setup
+details (including the `SCRAPEDO_TOKEN` secret).
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    "react-x": reactX,
-    "react-dom": reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs["recommended-typescript"].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
+### [`programas-fibra-data-processing`](./programas-fibra-data-processing) — Geo data generation
+
+A local Python script (`main.py`) that turns the raw PEBA/UNICO releases (shapefiles and
+Excel files with awarded-area info) into the GeoJSON/PMTiles and H3 hexagon aggregates
+consumed by the site. This runs by hand whenever a new program vintage needs to be
+processed for the first time; see
+[`process_files.sh`](./programas-fibra-data-processing/process_files.sh) for the full
+pipeline (`ogr2ogr` → `main.py` → `tippecanoe` → `tile-join`).
+
+```bash
+uv sync
+uv run main.py unico -e <eligible-areas.geojson> -a <awarded-areas.xlsx> -o out.geojson -p "UNICO 2024"
 ```
