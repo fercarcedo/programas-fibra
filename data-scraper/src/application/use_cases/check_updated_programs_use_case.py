@@ -11,6 +11,7 @@ from domain.renderers.page_renderer import PageRenderer
 from domain.fetchers.xlsx_fetcher import XlsxFetcher
 
 _DATE_REGEX = re.compile(r"Fecha de actualización:\s*(?P<date>\d{2}/\d{2}/\d{4})")
+_XLSX_HREF_REGEX = re.compile(r"\.xlsx(?:[?#]|$)", re.IGNORECASE)
 
 class CheckUpdatedProgramsUseCase:
     def __init__(
@@ -55,13 +56,15 @@ class CheckUpdatedProgramsUseCase:
 
     def _parse_page(self, url: str, html: str) -> tuple[str | None, str | None]:
         soup = BeautifulSoup(html, "html.parser")
-        excel_link = soup.find("a", class_="file xlsx")
+        main = soup.find("main")
+        content_div = (main and main.find("div", class_="cmp-text")) or main or soup
+
+        excel_link = content_div.find("a", href=_XLSX_HREF_REGEX)
         if excel_link is None:
             return None, None
         xlsx_url = urljoin(url, excel_link.get("href"))
 
-        content_div = soup.find("div", class_="col-contenido")
-        paragraphs = content_div.find_all("p", string=_DATE_REGEX) if content_div else []
+        paragraphs = content_div.find_all("p", string=_DATE_REGEX)
         if not paragraphs:
             return xlsx_url, None
         match = _DATE_REGEX.search(paragraphs[0].get_text(strip=True))
