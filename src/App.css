@@ -7,3 +7,13 @@
 .pf-map-btn:active {
   background-color: #f3f4f6 !important;
 }
+
+/* On narrow screens the geocoder's own CSS expands it to ~full map width
+   when uncollapsed, overlapping the basemap/legend controls in the top-right
+   corner and hiding the search bar's clear (X) button underneath them. Cap
+   its width so it stops before that corner. */
+@media (max-width: 640px) {
+  .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed) {
+    max-width: calc(100vw - 190px);
+  }
+}
