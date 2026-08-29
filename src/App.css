@@ -8,12 +8,81 @@
   background-color: #f3f4f6 !important;
 }
 
-/* On narrow screens the geocoder's own CSS expands it to ~full map width
-   when uncollapsed, overlapping the basemap/legend controls in the top-right
-   corner and hiding the search bar's clear (X) button underneath them. Cap
-   its width so it stops before that corner. */
+.pf-geocoder-back {
+  display: none;
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #404040;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.maplibregl-ctrl-top-right {
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maplibregl-ctrl-top-right {
+    transition: none;
+  }
+}
+
+/* On narrow screens the geocoder's own CSS expands it to ~full map width when
+   uncollapsed, overlapping the basemap/legend controls in the top-right corner
+   and hiding the search bar's clear (X) button underneath them. */
 @media (max-width: 640px) {
+  /* Without :has() the expanded state cannot be detected from the controls in
+     the other corner, so fall back to capping the width short of them. */
   .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed) {
     max-width: calc(100vw - 190px);
+  }
+
+  @supports selector(:has(*)) {
+    /* Open search takes the whole row and the corner controls step aside, so
+       the clear (X) button is never covered. */
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed) {
+      width: calc(100vw - 20px);
+      max-width: none;
+    }
+
+    .maplibregl-ctrl-top-left:has(
+        .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
+      )
+      ~ .maplibregl-ctrl-top-right {
+      opacity: 0;
+      /* Not pointer-events: maplibre sets pointer-events: auto on the controls
+         themselves, which overrides it on this ancestor and leaves them
+         invisibly swallowing taps aimed at the clear (X) button. visibility is
+         inherited and is not overridden, so it takes them out of hit testing. */
+      visibility: hidden;
+    }
+
+    /* The magnifier gives way to the back arrow that dismisses the bar. */
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
+      .maplibregl-ctrl-geocoder--icon-search {
+      display: none;
+    }
+
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
+      .pf-geocoder-back {
+      display: flex;
+    }
+
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
+      .maplibregl-ctrl-geocoder--input {
+      padding-left: 44px;
+    }
   }
 }

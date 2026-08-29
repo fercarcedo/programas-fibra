@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { useControl } from "react-map-gl/maplibre";
 import { render } from "@testing-library/react";
 import SearchControl from "../../src/components/SearchControl";
@@ -9,8 +9,18 @@ import maplibregl from "maplibre-gl";
 import search from "../../src/api/nominatim";
 import { MOCK_NOMINATIM_RESPONSE_SUCCESS } from "../data/nominatim_responses";
 
+// The back button looks the geocoder up through the map container, so the tests
+// that cover it hand a real one over here. The rest leave it unset, which keeps
+// the component's effect a no-op for them.
+const mocks = vi.hoisted(() => ({ mapContainer: null as HTMLElement | null }));
+
 vi.mock("react-map-gl/maplibre", () => ({
   useControl: vi.fn(),
+  useMap: vi.fn(() => ({
+    current: mocks.mapContainer
+      ? { getContainer: () => mocks.mapContainer }
+      : undefined,
+  })),
 }));
 
 const mockGeocoderInstance = {
@@ -177,6 +187,80 @@ describe("SearchControl", () => {
     expect(result).toEqual({
       type: "FeatureCollection",
       features: [],
+    });
+  });
+
+  describe("back button", () => {
+    const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
+    let geocoder: HTMLElement;
+    let input: HTMLInputElement;
+
+    const renderWithMap = () => {
+      const mapContainer = document.createElement("div");
+      mapContainer.innerHTML =
+        '<div class="maplibregl-ctrl-geocoder">' +
+        '<input class="maplibregl-ctrl-geocoder--input" />' +
+        "</div>";
+      document.body.appendChild(mapContainer);
+      mocks.mapContainer = mapContainer;
+
+      geocoder = mapContainer.querySelector(".maplibregl-ctrl-geocoder")!;
+      input = mapContainer.querySelector(".maplibregl-ctrl-geocoder--input")!;
+
+      return render(
+        <SearchControl
+          position="top-left"
+          showResultsWhileTyping={true}
+          collapsed={true}
+          language="es"
+          placeholder="Buscar"
+        />,
+      );
+    };
+
+    afterEach(() => {
+      mocks.mapContainer?.remove();
+      mocks.mapContainer = null;
+    });
+
+    it("adds a back button to the geocoder", () => {
+      renderWithMap();
+
+      const backButton = geocoder.querySelector(".pf-geocoder-back");
+
+      expect(backButton).not.toBeNull();
+      expect(backButton?.getAttribute("aria-label")).toBe("Cerrar búsqueda");
+    });
+
+    it("collapses the search bar but keeps the query when clicked", () => {
+      renderWithMap();
+      input.value = "Oviedo";
+
+      geocoder.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+
+      expect(geocoder.classList.contains(COLLAPSED_CLASS)).toBe(true);
+      // dismissing the bar is not the same as clearing it, that is what the
+      // geocoder's own X button is for
+      expect(input.value).toBe("Oviedo");
+    });
+
+    it("keeps the click from reaching the geocoder container", () => {
+      renderWithMap();
+      // the geocoder reopens its suggestion list from a listener of its own
+      const containerListener = vi.fn();
+      geocoder.addEventListener("click", containerListener);
+
+      geocoder.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+
+      expect(containerListener).not.toHaveBeenCalled();
+    });
+
+    it("removes the back button when unmounted", () => {
+      const { unmount } = renderWithMap();
+
+      unmount();
+
+      expect(geocoder.querySelector(".pf-geocoder-back")).toBeNull();
     });
   });
 
