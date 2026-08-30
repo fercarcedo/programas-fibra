@@ -1,6 +1,6 @@
 import type { GeoDataRepository } from "../repositories/geo_data_repository";
 
-const ALLOWED_GEO_RESOURCES = ['aggregated'];
+const ALLOWED_GEO_RESOURCES = ["aggregated"];
 
 export class GeoDataService {
   private geoDataRepository: GeoDataRepository;
@@ -10,7 +10,7 @@ export class GeoDataService {
   }
 
   private isAllowedResource(key: string): boolean {
-    return ALLOWED_GEO_RESOURCES.some(resource => key.startsWith(resource));
+    return ALLOWED_GEO_RESOURCES.some((resource) => key.startsWith(resource));
   }
 
   async getData(key: string): Promise<ReadableStream | null> {

@@ -1,0 +1,166 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      site: ${{ steps.filter.outputs.site }}
+      scraper: ${{ steps.filter.outputs.scraper }}
+      processing: ${{ steps.filter.outputs.processing }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # AND semantics per filter: 'site' matches a changed file only if it
+          # matches '**' and none of the '!...' exclusions. Without this, the
+          # default OR semantics would make 'site' always true because of '**'.
+          predicate-quantifier: every
+          filters: |
+            site:
+              - '**'
+              - '!data-scraper/**'
+              - '!programas-fibra-data-processing/**'
+              - '!.github/**'
+              - '!**/*.md'
+            scraper:
+              - 'data-scraper/**'
+            processing:
+              - 'programas-fibra-data-processing/**'
+
+  # Repo-wide lint/format/test/build for the root worker + frontend. Also runs
+  # for scraper-only changes because `npm run check-format` checks files
+  # across the whole repo (data-scraper's package.json, wrangler.jsonc, etc).
+  site-checks:
+    needs: changes
+    if: needs.changes.outputs.site == 'true' || needs.changes.outputs.scraper == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run check-format
+      - run: npm test
+      - run: npm run build
+
+  scraper-tests:
+    needs: changes
+    if: needs.changes.outputs.scraper == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: data-scraper
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: data-scraper/uv.lock
+      - run: uv sync --frozen
+      - run: uv run pytest
+
+  processing-tests:
+    needs: changes
+    if: needs.changes.outputs.processing == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: programas-fibra-data-processing
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: programas-fibra-data-processing/uv.lock
+      - run: uv sync --frozen
+      - run: uv run pytest
+      - run: uv run black --check .
+
+  # Single required status check for branch protection: succeeds only if
+  # every job that actually ran succeeded (a skipped job, because its inputs
+  # didn't change, is not a failure).
+  ci-ok:
+    needs: [changes, site-checks, scraper-tests, processing-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify no required job failed
+        run: |
+          if [[ "${{ needs.changes.result }}" != "success" ]]; then
+            echo "changes (paths-filter) job did not succeed"
+            exit 1
+          fi
+          for result in "${{ needs.site-checks.result }}" "${{ needs.scraper-tests.result }}" "${{ needs.processing-tests.result }}"; do
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "A required job failed or was cancelled: $result"
+              exit 1
+            fi
+          done
+
+  deploy-site:
+    needs: [changes, site-checks]
+    if: >-
+      github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+      needs.changes.outputs.site == 'true' &&
+      needs.site-checks.result == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-site
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-scraper:
+    needs: [changes, scraper-tests]
+    if: >-
+      github.event_name == 'push' && github.ref == 'refs/heads/main' &&
+      needs.changes.outputs.scraper == 'true' &&
+      needs.scraper-tests.result == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: data-scraper
+    concurrency:
+      group: deploy-scraper
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -1,6 +1,6 @@
 export interface ProjectsStatusInfoWebResponse {
-    status: string;
-    deadline: string | null;
+  status: string;
+  deadline: string | null;
 }
 
 export interface ProjectsStatusWebResponse {

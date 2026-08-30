@@ -1,5 +1,5 @@
 import type { GeoDataRepository } from "../../application/repositories/geo_data_repository";
-import type { Env } from '../../types';
+import type { Env } from "../../types";
 
 export class R2GeoDataRepository implements GeoDataRepository {
   private env: Env;

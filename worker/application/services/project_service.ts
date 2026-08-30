@@ -11,8 +11,8 @@ export class ProjectService {
   private normalizeProjectCode(projectId: string): string | null {
     // Normalize by removing leading zeros from the numeric suffix
     // TSI-061000-2015-0114 -> TSI-061000-2015-114
-    const parts = projectId.split('-');
-    if (parts.length === 4 && parts[0] === 'TSI') {
+    const parts = projectId.split("-");
+    if (parts.length === 4 && parts[0] === "TSI") {
       const suffix = parts[3];
       if (/^\d+$/.test(suffix)) {
         const normalized = String(parseInt(suffix, 10));
@@ -25,7 +25,7 @@ export class ProjectService {
   }
 
   async getProject(projectId: string): Promise<Project | null> {
-    if (!projectId.startsWith('TSI-')) {
+    if (!projectId.startsWith("TSI-")) {
       console.warn(`Invalid project id: ${projectId}`);
       return null;
     }
@@ -37,7 +37,9 @@ export class ProjectService {
       if (normalized) {
         project = await this.projectRepository.getProject(normalized);
         if (project) {
-          console.info(`Found project using normalized id: ${projectId} -> ${normalized}`);
+          console.info(
+            `Found project using normalized id: ${projectId} -> ${normalized}`,
+          );
         }
       }
     }

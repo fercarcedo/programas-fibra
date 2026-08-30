@@ -1,7 +1,8 @@
 <div align="center">
   <img src="public/icon_192.png" width="96" alt="" />
 
-  # Programas Fibra
+# Programas Fibra
+
 </div>
 
 [programasfibra.es](https://programasfibra.es) is a map that shows all Spanish public

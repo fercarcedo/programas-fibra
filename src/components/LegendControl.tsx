@@ -4,11 +4,22 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 
 const LayersIcon = () => {
-    return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-        <polyline points="2 17 12 22 22 17"></polyline>
-        <polyline points="2 12 12 17 22 12"></polyline>
-    </svg>;
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+      <polyline points="2 17 12 22 22 17"></polyline>
+      <polyline points="2 12 12 17 22 12"></polyline>
+    </svg>
+  );
 };
 
 export type LegendControlProps = {
@@ -23,21 +34,22 @@ function LegendControl(props: LegendControlProps) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   useControl(
-    () => ({
-      onAdd: () => {
-        const div = document.createElement('div');
-        div.className = 'maplibregl-ctrl';
-        setContainer(div);
-        return div;
-      },
-      onRemove: () => {
-        setContainer(null);
-      },
-      getDefaultPosition: () => props.position
-    } as IControl),
+    () =>
+      ({
+        onAdd: () => {
+          const div = document.createElement("div");
+          div.className = "maplibregl-ctrl";
+          setContainer(div);
+          return div;
+        },
+        onRemove: () => {
+          setContainer(null);
+        },
+        getDefaultPosition: () => props.position,
+      }) as IControl,
     {
-      position: props.position
-    }
+      position: props.position,
+    },
   );
 
   if (!container) return null;
@@ -92,14 +104,14 @@ function LegendControl(props: LegendControlProps) {
         onClick={props.onClick}
         title="Leyenda y filtros"
         style={{
-          cursor: 'pointer',
-          color: props.isOpen ? '#3b82f6' : '#4b5563'
+          cursor: "pointer",
+          color: props.isOpen ? "#3b82f6" : "#4b5563",
         }}
       >
         <LayersIcon />
       </button>
     </div>,
-    container
+    container,
   );
 }
 

@@ -4,12 +4,12 @@ import { GeoDataService } from "@worker/application/services/geo_data_service";
 
 const mockRepository: GeoDataRepository = {
   getData: vi.fn(async (key: string) => {
-    if (key === 'aggregated-first.json') {
-      return createStream({ data: 'test-data' }); 
+    if (key === "aggregated-first.json") {
+      return createStream({ data: "test-data" });
     }
     return null;
-  })
-}
+  }),
+};
 
 async function consumeStream<T>(jsonStream: ReadableStream<T>): T {
   const response = new Response(jsonStream);
@@ -28,32 +28,36 @@ function createStream<T>(data: T): ReadableStream<Uint8Array> {
   });
 }
 
-describe('Geo data service', () => {
+describe("Geo data service", () => {
   beforeEach(() => {
-    vi.clearAllMocks(); 
+    vi.clearAllMocks();
   });
 
-  it('should return data', async () => {
+  it("should return data", async () => {
     const service = new GeoDataService(mockRepository);
-    const stream = await service.getData('aggregated-first.json');
+    const stream = await service.getData("aggregated-first.json");
 
     expect(await consumeStream(stream)).toEqual({
-        data: 'test-data'
+      data: "test-data",
     });
-    expect(mockRepository.getData).toHaveBeenCalledWith('aggregated-first.json');
+    expect(mockRepository.getData).toHaveBeenCalledWith(
+      "aggregated-first.json",
+    );
   });
 
-  it('should return null when repository returns no data', async () => {
+  it("should return null when repository returns no data", async () => {
     const service = new GeoDataService(mockRepository);
-    const stream = await service.getData('aggregated-notfound.json');
+    const stream = await service.getData("aggregated-notfound.json");
 
     expect(stream).toBeNull();
-    expect(mockRepository.getData).toHaveBeenCalledWith('aggregated-notfound.json');
+    expect(mockRepository.getData).toHaveBeenCalledWith(
+      "aggregated-notfound.json",
+    );
   });
 
-  it('should return null if key does not start with aggregated-', async () => {
+  it("should return null if key does not start with aggregated-", async () => {
     const service = new GeoDataService(mockRepository);
-    const stream = await service.getData('other.json');
+    const stream = await service.getData("other.json");
 
     expect(stream).toBeNull();
     expect(mockRepository.getData).not.toHaveBeenCalled();

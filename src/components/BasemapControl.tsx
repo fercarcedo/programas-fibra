@@ -28,7 +28,7 @@ function BasemapControl(props: BasemapControlProps) {
       }) as IControl,
     {
       position: props.position,
-    }
+    },
   );
 
   if (!container) return null;
@@ -75,7 +75,7 @@ function BasemapControl(props: BasemapControlProps) {
         </>
       )}
     </button>,
-    container
+    container,
   );
 }
 
