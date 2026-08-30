@@ -257,7 +257,8 @@ describe("SearchControl", () => {
     };
 
     beforeEach(() => {
-      // the history entry is only taken on the screens the bar takes over
+      window.history.replaceState(null, "");
+      // the history entry is only taken on the touchscreens the bar takes over
       vi.stubGlobal(
         "matchMedia",
         vi.fn(() => ({ matches: true })),
@@ -373,6 +374,23 @@ describe("SearchControl", () => {
       await reopen();
 
       expect(window.history.state?.pfSearchOpen).toBe(true);
+    });
+
+    it("leaves the back button to the page where there is no touchscreen", async () => {
+      vi.stubGlobal(
+        "matchMedia",
+        vi.fn(() => ({ matches: false })),
+      );
+      renderWithMap();
+
+      await reopen();
+
+      // in a small desktop window the back button still belongs to the page
+      expect(window.history.state?.pfSearchOpen).toBeUndefined();
+      // width alone would not have told the two apart
+      expect(window.matchMedia).toHaveBeenCalledWith(
+        expect.stringContaining("pointer: coarse"),
+      );
     });
 
     it("closes the bar when the back gesture pops its history entry", async () => {

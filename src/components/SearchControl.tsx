@@ -61,7 +61,9 @@ const BACK_ARROW_ICON =
 const EDITING_CLASS = "pf-search-editing";
 const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
 const SEARCH_HISTORY_STATE = "pfSearchOpen";
-const NARROW_SCREEN = "(max-width: 640px)";
+// Narrow alone would take the back button over in a small desktop window too,
+// where it belongs to the page rather than to whatever is open on top of it.
+const TOUCH_SCREEN = "(max-width: 640px) and (pointer: coarse)";
 
 /**
  * Drives the three states the search bar moves through on narrow screens, which
@@ -154,13 +156,14 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
 
     // An open search bar is the sort of thing a phone's back gesture is expected
     // to close, so it takes a history entry of its own while it is open, and
-    // gives it back on the way out however it was closed.
-    const narrowScreen = window.matchMedia(NARROW_SCREEN);
+    // gives it back on the way out however it was closed. The entry carries no
+    // URL of its own, so going back stays on the page and only closes the bar.
+    const touchScreen = window.matchMedia(TOUCH_SCREEN);
     let pushedHistoryEntry = false;
 
     const syncHistoryEntry = () => {
       if (isOpen()) {
-        if (pushedHistoryEntry || !narrowScreen.matches) return;
+        if (pushedHistoryEntry || !touchScreen.matches) return;
         window.history.pushState({ [SEARCH_HISTORY_STATE]: true }, "");
         pushedHistoryEntry = true;
         return;
