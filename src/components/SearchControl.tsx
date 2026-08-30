@@ -110,6 +110,26 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
     const onFocus = () => geocoderEl.classList.add(EDITING_CLASS);
     const onBlur = () => geocoderEl.classList.remove(EDITING_CLASS);
 
+    // Reopening a bar left with a query in it also re-triggers the geocoder's
+    // own suggestions list, from a click listener of its own on the container,
+    // at the exact same tap that starts the collapsed-to-open width transition
+    // — so the list draws itself at whatever width the bar happens to be at
+    // that instant, and only catches up once the transition ends two frames
+    // later. The browser fires focus on mousedown, well before click, so by the
+    // time any click handler runs the geocoder's own focus listener has already
+    // un-collapsed the bar — checking isOpen() there is already too late. A
+    // capture-phase listener for focus itself runs ahead of that: focus does
+    // not bubble, but capture still reaches every ancestor on the way down to
+    // the input, before any of the input's own listeners, geocoder's included.
+    const onFocusCapture = (event: FocusEvent) => {
+      if (event.target === input && !isOpen())
+        geocoderEl.classList.add("pf-search-resizing");
+    };
+    const onWidthTransitionEnd = (event: TransitionEvent) => {
+      if (event.propertyName === "width" || event.propertyName === "min-width")
+        geocoderEl.classList.remove("pf-search-resizing");
+    };
+
     const backButton = document.createElement("button");
     backButton.type = "button";
     backButton.className = "pf-geocoder-back";
@@ -200,6 +220,9 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       attributeFilter: ["class"],
     });
     window.addEventListener("popstate", onPopState);
+    geocoderEl.addEventListener("focus", onFocusCapture, true);
+    geocoderEl.addEventListener("transitionend", onWidthTransitionEnd);
+    geocoderEl.addEventListener("transitioncancel", onWidthTransitionEnd);
 
     return () => {
       backButton.removeEventListener("click", onBackButtonClick);
@@ -212,6 +235,9 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       geocoder?.off("result", onResult);
       openState.disconnect();
       window.removeEventListener("popstate", onPopState);
+      geocoderEl.removeEventListener("focus", onFocusCapture, true);
+      geocoderEl.removeEventListener("transitionend", onWidthTransitionEnd);
+      geocoderEl.removeEventListener("transitioncancel", onWidthTransitionEnd);
     };
   }, [map, geocoder]);
 };

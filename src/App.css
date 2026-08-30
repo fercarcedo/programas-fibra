@@ -35,6 +35,15 @@
   display: none !important;
 }
 
+/* Reopening a bar left with a query re-triggers the geocoder's own suggestions
+   list at the exact moment the collapsed-to-open width transition starts, so it
+   draws itself at whatever width the bar happens to be mid-animation. Hiding it
+   for the transition's duration means it only ever appears already the right
+   width, however it came to be shown. */
+.pf-search-resizing .suggestions-wrapper {
+  display: none;
+}
+
 /* The corner controls are shorter than the search bar, and both corners start
    at the same offset, so left to themselves they sit high against it. Giving
    their row the bar's height centres them on it: on the search icon while the

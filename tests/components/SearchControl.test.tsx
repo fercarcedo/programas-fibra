@@ -314,6 +314,55 @@ describe("SearchControl", () => {
       expect(geocoderEl.classList.contains(EDITING_CLASS)).toBe(false);
     });
 
+    it("hides the suggestions list while reopening from collapsed", () => {
+      renderWithMap();
+      geocoderEl.classList.add(COLLAPSED_CLASS);
+
+      // the browser fires focus itself, ahead of anything the geocoder's own
+      // un-collapse listener does in response to the same event
+      input.focus();
+
+      expect(geocoderEl.classList.contains("pf-search-resizing")).toBe(true);
+    });
+
+    it("does not hide the suggestions list for a focus that isn't reopening it", () => {
+      renderWithMap();
+      // already open: this focus isn't the one un-collapsing the bar
+      geocoderEl.classList.remove(COLLAPSED_CLASS);
+
+      input.focus();
+
+      expect(geocoderEl.classList.contains("pf-search-resizing")).toBe(false);
+    });
+
+    it("reveals the suggestions list once the width transition ends", () => {
+      renderWithMap();
+      geocoderEl.classList.add(COLLAPSED_CLASS);
+      input.focus();
+      expect(geocoderEl.classList.contains("pf-search-resizing")).toBe(true);
+
+      const transitionEnd = new Event("transitionend");
+      Object.defineProperty(transitionEnd, "propertyName", { value: "width" });
+      geocoderEl.dispatchEvent(transitionEnd);
+
+      expect(geocoderEl.classList.contains("pf-search-resizing")).toBe(false);
+    });
+
+    it("ignores transitions on properties other than width", () => {
+      renderWithMap();
+      geocoderEl.classList.add(COLLAPSED_CLASS);
+      input.focus();
+
+      const transitionEnd = new Event("transitionend");
+      Object.defineProperty(transitionEnd, "propertyName", {
+        value: "opacity",
+      });
+      geocoderEl.dispatchEvent(transitionEnd);
+
+      // still resizing: opacity finishing says nothing about width
+      expect(geocoderEl.classList.contains("pf-search-resizing")).toBe(true);
+    });
+
     it("holds on to the focus while the back button is pressed", () => {
       renderWithMap();
       const mousedown = new MouseEvent("mousedown", {
