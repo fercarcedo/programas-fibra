@@ -198,9 +198,29 @@ describe("SearchControl", () => {
     const EDITING_CLASS = "pf-search-editing";
     let geocoderEl: HTMLElement;
     let input: HTMLInputElement;
+    let clearButton: HTMLElement;
 
     const clickBackButton = () =>
       geocoderEl.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+
+    // the press is what tells the bar whether a result is being dropped or a
+    // half-typed query, so a bare click() would not stand in for a real tap
+    const pressClearButton = () => {
+      clearButton.dispatchEvent(
+        new MouseEvent("mousedown", { bubbles: true, cancelable: true }),
+      );
+      clearButton.click();
+    };
+
+    // MutationObserver callbacks arrive as microtasks
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+    const reopen = async () => {
+      geocoderEl.classList.add(COLLAPSED_CLASS);
+      await flush();
+      geocoderEl.classList.remove(COLLAPSED_CLASS);
+      await flush();
+    };
 
     const emitResult = () => {
       const [, onResult] =
@@ -221,6 +241,9 @@ describe("SearchControl", () => {
 
       geocoderEl = mapContainer.querySelector(".maplibregl-ctrl-geocoder")!;
       input = mapContainer.querySelector(".maplibregl-ctrl-geocoder--input")!;
+      clearButton = mapContainer.querySelector(
+        ".maplibregl-ctrl-geocoder--button",
+      )!;
 
       return render(
         <SearchControl
@@ -233,7 +256,16 @@ describe("SearchControl", () => {
       );
     };
 
+    beforeEach(() => {
+      // the history entry is only taken on the screens the bar takes over
+      vi.stubGlobal(
+        "matchMedia",
+        vi.fn(() => ({ matches: true })),
+      );
+    });
+
     afterEach(() => {
+      vi.unstubAllGlobals();
       mocks.mapContainer?.remove();
       mocks.mapContainer = null;
       mocks.geocoder = null;
@@ -311,6 +343,45 @@ describe("SearchControl", () => {
       expect(document.activeElement).not.toBe(input);
       expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(false);
       expect(geocoderEl.classList.contains(EDITING_CLASS)).toBe(false);
+    });
+
+    it("puts the bar away rather than reopening it when a result is dropped", () => {
+      renderWithMap();
+      // a committed result: on screen, but not being typed into
+      input.value = "Oviedo, Asturias, España";
+
+      pressClearButton();
+
+      // the geocoder refocuses the field as it clears, which would otherwise
+      // leave the bar open for a search that was never asked for
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
+    });
+
+    it("leaves the bar open when it is cleared mid-query", () => {
+      renderWithMap();
+      input.focus();
+      input.value = "Ovi";
+
+      pressClearButton();
+
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(false);
+    });
+
+    it("takes a history entry while the bar is open", async () => {
+      renderWithMap();
+
+      await reopen();
+
+      expect(window.history.state?.pfSearchOpen).toBe(true);
+    });
+
+    it("closes the bar when the back gesture pops its history entry", async () => {
+      renderWithMap();
+      await reopen();
+
+      window.dispatchEvent(new PopStateEvent("popstate"));
+
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
     });
 
     it("stops listening for results when unmounted", () => {
