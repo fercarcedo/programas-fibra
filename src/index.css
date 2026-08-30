@@ -12,8 +12,8 @@ body {
 }
 
 @font-face {
-  font-family: 'Material Icons';
-  src: url('./assets/fonts/material-icons-subset.woff2') format('woff2');
+  font-family: "Material Icons";
+  src: url("./assets/fonts/material-icons-subset.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
 }

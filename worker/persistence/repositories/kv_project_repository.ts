@@ -1,6 +1,6 @@
 import type { Project, ProjectsStatus } from "../../application/domain/project";
 import type { ProjectRepository } from "../../application/repositories/project_repository";
-import type { Env } from '../../types';
+import type { Env } from "../../types";
 import { toDomain } from "../mapper/project_mapper";
 import { toDomain as toProjectStatusInfoDomain } from "../mapper/project_status_mapper";
 import type { ProjectKV } from "../model/project_kv";
@@ -24,7 +24,10 @@ export class KVProjectRepository implements ProjectRepository {
   }
 
   async getProjectsStatus(): Promise<ProjectsStatus | null> {
-    const statusData = await this.env.PROJECTS.get<ProjectsStatusInfoKV>("projects-status", "json");
+    const statusData = await this.env.PROJECTS.get<ProjectsStatusInfoKV>(
+      "projects-status",
+      "json",
+    );
     if (!statusData) {
       return null;
     }

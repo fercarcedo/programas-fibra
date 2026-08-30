@@ -4,7 +4,11 @@ import MaplibreGeocoder, {
   type MaplibreGeocoderFeatureResults,
 } from "@maplibre/maplibre-gl-geocoder";
 import "@maplibre/maplibre-gl-geocoder/dist/maplibre-gl-geocoder.css";
-import { useControl, useMap, type ControlPosition } from "react-map-gl/maplibre";
+import {
+  useControl,
+  useMap,
+  type ControlPosition,
+} from "react-map-gl/maplibre";
 import maplibregl from "maplibre-gl";
 import { useEffect } from "react";
 import search from "../api/nominatim";

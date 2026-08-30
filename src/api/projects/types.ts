@@ -7,11 +7,11 @@ export interface ProjectAward {
   technology: string;
 }
 
-export type ProjectStatus = 'in_progress' | 'finished' | 'cancelled';
+export type ProjectStatus = "in_progress" | "finished" | "cancelled";
 
 export interface ProjectsStatusSummaryInfo {
-    status: ProjectStatus;
-    deadline: string | null;
+  status: ProjectStatus;
+  deadline: string | null;
 }
 
 export interface ProjectsStatusSummary {

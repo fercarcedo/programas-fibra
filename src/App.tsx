@@ -15,14 +15,18 @@ import { type MapViewState, type PickingInfo } from "@deck.gl/core";
 import { H3HexagonLayer, MVTLayer } from "@deck.gl/geo-layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import type { MapboxOverlayProps } from "@deck.gl/mapbox";
-import { DataFilterExtension } from '@deck.gl/extensions';
+import { DataFilterExtension } from "@deck.gl/extensions";
 import type { Feature, Geometry } from "geojson";
 import type { AreaProperties } from "./api/areas/types";
 import AreaPopup from "./components/AreaPopup";
 import centroid from "@turf/centroid";
-import { getOperatorColor, getOperatorKey, getProgramColor } from "./map/colors";
+import {
+  getOperatorColor,
+  getOperatorKey,
+  getProgramColor,
+} from "./map/colors";
 import LegendControl from "./components/LegendControl";
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence } from "motion/react";
 import LegendPanel from "./components/LegendPanel";
 import { useProjectsStatus } from "./api/projects";
 
@@ -82,7 +86,9 @@ function App() {
     setMapLoaded(true);
   }, []);
 
-  const handleLayerClick = (info: PickingInfo<Feature<Geometry, AreaProperties>>) => {
+  const handleLayerClick = (
+    info: PickingInfo<Feature<Geometry, AreaProperties>>,
+  ) => {
     if (info.object && info.coordinate) {
       const polygonCentroid = centroid(info.object);
       const [lon, lat] = polygonCentroid.geometry.coordinates;
@@ -104,8 +110,12 @@ function App() {
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [fontLoaded, setFontLoaded] = useState(false);
   const [isLegendOpen, setLegendOpen] = useState(false);
-  const [selectedOperators, setSelectedOperators] = useState<Set<string>>(new Set());
-  const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(new Set());
+  const [selectedOperators, setSelectedOperators] = useState<Set<string>>(
+    new Set(),
+  );
+  const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(
+    new Set(),
+  );
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [basemap, setBasemap] = useState<"map" | "satellite">("map");
   const { data: statusSummary } = useProjectsStatus();
@@ -131,8 +141,10 @@ function App() {
 
     // --- FAST PATH ---------------------------------------
     // Check if we are showing EVERYTHING (either via empty set or full set)
-    const isAllOperators = selectedOperators.size === 0 || selectedOperators.size === allOpsSize;
-    const isAllPrograms = selectedPrograms.size === 0 || selectedPrograms.size === allProgsSize;
+    const isAllOperators =
+      selectedOperators.size === 0 || selectedOperators.size === allOpsSize;
+    const isAllPrograms =
+      selectedPrograms.size === 0 || selectedPrograms.size === allProgsSize;
     const isAllStatus = !selectedStatus;
 
     if (isAllOperators && isAllPrograms && isAllStatus) {
@@ -145,7 +157,9 @@ function App() {
     // Iterate over the grantees (keys of 'counts')
     for (const opName in d.counts) {
       // 1. Check Operator Filter
-      const opVisible = selectedOperators.size === 0 || selectedOperators.has(getOperatorKey(opName));
+      const opVisible =
+        selectedOperators.size === 0 ||
+        selectedOperators.has(getOperatorKey(opName));
 
       if (opVisible) {
         const programs = d.counts[opName];
@@ -153,7 +167,9 @@ function App() {
         // 2. Iterate over Programs
         for (const progName in programs) {
           // Check Program Filter
-          const progVisible = selectedPrograms.size === 0 || selectedPrograms.has(progName.toUpperCase().replace(" ", "_"));
+          const progVisible =
+            selectedPrograms.size === 0 ||
+            selectedPrograms.has(progName.toUpperCase().replace(" ", "_"));
 
           if (progVisible) {
             const programData = programs[progName];
@@ -171,7 +187,7 @@ function App() {
     }
 
     return sum;
-  }
+  };
 
   const mapLayers =
     viewState.zoom < 9
@@ -184,7 +200,12 @@ function App() {
             getHexagon: (d: AggregatedHexagonData) => d.h3Index,
             getElevation: 0,
             getFillColor: (d: AggregatedHexagonData) => {
-              const val = getH3Value(d, selectedOperators, selectedPrograms, selectedStatus);
+              const val = getH3Value(
+                d,
+                selectedOperators,
+                selectedPrograms,
+                selectedStatus,
+              );
 
               if (val === 0) {
                 return [0, 0, 0, 0];
@@ -200,15 +221,21 @@ function App() {
               blendEquation: 32774,
             },
             updateTriggers: {
-              getFillColor: [selectedOperators, selectedPrograms, selectedStatus],
-            }
+              getFillColor: [
+                selectedOperators,
+                selectedPrograms,
+                selectedStatus,
+              ],
+            },
           }),
         ]
       : [
           new MVTLayer({
             id: "fiber-layer",
             sourceLayer: "output",
-            data: ["https://tiles.programasfibra.es/output-b018afb40a/{z}/{x}/{y}"],
+            data: [
+              "https://tiles.programasfibra.es/output-b018afb40a/{z}/{x}/{y}",
+            ],
             minZoom: 0,
             maxZoom: 18,
             filled: true,
@@ -243,39 +270,51 @@ function App() {
               getOperatorColor(feature.properties.grantee ?? "", 128),
             getTextAnchor: "middle",
             getTextAlignmentBaseline: "center",
-            extensions: [new DataFilterExtension({filterSize: 1})],
+            extensions: [new DataFilterExtension({ filterSize: 1 })],
             getFilterValue: (feature: FiberFeature) => {
               const grantee = feature.properties.grantee ?? "";
               const normalizedProgramName = feature.properties.program_name
                 ?.toUpperCase()
                 .replace(" ", "_");
-              const enabledOperator = selectedOperators.size === 0 ||
-                                      selectedOperators.has(getOperatorKey(grantee));
+              const enabledOperator =
+                selectedOperators.size === 0 ||
+                selectedOperators.has(getOperatorKey(grantee));
 
-              const enabledProgram = selectedPrograms.size === 0 ||
-                                    selectedPrograms.has(normalizedProgramName ?? "");
+              const enabledProgram =
+                selectedPrograms.size === 0 ||
+                selectedPrograms.has(normalizedProgramName ?? "");
 
               let enabledProjectStatus = true;
 
               if (selectedStatus && statusSummary) {
                 const projectId = feature.properties.project;
-                const projectData = projectId ? statusSummary[projectId] : undefined;
+                const projectData = projectId
+                  ? statusSummary[projectId]
+                  : undefined;
 
                 enabledProjectStatus = projectData?.status === selectedStatus;
               }
 
-              return (enabledOperator && enabledProgram && enabledProjectStatus) ? 1 : 0;
+              return enabledOperator && enabledProgram && enabledProjectStatus
+                ? 1
+                : 0;
             },
             filterRange: [1, 1],
             updateTriggers: {
               getText: fontLoaded,
-              getFilterValue: [selectedOperators, selectedPrograms, selectedStatus],
+              getFilterValue: [
+                selectedOperators,
+                selectedPrograms,
+                selectedStatus,
+              ],
             },
           }),
         ];
 
   const mapStyle = useMemo<StyleSpecification>(() => {
-    const protomapsLayers = layers("protomaps", namedFlavor("grayscale"), { lang: "es" });
+    const protomapsLayers = layers("protomaps", namedFlavor("grayscale"), {
+      lang: "es",
+    });
     const satelliteUnderlayLayerIds = new Set([
       "background",
       "earth",
@@ -283,12 +322,15 @@ function App() {
     ]);
 
     const satelliteUnderlayLayers = protomapsLayers.filter((layer) =>
-      satelliteUnderlayLayerIds.has(layer.id)
+      satelliteUnderlayLayerIds.has(layer.id),
     );
 
     const satelliteWaterMaskLayers = protomapsLayers
-      .filter((layer) =>
-        layer.id === "water" || layer.id === "water_stream" || layer.id === "water_river"
+      .filter(
+        (layer) =>
+          layer.id === "water" ||
+          layer.id === "water_stream" ||
+          layer.id === "water_river",
       )
       .map((layer) => {
         if (layer.type === "fill") {
@@ -315,7 +357,9 @@ function App() {
       });
 
     const protomapsLabelLayers = protomapsLayers
-      .filter((layer) => layer.type === "symbol" && layer.id.startsWith("places_"))
+      .filter(
+        (layer) => layer.type === "symbol" && layer.id.startsWith("places_"),
+      )
       .map((layer) => ({
         ...layer,
         paint: {
@@ -330,10 +374,8 @@ function App() {
     if (basemap === "satellite") {
       return {
         version: 8 as const,
-        glyphs:
-          `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
-        sprite:
-          `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
+        glyphs: `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
+        sprite: `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
         sources: {
           protomaps: {
             type: "vector" as const,
@@ -371,16 +413,12 @@ function App() {
 
     return {
       version: 8 as const,
-      glyphs:
-        `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
-      sprite:
-        `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
+      glyphs: `${window.location.origin}/map-assets/fonts/v1/{fontstack}/{range}.pbf`,
+      sprite: `${window.location.origin}/map-assets/sprites/v4.1/grayscale`,
       sources: {
         protomaps: {
           type: "vector" as const,
-          tiles: [
-            "https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}",
-          ],
+          tiles: ["https://tiles.programasfibra.es/map-3a858e9500/{z}/{x}/{y}"],
           maxzoom: 15,
         },
       },
@@ -400,9 +438,9 @@ function App() {
             '<a href="https://protomaps.com/" target="_blank">© Protomaps</a>',
             '<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
             '<a href="https://www.ign.es/" target="_blank">IGN PNOA</a>',
-            '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx" target="_blank">Datos: SETELECO</a>'
-          ].join(' | '),
-          compact: true
+            '<a href="https://avance.digital.gob.es/banda-ancha/ayudas/Paginas/ayudas-publicas.aspx" target="_blank">Datos: SETELECO</a>',
+          ].join(" | "),
+          compact: true,
         }}
         renderWorldCopies={false}
         maxBounds={[-19.116211, 26.824071, 7.954102, 44.527843]}
@@ -424,12 +462,26 @@ function App() {
           position="top-right"
           isOpen={isLegendOpen}
           basemap={basemap}
-          onBasemapToggle={() => setBasemap(basemap === "map" ? "satellite" : "map")}
-          onClick={() => {setLegendOpen(!isLegendOpen)}}
+          onBasemapToggle={() =>
+            setBasemap(basemap === "map" ? "satellite" : "map")
+          }
+          onClick={() => {
+            setLegendOpen(!isLegendOpen);
+          }}
         />
 
         <AnimatePresence>
-          {isLegendOpen && <LegendPanel onClose={() => setLegendOpen(false)} selectedOperators={selectedOperators} setSelectedOperators={setSelectedOperators} selectedPrograms={selectedPrograms} setSelectedPrograms={setSelectedPrograms} selectedStatus={selectedStatus} setSelectedStatus={setSelectedStatus} />}
+          {isLegendOpen && (
+            <LegendPanel
+              onClose={() => setLegendOpen(false)}
+              selectedOperators={selectedOperators}
+              setSelectedOperators={setSelectedOperators}
+              selectedPrograms={selectedPrograms}
+              setSelectedPrograms={setSelectedPrograms}
+              selectedStatus={selectedStatus}
+              setSelectedStatus={setSelectedStatus}
+            />
+          )}
         </AnimatePresence>
 
         {mapLoaded && <DeckGLOverlay layers={[mapLayers]} interleaved={true} />}

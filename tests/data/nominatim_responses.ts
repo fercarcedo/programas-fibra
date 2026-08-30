@@ -15,7 +15,8 @@ export const MOCK_NOMINATIM_RESPONSE_SUCCESS: NominatimSearchResponse[] = [
     importance: 0.62025,
     addresstype: "place",
     name: "Strada Pictor Alexandru Romano",
-    display_name: "17, Strada Pictor Alexandru Romano, Bukarest, Bucharest, Sector 2, Bucharest, 023964, Romania",
-    boundingbox: ["26.1156689", "44.4354754", "26.1157689", "44.4355754"]
-  }
+    display_name:
+      "17, Strada Pictor Alexandru Romano, Bukarest, Bucharest, Sector 2, Bucharest, 023964, Romania",
+    boundingbox: ["26.1156689", "44.4354754", "26.1157689", "44.4355754"],
+  },
 ];

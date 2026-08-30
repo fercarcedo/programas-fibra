@@ -7,13 +7,16 @@ export interface GetDataRouterRequest extends IRequest {
   };
 }
 
-export async function getData(request: GetDataRouterRequest, geoDataService: GeoDataService) {
+export async function getData(
+  request: GetDataRouterRequest,
+  geoDataService: GeoDataService,
+) {
   const key = request.params.key;
   const object = await geoDataService.getData(key);
 
   if (!object) {
     console.warn(`Data not found for key: ${key}`);
-    return new Response('Not found', { status: 404 });
+    return new Response("Not found", { status: 404 });
   }
 
   const ifNoneMatch = request.headers.get("If-None-Match");
@@ -25,9 +28,9 @@ export async function getData(request: GetDataRouterRequest, geoDataService: Geo
 
   return new Response(object, {
     headers: {
-      'content-type': 'application/json; charset=UTF-8',
-      'etag': etag!,
-      'cache-control': 'no-cache',
+      "content-type": "application/json; charset=UTF-8",
+      etag: etag!,
+      "cache-control": "no-cache",
     },
   });
 }

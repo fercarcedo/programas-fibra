@@ -78,14 +78,16 @@ function AreaPropertyRow(props: AreaPropertyRowProps) {
   );
 }
 
-
-const getProjectStatus = (id: string, projectsStatusData: ProjectsStatusSummary) => {
+const getProjectStatus = (
+  id: string,
+  projectsStatusData: ProjectsStatusSummary,
+) => {
   if (projectsStatusData[id]) return projectsStatusData[id];
 
-  const parts = id.split('-');
+  const parts = id.split("-");
   if (parts.length > 0) {
-    parts[parts.length - 1] = parts[parts.length - 1].replace(/^0+/, '');
-    const normalizedId = parts.join('-');
+    parts[parts.length - 1] = parts[parts.length - 1].replace(/^0+/, "");
+    const normalizedId = parts.join("-");
 
     return projectsStatusData[normalizedId];
   }
@@ -98,14 +100,16 @@ function AreaPopup(props: AreaPopupProps) {
   const {
     isPending: isPendingProjectsStatus,
     error: projectsStatusError,
-    data: projectsStatusData
+    data: projectsStatusData,
   } = useProjectsStatus();
 
   const autonomousCommunity = normalizeGeoName(props.data.autonomous_community);
   const province = normalizeGeoName(props.data.province);
   const town = normalizeGeoName(props.data.town);
 
-  const projectStatus = projectsStatusData ? getProjectStatus(props.data.project, projectsStatusData) : null;
+  const projectStatus = projectsStatusData
+    ? getProjectStatus(props.data.project, projectsStatusData)
+    : null;
 
   return (
     <Popup
@@ -117,7 +121,9 @@ function AreaPopup(props: AreaPopupProps) {
       closeOnClick={false}
     >
       <div>
-        <h2 className="text-lg font-semibold max-w-[240px]">{props.data.grantee}</h2>
+        <h2 className="text-lg font-semibold max-w-[240px]">
+          {props.data.grantee}
+        </h2>
         <h3 className="text-base font-medium pb-4">
           {props.data.program_name}
         </h3>
@@ -181,14 +187,19 @@ function AreaPopup(props: AreaPopupProps) {
               value={props.data.project}
               expandable={true}
             >
-              {(isPending || isPendingProjectsStatus) ? (
+              {isPending || isPendingProjectsStatus ? (
                 <p>Cargando...</p>
-              ) : (error || projectsStatusError) ? (<span>Error al cargar los datos del proyecto</span>) : (
+              ) : error || projectsStatusError ? (
+                <span>Error al cargar los datos del proyecto</span>
+              ) : (
                 <div className="p-4 bg-gray-50 border-t">
                   <table className="w-full">
                     <tbody>
                       {projectStatus?.status && (
-                        <AreaPropertyRow name="Estado" value={STATUS_LABELS[projectStatus.status]} />
+                        <AreaPropertyRow
+                          name="Estado"
+                          value={STATUS_LABELS[projectStatus.status]}
+                        />
                       )}
                       <AreaPropertyRow
                         name="Presupuesto financiable"

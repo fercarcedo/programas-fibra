@@ -16,6 +16,7 @@ export default tseslint.config(
 
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: ["tests/**/*.{ts,tsx}", "vitest.config.ts"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -35,6 +36,21 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+    },
+  },
+
+  {
+    // Test files live outside the app/worker tsconfig projects (they're not
+    // part of the production build), so they get their own tsconfig here
+    // rather than being pulled into `tsc -b`.
+    files: ["tests/**/*.{ts,tsx}", "vitest.config.ts"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        project: ["./tsconfig.test.json"],
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
   },
 );

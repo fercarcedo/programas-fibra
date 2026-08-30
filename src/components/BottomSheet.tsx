@@ -16,21 +16,24 @@ export const BottomSheet = ({
 }: BottomSheetProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const dragControls = useDragControls();
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const windowHeight = typeof window !== "undefined" ? window.innerHeight : 800;
   const variants = {
     mobile: {
       closed: { y: windowHeight },
       collapsed: { y: windowHeight * 0.4 },
-      expanded: { y: 0 }
+      expanded: { y: 0 },
     },
     desktop: {
       closed: { x: "100%", y: 0 },
-      open: { x: 0, y: 0 }
-    }
+      open: { x: 0, y: 0 },
+    },
   };
 
-  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const handleDragEnd = (
+    _: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => {
     if (!isMobile) return;
 
     const velocity = info.velocity.y;
@@ -38,8 +41,7 @@ export const BottomSheet = ({
 
     if (velocity < -300 || offset < -50) {
       setIsExpanded(true);
-    }
-    else if (velocity > 300 || offset > 50) {
+    } else if (velocity > 300 || offset > 50) {
       if (isExpanded) {
         setIsExpanded(false);
       } else {
@@ -86,7 +88,8 @@ export const BottomSheet = ({
       <div
         className="flex-1 overflow-y-auto p-5 space-y-8 touch-pan-y"
         style={{
-          paddingBottom: isMobile && !isExpanded ? "calc(40dvh + 20px)" : "20px",
+          paddingBottom:
+            isMobile && !isExpanded ? "calc(40dvh + 20px)" : "20px",
         }}
       >
         {children}

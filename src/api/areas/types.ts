@@ -1,4 +1,4 @@
-export type AreaType = 'town' | 'area';
+export type AreaType = "town" | "area";
 
 export interface AreaProperties {
   type: AreaType;

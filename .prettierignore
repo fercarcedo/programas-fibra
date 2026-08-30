@@ -1,3 +1,13 @@
 # Ignore artifacts:
 build
 coverage
+dist
+
+# Vendored / generated, not meant to be hand-edited
+.venv
+.pytest_cache
+__pycache__
+package-lock.json
+uv.lock
+worker-configuration.d.ts
+public/map-assets/
