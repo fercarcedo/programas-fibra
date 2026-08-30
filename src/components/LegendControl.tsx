@@ -48,7 +48,7 @@ function LegendControl(props: LegendControlProps) {
         type="button"
         onClick={props.onBasemapToggle}
         title={`Cambiar a ${props.basemap === "map" ? "satélite" : "mapa"}`}
-        className="pf-map-btn h-[29px] px-3 rounded-full border border-gray-200 bg-white shadow-md text-xs font-semibold leading-none text-gray-800 flex items-center gap-2 hover:border-gray-300"
+        className="pf-map-btn pf-basemap-btn h-[29px] px-3 rounded-full border border-gray-200 bg-white shadow-md text-xs font-semibold leading-none text-gray-800 flex items-center gap-2 hover:border-gray-300"
       >
         {props.basemap === "map" ? (
           <>
@@ -66,7 +66,7 @@ function LegendControl(props: LegendControlProps) {
               <path d="M19 12a7 7 0 0 1-14 0" />
               <path d="M12 3v2M12 19v2" />
             </svg>
-            Satélite
+            <span className="pf-basemap-label">Satélite</span>
           </>
         ) : (
           <>
@@ -81,7 +81,7 @@ function LegendControl(props: LegendControlProps) {
               <path d="M3 6.5 9 4l6 2.5L21 4v13.5L15 20l-6-2.5L3 20V6.5Z" />
               <path d="M9 4v13.5M15 6.5V20" />
             </svg>
-            Mapa
+            <span className="pf-basemap-label">Mapa</span>
           </>
         )}
       </button>
