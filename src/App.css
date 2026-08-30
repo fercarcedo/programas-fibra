@@ -27,6 +27,14 @@
   justify-content: center;
 }
 
+/* Going back leaves the query in the field, and with it the geocoder's inline
+   display on the clear (X) button, which would otherwise sit on top of the
+   magnifier on the collapsed pill. It comes back with the query when the bar is
+   reopened, so !important is only overriding that inline style. */
+.maplibregl-ctrl-geocoder--collapsed .maplibregl-ctrl-geocoder--button {
+  display: none !important;
+}
+
 .maplibregl-ctrl-top-right {
   transition:
     opacity 0.2s ease,
@@ -50,16 +58,15 @@
   }
 
   @supports selector(:has(*)) {
-    /* Open search takes the whole row and the corner controls step aside, so
-       the clear (X) button is never covered. */
-    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed) {
+    /* Only while the query is being typed does the search need the whole row.
+       Once a result has been picked the bar keeps the query but goes back to
+       the width above, which leaves the corner controls their room. */
+    .maplibregl-ctrl-geocoder.pf-search-editing {
       width: calc(100vw - 20px);
       max-width: none;
     }
 
-    .maplibregl-ctrl-top-left:has(
-        .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
-      )
+    .maplibregl-ctrl-top-left:has(.pf-search-editing)
       ~ .maplibregl-ctrl-top-right {
       opacity: 0;
       /* Not pointer-events: maplibre sets pointer-events: auto on the controls
@@ -69,20 +76,98 @@
       visibility: hidden;
     }
 
-    /* The magnifier gives way to the back arrow that dismisses the bar. */
-    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
+    /* The magnifier gives way to the back arrow that dismisses the bar, which
+       is only of use while there is a half-typed query to abandon. */
+    .pf-search-editing .maplibregl-ctrl-geocoder--icon-search {
+      display: none;
+    }
+
+    .pf-search-editing .pf-geocoder-back {
+      display: flex;
+    }
+
+    .pf-search-editing .maplibregl-ctrl-geocoder--input {
+      padding-left: 44px;
+    }
+
+    /* Once a result is showing, the magnifier has nothing left to say and the
+       basemap button can stand on its icon alone (its title carries the label),
+       which buys the place name most of the row while leaving a gap before the
+       pill. */
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):not(
+        .pf-search-editing
+      ) {
+      /* An explicit width rather than a cap: the control container shrinks to
+         fit, so a percentage width would settle on the content and leave the
+         gap growing with the screen. min-width is the geocoder's own 240px,
+         which on the narrowest phones would reach under the pill. */
+      width: calc(100vw - 102px);
+      min-width: 0;
+      max-width: none;
+    }
+
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):not(
+        .pf-search-editing
+      )
       .maplibregl-ctrl-geocoder--icon-search {
       display: none;
     }
 
-    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
-      .pf-geocoder-back {
-      display: flex;
+    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):not(
+        .pf-search-editing
+      )
+      .maplibregl-ctrl-geocoder--input {
+      padding-left: 14px;
     }
 
-    .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed)
-      .maplibregl-ctrl-geocoder--input {
-      padding-left: 44px;
+    .maplibregl-ctrl-top-left:has(
+        .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):not(
+            .pf-search-editing
+          )
+      )
+      ~ .maplibregl-ctrl-top-right
+      .pf-basemap-label {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    .maplibregl-ctrl-top-left:has(
+        .maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):not(
+            .pf-search-editing
+          )
+      )
+      ~ .maplibregl-ctrl-top-right
+      .pf-basemap-btn {
+      padding-left: 7px;
+      padding-right: 7px;
+      gap: 0;
     }
   }
+}
+
+.pf-basemap-label {
+  display: inline-block;
+  overflow: hidden;
+  max-width: 5rem;
+  opacity: 1;
+  white-space: nowrap;
+  transition:
+    max-width 0.2s ease,
+    opacity 0.15s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-basemap-label {
+    transition: none;
+  }
+}
+
+/* The X belongs with the query: the geocoder hides its own once a result is
+   picked, but the bar stays on screen showing that result and has to keep
+   offering a way to undo it. */
+.maplibregl-ctrl-geocoder:not(.maplibregl-ctrl-geocoder--collapsed):has(
+    .maplibregl-ctrl-geocoder--input:not(:placeholder-shown)
+  )
+  .maplibregl-ctrl-geocoder--button {
+  display: block !important;
 }
