@@ -160,6 +160,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: data-scraper/uv.lock
+      - run: uv sync --frozen
+      # `npm run deploy` proxies through pywrangler, which vendors
+      # pyproject.toml's dependencies (e.g. beautifulsoup4) into
+      # python_modules/ before deploying - plain `wrangler deploy` skips
+      # that step and ships a worker missing those imports.
       - run: npm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
