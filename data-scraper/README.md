@@ -1,26 +1,21 @@
 ## Usage
 
-You can run the Worker defined by your new project by executing `wrangler dev` in this
-directory. This will start up an HTTP server and will allow you to iterate on your
-Worker without having to restart `wrangler`.
+This is a Python Workers project, so `dev`/`deploy` go through
+[`pywrangler`](https://pypi.org/project/workers-py/) (`npm run dev` / `npm run deploy`)
+rather than plain `wrangler`. `pywrangler` vendors this project's `pyproject.toml`
+dependencies (via a Pyodide-targeted build) into `python_modules/` before proxying to
+`wrangler` — that vendoring step is what plain `wrangler deploy` skips, and skipping it is
+what produces a `ModuleNotFoundError` for a dependency like `bs4` at runtime.
 
-### Types and autocomplete
-
-This project also includes a pyproject.toml and uv.lock file with some requirements which
-set up autocomplete and type hints for this Python Workers project.
-
-To get these installed you'll need `uv`, which you can install by following
-https://docs.astral.sh/uv/getting-started/installation/.
-
-Once `uv` is installed, you can run the following:
+You'll need `uv`, which you can install by following
+https://docs.astral.sh/uv/getting-started/installation/. Then run:
 
 ```
-uv venv
 uv sync
 ```
 
-Then point your editor's Python plugin at the `.venv` directory. You should then have working
-autocomplete and type information in your editor.
+This installs `pywrangler` plus this project's dependencies into `.venv`, and also gives
+you working autocomplete/type hints if you point your editor's Python plugin at `.venv`.
 
 ## Secrets
 
