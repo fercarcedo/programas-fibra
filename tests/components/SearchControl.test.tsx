@@ -9,13 +9,16 @@ import maplibregl from "maplibre-gl";
 import search from "../../src/api/nominatim";
 import { MOCK_NOMINATIM_RESPONSE_SUCCESS } from "../data/nominatim_responses";
 
-// The back button looks the geocoder up through the map container, so the tests
-// that cover it hand a real one over here. The rest leave it unset, which keeps
-// the component's effect a no-op for them.
-const mocks = vi.hoisted(() => ({ mapContainer: null as HTMLElement | null }));
+// Dismissing the search bar reaches the geocoder through the map container and
+// through whatever useControl hands back, so the tests covering it supply both
+// here. The rest leave them unset, which keeps that effect a no-op for them.
+const mocks = vi.hoisted(() => ({
+  mapContainer: null as HTMLElement | null,
+  geocoder: null as { on: Mock; off: Mock; clear: Mock } | null,
+}));
 
 vi.mock("react-map-gl/maplibre", () => ({
-  useControl: vi.fn(),
+  useControl: vi.fn(() => mocks.geocoder),
   useMap: vi.fn(() => ({
     current: mocks.mapContainer
       ? { getContainer: () => mocks.mapContainer }
@@ -190,10 +193,19 @@ describe("SearchControl", () => {
     });
   });
 
-  describe("back button", () => {
+  describe("dismissing the search bar", () => {
     const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
-    let geocoder: HTMLElement;
+    let geocoderEl: HTMLElement;
     let input: HTMLInputElement;
+
+    const clickBackButton = () =>
+      geocoderEl.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+
+    const emitResult = () => {
+      const [, onResult] =
+        mocks.geocoder!.on.mock.calls.find(([type]) => type === "result") ?? [];
+      onResult();
+    };
 
     const renderWithMap = () => {
       const mapContainer = document.createElement("div");
@@ -203,8 +215,9 @@ describe("SearchControl", () => {
         "</div>";
       document.body.appendChild(mapContainer);
       mocks.mapContainer = mapContainer;
+      mocks.geocoder = { on: vi.fn(), off: vi.fn(), clear: vi.fn() };
 
-      geocoder = mapContainer.querySelector(".maplibregl-ctrl-geocoder")!;
+      geocoderEl = mapContainer.querySelector(".maplibregl-ctrl-geocoder")!;
       input = mapContainer.querySelector(".maplibregl-ctrl-geocoder--input")!;
 
       return render(
@@ -221,46 +234,62 @@ describe("SearchControl", () => {
     afterEach(() => {
       mocks.mapContainer?.remove();
       mocks.mapContainer = null;
+      mocks.geocoder = null;
     });
 
     it("adds a back button to the geocoder", () => {
       renderWithMap();
 
-      const backButton = geocoder.querySelector(".pf-geocoder-back");
+      const backButton = geocoderEl.querySelector(".pf-geocoder-back");
 
       expect(backButton).not.toBeNull();
       expect(backButton?.getAttribute("aria-label")).toBe("Cerrar búsqueda");
     });
 
-    it("collapses the search bar but keeps the query when clicked", () => {
+    it("collapses the search bar but keeps the query when going back", () => {
       renderWithMap();
       input.value = "Oviedo";
 
-      geocoder.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+      clickBackButton();
 
-      expect(geocoder.classList.contains(COLLAPSED_CLASS)).toBe(true);
-      // dismissing the bar is not the same as clearing it, that is what the
-      // geocoder's own X button is for
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
+      // going back is not clearing, that is what the geocoder's own X is for
       expect(input.value).toBe("Oviedo");
+      expect(mocks.geocoder!.clear).not.toHaveBeenCalled();
     });
 
     it("keeps the click from reaching the geocoder container", () => {
       renderWithMap();
       // the geocoder reopens its suggestion list from a listener of its own
       const containerListener = vi.fn();
-      geocoder.addEventListener("click", containerListener);
+      geocoderEl.addEventListener("click", containerListener);
 
-      geocoder.querySelector<HTMLElement>(".pf-geocoder-back")!.click();
+      clickBackButton();
 
       expect(containerListener).not.toHaveBeenCalled();
     });
 
-    it("removes the back button when unmounted", () => {
+    it("clears and collapses the search bar once a result is picked", () => {
+      renderWithMap();
+      input.value = "Oviedo";
+
+      emitResult();
+
+      // the map has already travelled to the result, so the query is spent
+      expect(mocks.geocoder!.clear).toHaveBeenCalled();
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
+    });
+
+    it("stops listening for results when unmounted", () => {
       const { unmount } = renderWithMap();
 
       unmount();
 
-      expect(geocoder.querySelector(".pf-geocoder-back")).toBeNull();
+      expect(geocoderEl.querySelector(".pf-geocoder-back")).toBeNull();
+      expect(mocks.geocoder!.off).toHaveBeenCalledWith(
+        "result",
+        expect.any(Function),
+      );
     });
   });
 

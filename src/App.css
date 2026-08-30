@@ -27,6 +27,14 @@
   justify-content: center;
 }
 
+/* Going back leaves the query in the field, and with it the geocoder's inline
+   display on the clear (X) button, which would otherwise sit on top of the
+   magnifier on the collapsed pill. It comes back with the query when the bar is
+   reopened, so !important is only overriding that inline style. */
+.maplibregl-ctrl-geocoder--collapsed .maplibregl-ctrl-geocoder--button {
+  display: none !important;
+}
+
 .maplibregl-ctrl-top-right {
   transition:
     opacity 0.2s ease,

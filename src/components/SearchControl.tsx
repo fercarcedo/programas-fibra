@@ -55,24 +55,35 @@ const BACK_ARROW_ICON =
   '<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>';
 
 /**
- * Adds a back arrow to the geocoder so that on narrow screens closing the
- * search bar and clearing its contents are two separate actions: the arrow on
- * the left dismisses the bar, the existing X on the right only empties the
- * field. CSS decides when the arrow is visible.
+ * Takes care of dismissing the search bar. On narrow screens closing the bar
+ * and clearing its contents are two separate actions: the back arrow this adds
+ * on the left dismisses the bar and keeps the query, while the geocoder's own X
+ * on the right only empties the field. CSS decides when the arrow is visible.
+ *
+ * Picking a result also dismisses the bar, since the map has already travelled
+ * to the place being searched for and the query is spent.
  */
-const useBackButton = () => {
+const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
   const { current: map } = useMap();
 
   useEffect(() => {
     if (!map) return;
 
-    const geocoder = map
+    const geocoderEl = map
       .getContainer()
       .querySelector<HTMLElement>(".maplibregl-ctrl-geocoder");
-    const input = geocoder?.querySelector<HTMLInputElement>(
+    const input = geocoderEl?.querySelector<HTMLInputElement>(
       ".maplibregl-ctrl-geocoder--input",
     );
-    if (!geocoder || !input) return;
+    if (!geocoderEl || !input) return;
+
+    // Blurring alone does not close the bar: the geocoder only collapses itself
+    // while the field is empty, and it puts the focus back on the input after a
+    // result is picked. Collapse it here instead.
+    const dismiss = () => {
+      input.blur();
+      geocoderEl.classList.add("maplibregl-ctrl-geocoder--collapsed");
+    };
 
     const backButton = document.createElement("button");
     backButton.type = "button";
@@ -80,31 +91,38 @@ const useBackButton = () => {
     backButton.setAttribute("aria-label", "Cerrar búsqueda");
     backButton.innerHTML = BACK_ARROW_ICON;
 
-    const collapse = (event: MouseEvent) => {
+    const onBackButtonClick = (event: MouseEvent) => {
       event.preventDefault();
       // The geocoder listens for clicks on its own container to reopen the
       // suggestion list. That listener sits on an ancestor, so the event has to
       // be stopped here at the target to keep the list from popping back up.
       event.stopPropagation();
-      // Blurring alone does not close the bar: the geocoder only collapses
-      // itself while the field is empty. Collapse it here instead, which also
-      // keeps the query around for the next time the bar is opened.
-      input.blur();
-      geocoder.classList.add("maplibregl-ctrl-geocoder--collapsed");
+      // Going back is not clearing, so the query is left in place for the next
+      // time the bar is opened.
+      dismiss();
     };
 
-    backButton.addEventListener("click", collapse);
-    geocoder.prepend(backButton);
+    // Picking a result leaves a query that has already been travelled to, so
+    // the bar is emptied as well as closed.
+    const onResult = () => {
+      geocoder?.clear();
+      dismiss();
+    };
+
+    backButton.addEventListener("click", onBackButtonClick);
+    geocoderEl.prepend(backButton);
+    geocoder?.on("result", onResult);
 
     return () => {
-      backButton.removeEventListener("click", collapse);
+      backButton.removeEventListener("click", onBackButtonClick);
       backButton.remove();
+      geocoder?.off("result", onResult);
     };
-  }, [map]);
+  }, [map, geocoder]);
 };
 
 function SearchControl(props: SearchControlProps) {
-  useControl(
+  const geocoder = useControl<MaplibreGeocoder>(
     () => {
       const geocoderApi: MaplibreGeocoderApi = {
         forwardGeocode: async (config) => {
@@ -132,7 +150,7 @@ function SearchControl(props: SearchControlProps) {
     { position: props.position },
   );
 
-  useBackButton();
+  useDismissableSearchBar(geocoder);
 
   return null;
 }
