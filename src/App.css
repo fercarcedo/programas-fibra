@@ -35,11 +35,26 @@
   display: none !important;
 }
 
-/* Reopening a bar left with a query re-triggers the geocoder's own suggestions
-   list at the exact moment the collapsed-to-open width transition starts, so it
-   draws itself at whatever width the bar happens to be mid-animation. Hiding it
-   for the transition's duration means it only ever appears already the right
-   width, however it came to be shown. */
+/* The magnifier is drawn on top of the field and covers the middle of the
+   collapsed pill — exactly where a tap meant to open the bar lands. The icon
+   is not focusable, so such a tap never reaches the field, the geocoder never
+   sees the focus it un-collapses on, and the bar stays shut: the tap appears
+   to do nothing. Letting taps through to the field underneath is what makes
+   the pill open first time. */
+.maplibregl-ctrl-geocoder--icon-search {
+  pointer-events: none;
+}
+
+/* The geocoder redraws its cached suggestions from a click listener on its
+   container whether or not that click opened the bar, so a tap the bar did not
+   act on could still leave the list on screen beneath a closed pill, at the
+   pill's width. The list has no business being visible while the bar is shut,
+   whatever the reason. */
+.maplibregl-ctrl-geocoder--collapsed .suggestions-wrapper,
+/* Reopening a bar left with a query re-triggers that same list at the moment
+   the collapsed-to-open width transition starts, so it would otherwise draw
+   itself at whatever width the bar is passing through. Hiding it for the
+   transition's duration means it only ever appears already the right width. */
 .pf-search-resizing .suggestions-wrapper {
   display: none;
 }
