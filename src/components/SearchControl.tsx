@@ -60,10 +60,6 @@ const BACK_ARROW_ICON =
 
 const EDITING_CLASS = "pf-search-editing";
 const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
-const SEARCH_HISTORY_STATE = "pfSearchOpen";
-// Narrow alone would take the back button over in a small desktop window too,
-// where it belongs to the page rather than to whatever is open on top of it.
-const TOUCH_SCREEN = "(max-width: 640px) and (pointer: coarse)";
 
 /**
  * Drives the three states the search bar moves through on narrow screens, which
@@ -77,8 +73,11 @@ const TOUCH_SCREEN = "(max-width: 640px) and (pointer: coarse)";
  * keyboard and the cursor. Emptying the field is left to the geocoder's own X,
  * which puts the bar away with the result it drops.
  *
- * While the bar is open it holds a history entry, so that a phone's back
- * gesture closes it rather than leaving the page.
+ * The bar is deliberately left out of session history, so the back button keeps
+ * meaning what it always did. Holding an entry while the bar was open did let
+ * the back gesture close it, but Chrome on Android animates history navigation
+ * by sliding the whole page, and there is no way for a page to opt out of that,
+ * so dismissing a control that has its own arrow and X was costing a page slide.
  */
 const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
   const { current: map } = useMap();
@@ -94,7 +93,6 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
     );
     if (!geocoderEl || !input) return;
 
-    const isOpen = () => !geocoderEl.classList.contains(COLLAPSED_CLASS);
     const isEditing = () => geocoderEl.classList.contains(EDITING_CLASS);
     // Blurring alone would not put the bar away: the geocoder only collapses
     // itself while the field is empty.
@@ -154,35 +152,6 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       clearingResult = false;
     };
 
-    // An open search bar is the sort of thing a phone's back gesture is expected
-    // to close, so it takes a history entry of its own while it is open, and
-    // gives it back on the way out however it was closed. The entry carries no
-    // URL of its own, so going back stays on the page and only closes the bar.
-    const touchScreen = window.matchMedia(TOUCH_SCREEN);
-    let pushedHistoryEntry = false;
-
-    const syncHistoryEntry = () => {
-      if (isOpen()) {
-        if (pushedHistoryEntry || !touchScreen.matches) return;
-        window.history.pushState({ [SEARCH_HISTORY_STATE]: true }, "");
-        pushedHistoryEntry = true;
-        return;
-      }
-      if (!pushedHistoryEntry) return;
-      pushedHistoryEntry = false;
-      // Only the bar's own entry is ever dropped: anything else on top of it
-      // means going back would take the page with it.
-      if (window.history.state?.[SEARCH_HISTORY_STATE]) window.history.back();
-    };
-
-    const onPopState = () => {
-      if (!pushedHistoryEntry) return;
-      pushedHistoryEntry = false;
-      close();
-    };
-
-    const openState = new MutationObserver(syncHistoryEntry);
-
     backButton.addEventListener("click", onBackButtonClick);
     backButton.addEventListener("mousedown", keepFocus);
     clearButton?.addEventListener("mousedown", onClearMouseDown);
@@ -191,11 +160,6 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
     input.addEventListener("focus", onFocus);
     input.addEventListener("blur", onBlur);
     geocoder?.on("result", onResult);
-    openState.observe(geocoderEl, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    window.addEventListener("popstate", onPopState);
 
     return () => {
       backButton.removeEventListener("click", onBackButtonClick);
@@ -206,8 +170,6 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       input.removeEventListener("focus", onFocus);
       input.removeEventListener("blur", onBlur);
       geocoder?.off("result", onResult);
-      openState.disconnect();
-      window.removeEventListener("popstate", onPopState);
     };
   }, [map, geocoder]);
 };
