@@ -35,6 +35,23 @@
   display: none !important;
 }
 
+/* The corner controls are shorter than the search bar, and both corners start
+   at the same offset, so left to themselves they sit high against it. Giving
+   their row the bar's height centres them on it: on the search icon while the
+   bar is collapsed, on the field itself once it is showing a result. The
+   heights are the geocoder's own, one per breakpoint. */
+.maplibregl-ctrl-top-right > .maplibregl-ctrl {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+}
+
+@media (max-width: 640px) {
+  .maplibregl-ctrl-top-right > .maplibregl-ctrl {
+    min-height: 50px;
+  }
+}
+
 .maplibregl-ctrl-top-right {
   transition:
     opacity 0.2s ease,

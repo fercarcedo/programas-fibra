@@ -60,6 +60,8 @@ const BACK_ARROW_ICON =
 
 const EDITING_CLASS = "pf-search-editing";
 const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
+const SEARCH_HISTORY_STATE = "pfSearchOpen";
+const NARROW_SCREEN = "(max-width: 640px)";
 
 /**
  * Drives the three states the search bar moves through on narrow screens, which
@@ -70,7 +72,11 @@ const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
  * this adds on the left abandons it, keeping the text for the next time the bar
  * is opened. Picking a result instead commits it: the map has travelled there
  * and the query stays on as a label of where that is, so the bar only drops the
- * keyboard and the cursor. Emptying the field is left to the geocoder's own X.
+ * keyboard and the cursor. Emptying the field is left to the geocoder's own X,
+ * which puts the bar away with the result it drops.
+ *
+ * While the bar is open it holds a history entry, so that a phone's back
+ * gesture closes it rather than leaving the page.
  */
 const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
   const { current: map } = useMap();
@@ -85,6 +91,15 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       ".maplibregl-ctrl-geocoder--input",
     );
     if (!geocoderEl || !input) return;
+
+    const isOpen = () => !geocoderEl.classList.contains(COLLAPSED_CLASS);
+    const isEditing = () => geocoderEl.classList.contains(EDITING_CLASS);
+    // Blurring alone would not put the bar away: the geocoder only collapses
+    // itself while the field is empty.
+    const close = () => {
+      input.blur();
+      geocoderEl.classList.add(COLLAPSED_CLASS);
+    };
 
     const onFocus = () => geocoderEl.classList.add(EDITING_CLASS);
     const onBlur = () => geocoderEl.classList.remove(EDITING_CLASS);
@@ -102,10 +117,8 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       // be stopped here at the target to keep the list from popping back up.
       event.stopPropagation();
       // Going back is not clearing, so the query is left in place for the next
-      // time the bar is opened. Blurring alone would not put the bar away: the
-      // geocoder only collapses itself while the field is empty.
-      input.blur();
-      geocoderEl.classList.add(COLLAPSED_CLASS);
+      // time the bar is opened.
+      close();
     };
 
     // The geocoder puts the focus back on the input as it announces a result,
@@ -123,22 +136,75 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       ".maplibregl-ctrl-geocoder--button",
     );
 
+    // Whether the X is dropping a result that is on screen has to be noted
+    // before the geocoder handles the click, because clearing refocuses the
+    // field and so leaves the bar looking as though it were being typed into.
+    let clearingResult = false;
+    const onClearMouseDown = (event: MouseEvent) => {
+      keepFocus(event);
+      clearingResult = !isEditing();
+    };
+
+    // Dropping a result was never a request to search again, so the bar is put
+    // away rather than reopened on the refocus the geocoder does while clearing.
+    const onClearClick = () => {
+      if (clearingResult) close();
+      clearingResult = false;
+    };
+
+    // An open search bar is the sort of thing a phone's back gesture is expected
+    // to close, so it takes a history entry of its own while it is open, and
+    // gives it back on the way out however it was closed.
+    const narrowScreen = window.matchMedia(NARROW_SCREEN);
+    let pushedHistoryEntry = false;
+
+    const syncHistoryEntry = () => {
+      if (isOpen()) {
+        if (pushedHistoryEntry || !narrowScreen.matches) return;
+        window.history.pushState({ [SEARCH_HISTORY_STATE]: true }, "");
+        pushedHistoryEntry = true;
+        return;
+      }
+      if (!pushedHistoryEntry) return;
+      pushedHistoryEntry = false;
+      // Only the bar's own entry is ever dropped: anything else on top of it
+      // means going back would take the page with it.
+      if (window.history.state?.[SEARCH_HISTORY_STATE]) window.history.back();
+    };
+
+    const onPopState = () => {
+      if (!pushedHistoryEntry) return;
+      pushedHistoryEntry = false;
+      close();
+    };
+
+    const openState = new MutationObserver(syncHistoryEntry);
+
     backButton.addEventListener("click", onBackButtonClick);
     backButton.addEventListener("mousedown", keepFocus);
-    clearButton?.addEventListener("mousedown", keepFocus);
+    clearButton?.addEventListener("mousedown", onClearMouseDown);
+    clearButton?.addEventListener("click", onClearClick);
     geocoderEl.prepend(backButton);
     input.addEventListener("focus", onFocus);
     input.addEventListener("blur", onBlur);
     geocoder?.on("result", onResult);
+    openState.observe(geocoderEl, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    window.addEventListener("popstate", onPopState);
 
     return () => {
       backButton.removeEventListener("click", onBackButtonClick);
       backButton.removeEventListener("mousedown", keepFocus);
-      clearButton?.removeEventListener("mousedown", keepFocus);
+      clearButton?.removeEventListener("mousedown", onClearMouseDown);
+      clearButton?.removeEventListener("click", onClearClick);
       backButton.remove();
       input.removeEventListener("focus", onFocus);
       input.removeEventListener("blur", onBlur);
       geocoder?.off("result", onResult);
+      openState.disconnect();
+      window.removeEventListener("popstate", onPopState);
     };
   }, [map, geocoder]);
 };
