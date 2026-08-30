@@ -54,14 +54,19 @@ const BACK_ARROW_ICON =
   'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
   '<path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>';
 
+const EDITING_CLASS = "pf-search-editing";
+const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
+
 /**
- * Takes care of dismissing the search bar. On narrow screens closing the bar
- * and clearing its contents are two separate actions: the back arrow this adds
- * on the left dismisses the bar and keeps the query, while the geocoder's own X
- * on the right only empties the field. CSS decides when the arrow is visible.
+ * Drives the three states the search bar moves through on narrow screens, which
+ * CSS then styles: collapsed to its icon, being typed into, and showing a
+ * result that has been picked.
  *
- * Picking a result also dismisses the bar, since the map has already travelled
- * to the place being searched for and the query is spent.
+ * While a query is being typed the bar needs the whole row, and the back arrow
+ * this adds on the left abandons it, keeping the text for the next time the bar
+ * is opened. Picking a result instead commits it: the map has travelled there
+ * and the query stays on as a label of where that is, so the bar only drops the
+ * keyboard and the cursor. Emptying the field is left to the geocoder's own X.
  */
 const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
   const { current: map } = useMap();
@@ -77,13 +82,8 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
     );
     if (!geocoderEl || !input) return;
 
-    // Blurring alone does not close the bar: the geocoder only collapses itself
-    // while the field is empty, and it puts the focus back on the input after a
-    // result is picked. Collapse it here instead.
-    const dismiss = () => {
-      input.blur();
-      geocoderEl.classList.add("maplibregl-ctrl-geocoder--collapsed");
-    };
+    const onFocus = () => geocoderEl.classList.add(EDITING_CLASS);
+    const onBlur = () => geocoderEl.classList.remove(EDITING_CLASS);
 
     const backButton = document.createElement("button");
     backButton.type = "button";
@@ -98,24 +98,42 @@ const useDismissableSearchBar = (geocoder: MaplibreGeocoder | undefined) => {
       // be stopped here at the target to keep the list from popping back up.
       event.stopPropagation();
       // Going back is not clearing, so the query is left in place for the next
-      // time the bar is opened.
-      dismiss();
+      // time the bar is opened. Blurring alone would not put the bar away: the
+      // geocoder only collapses itself while the field is empty.
+      input.blur();
+      geocoderEl.classList.add(COLLAPSED_CLASS);
     };
 
-    // Picking a result leaves a query that has already been travelled to, so
-    // the bar is emptied as well as closed.
-    const onResult = () => {
-      geocoder?.clear();
-      dismiss();
-    };
+    // The geocoder puts the focus back on the input as it announces a result,
+    // which is what was leaving the keyboard up over the map the bar had just
+    // travelled to. The query itself stays, now labelling that result.
+    const onResult = () => input.blur();
+
+    // Pressing either of the buttons inside the bar would otherwise take the
+    // focus off the field, which ends the editing state, which resizes the bar
+    // and hides the back arrow, all before the press has turned into a click:
+    // the arrow moves out from under the finger that is tapping it. Holding on
+    // to the focus keeps the bar still until the click has been dealt with.
+    const keepFocus = (event: MouseEvent) => event.preventDefault();
+    const clearButton = geocoderEl.querySelector<HTMLElement>(
+      ".maplibregl-ctrl-geocoder--button",
+    );
 
     backButton.addEventListener("click", onBackButtonClick);
+    backButton.addEventListener("mousedown", keepFocus);
+    clearButton?.addEventListener("mousedown", keepFocus);
     geocoderEl.prepend(backButton);
+    input.addEventListener("focus", onFocus);
+    input.addEventListener("blur", onBlur);
     geocoder?.on("result", onResult);
 
     return () => {
       backButton.removeEventListener("click", onBackButtonClick);
+      backButton.removeEventListener("mousedown", keepFocus);
+      clearButton?.removeEventListener("mousedown", keepFocus);
       backButton.remove();
+      input.removeEventListener("focus", onFocus);
+      input.removeEventListener("blur", onBlur);
       geocoder?.off("result", onResult);
     };
   }, [map, geocoder]);

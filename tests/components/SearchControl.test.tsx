@@ -195,6 +195,7 @@ describe("SearchControl", () => {
 
   describe("dismissing the search bar", () => {
     const COLLAPSED_CLASS = "maplibregl-ctrl-geocoder--collapsed";
+    const EDITING_CLASS = "pf-search-editing";
     let geocoderEl: HTMLElement;
     let input: HTMLInputElement;
 
@@ -212,6 +213,7 @@ describe("SearchControl", () => {
       mapContainer.innerHTML =
         '<div class="maplibregl-ctrl-geocoder">' +
         '<input class="maplibregl-ctrl-geocoder--input" />' +
+        '<button class="maplibregl-ctrl-geocoder--button"></button>' +
         "</div>";
       document.body.appendChild(mapContainer);
       mocks.mapContainer = mapContainer;
@@ -269,15 +271,46 @@ describe("SearchControl", () => {
       expect(containerListener).not.toHaveBeenCalled();
     });
 
-    it("clears and collapses the search bar once a result is picked", () => {
+    it("marks the bar as being edited only while the field has the focus", () => {
       renderWithMap();
-      input.value = "Oviedo";
+
+      input.focus();
+      expect(geocoderEl.classList.contains(EDITING_CLASS)).toBe(true);
+
+      input.blur();
+      expect(geocoderEl.classList.contains(EDITING_CLASS)).toBe(false);
+    });
+
+    it("holds on to the focus while the back button is pressed", () => {
+      renderWithMap();
+      const mousedown = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      });
+
+      geocoderEl
+        .querySelector<HTMLElement>(".pf-geocoder-back")!
+        .dispatchEvent(mousedown);
+
+      // losing the focus here would resize the bar and hide the arrow before
+      // the press became a click
+      expect(mousedown.defaultPrevented).toBe(true);
+    });
+
+    it("keeps the query on screen but drops the focus once a result is picked", () => {
+      renderWithMap();
+      input.value = "Oviedo, Asturias, España";
+      input.focus();
 
       emitResult();
 
-      // the map has already travelled to the result, so the query is spent
-      expect(mocks.geocoder!.clear).toHaveBeenCalled();
-      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
+      // picking a result commits it: the query stays as a label of where the
+      // map now is, so only the keyboard and the cursor go away
+      expect(mocks.geocoder!.clear).not.toHaveBeenCalled();
+      expect(input.value).toBe("Oviedo, Asturias, España");
+      expect(document.activeElement).not.toBe(input);
+      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(false);
+      expect(geocoderEl.classList.contains(EDITING_CLASS)).toBe(false);
     });
 
     it("stops listening for results when unmounted", () => {
