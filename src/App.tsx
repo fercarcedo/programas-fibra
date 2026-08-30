@@ -109,12 +109,12 @@ function App() {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [isLegendOpen, setLegendOpen] = useState(false);
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
   const [selectedOperators, setSelectedOperators] = useState<Set<string>>(
-    new Set(),
+    () => new Set(),
   );
   const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(
-    new Set(),
+    () => new Set(),
   );
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [basemap, setBasemap] = useState<"map" | "satellite">("map");
@@ -466,14 +466,14 @@ function App() {
             setBasemap(basemap === "map" ? "satellite" : "map")
           }
           onClick={() => {
-            setLegendOpen(!isLegendOpen);
+            setIsLegendOpen(!isLegendOpen);
           }}
         />
 
         <AnimatePresence>
           {isLegendOpen && (
             <LegendPanel
-              onClose={() => setLegendOpen(false)}
+              onClose={() => setIsLegendOpen(false)}
               selectedOperators={selectedOperators}
               setSelectedOperators={setSelectedOperators}
               selectedPrograms={selectedPrograms}

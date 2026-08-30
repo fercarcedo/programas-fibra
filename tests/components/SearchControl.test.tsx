@@ -212,16 +212,6 @@ describe("SearchControl", () => {
       clearButton.click();
     };
 
-    // MutationObserver callbacks arrive as microtasks
-    const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
-
-    const reopen = async () => {
-      geocoderEl.classList.add(COLLAPSED_CLASS);
-      await flush();
-      geocoderEl.classList.remove(COLLAPSED_CLASS);
-      await flush();
-    };
-
     const emitResult = () => {
       const [, onResult] =
         mocks.geocoder!.on.mock.calls.find(([type]) => type === "result") ?? [];
@@ -256,16 +246,7 @@ describe("SearchControl", () => {
       );
     };
 
-    beforeEach(() => {
-      // the history entry is only taken on the screens the bar takes over
-      vi.stubGlobal(
-        "matchMedia",
-        vi.fn(() => ({ matches: true })),
-      );
-    });
-
     afterEach(() => {
-      vi.unstubAllGlobals();
       mocks.mapContainer?.remove();
       mocks.mapContainer = null;
       mocks.geocoder = null;
@@ -367,21 +348,17 @@ describe("SearchControl", () => {
       expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(false);
     });
 
-    it("takes a history entry while the bar is open", async () => {
+    it("leaves session history alone while the bar is opened and closed", () => {
+      const entries = window.history.length;
       renderWithMap();
 
-      await reopen();
+      geocoderEl.classList.remove(COLLAPSED_CLASS);
+      clickBackButton();
 
-      expect(window.history.state?.pfSearchOpen).toBe(true);
-    });
-
-    it("closes the bar when the back gesture pops its history entry", async () => {
-      renderWithMap();
-      await reopen();
-
-      window.dispatchEvent(new PopStateEvent("popstate"));
-
-      expect(geocoderEl.classList.contains(COLLAPSED_CLASS)).toBe(true);
+      // holding an entry would let the back gesture close the bar, at the cost
+      // of Chrome on Android sliding the whole page on the way out
+      expect(window.history.length).toBe(entries);
+      expect(window.history.state?.pfSearchOpen).toBeUndefined();
     });
 
     it("stops listening for results when unmounted", () => {
