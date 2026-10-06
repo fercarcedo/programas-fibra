@@ -121,7 +121,7 @@ function AreaPopup(props: AreaPopupProps) {
       closeOnClick={false}
     >
       <div>
-        <h2 className="text-lg font-semibold max-w-[240px]">
+        <h2 className="text-lg font-semibold max-w-[240px] pr-8">
           {props.data.grantee}
         </h2>
         <h3 className="text-base font-medium pb-4">
