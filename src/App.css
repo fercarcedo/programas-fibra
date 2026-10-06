@@ -245,3 +245,11 @@
     inset: -6px;
   }
 }
+
+/* The geolocate button is only marked as disabled while it waits for a
+   position (see GeolocateControl), so it keeps its icon but should not look
+   pressable. */
+.maplibregl-ctrl button.maplibregl-ctrl-geolocate[aria-disabled="true"] {
+  cursor: progress;
+  background-color: transparent;
+}

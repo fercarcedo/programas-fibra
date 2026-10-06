@@ -5,10 +5,10 @@ import {
 } from "@worker/presentation/handlers/data";
 import type { GeoDataService } from "@worker/application/services/geo_data_service";
 
-const mockGeoDataService: GeoDataService = {
+const mockGeoDataService = {
   getData: vi.fn(async (key: string) => {
     if (key === "aggregated-first.json") {
-      return { data: "test-data" };
+      return new Response(JSON.stringify({ data: "test-data" })).body;
     }
     return null;
   }),
@@ -18,7 +18,7 @@ const mockGeoDataService: GeoDataService = {
     }
     return null;
   }),
-};
+} as unknown as GeoDataService;
 
 describe("Data handler", () => {
   it("should return data", async () => {
@@ -39,6 +39,7 @@ describe("Data handler", () => {
     const response = await getData(request, mockGeoDataService);
 
     expect(response.status).toEqual(200);
+    expect(await response.json()).toEqual({ data: "test-data" });
     const contentType = response.headers.get("Content-Type");
     expect(contentType).toContain("application/json");
     const cacheControl = response.headers.get("Cache-Control");

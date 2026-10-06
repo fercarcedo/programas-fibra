@@ -13,19 +13,25 @@ function BasemapControl(props: BasemapControlProps) {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   useControl(
-    () =>
-      ({
+    () => {
+      const div = document.createElement("div");
+      div.className = "maplibregl-ctrl";
+      return {
         onAdd: () => {
-          const div = document.createElement("div");
-          div.className = "maplibregl-ctrl";
           setContainer(div);
           return div;
         },
+        // MapLibre leaves taking a control off the map to the control itself.
+        // Left in place, the container would stay behind in its corner whenever
+        // the control is removed and added again, as StrictMode does on mount,
+        // pushing the one that replaced it a row down.
         onRemove: () => {
+          div.remove();
           setContainer(null);
         },
         getDefaultPosition: () => props.position,
-      }) as IControl,
+      } as IControl;
+    },
     {
       position: props.position,
     },

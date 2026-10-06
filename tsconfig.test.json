@@ -6,11 +6,8 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "strict": false,
-    "types": ["./worker-configuration.d.ts", "vitest/globals"],
-    "baseUrl": ".",
-    "paths": {
-      "@worker/*": ["./worker/*"]
-    }
+    "types": ["vite/client", "vitest/globals"]
   },
-  "include": ["vitest.config.ts", "tests"]
+  "include": ["vitest.config.ts", "tests"],
+  "exclude": ["tests/worker"]
 }

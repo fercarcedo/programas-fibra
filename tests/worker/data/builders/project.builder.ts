@@ -1,4 +1,4 @@
-import { Project } from "@worker/application/domain/project";
+import type { Project } from "@worker/application/domain/project";
 
 const DEFAULT_PROJECT: Project = {
   status: "finished",

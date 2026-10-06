@@ -4,15 +4,18 @@ import type { Env } from "@worker/types";
 import { buildProjectKV } from "../../data/builders/project_kv.builder";
 import { buildProject } from "../../data/builders/project.builder";
 
-const mockEnv: Env = {
+// The repository only ever reads from the namespace, so that is all the mock
+// provides.
+const mockEnv = {
   PROJECTS: {
     get: vi.fn(async (key: string) => {
       if (key === "TSI-061000-2019-0001") {
         return JSON.stringify(buildProjectKV());
       }
+      return null;
     }),
   },
-};
+} as unknown as Env;
 
 describe("KV project repository", () => {
   it("should return data", async () => {

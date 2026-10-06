@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
-import Map, {
-  GeolocateControl,
-  NavigationControl,
-  useControl,
-} from "react-map-gl/maplibre";
+import Map, { NavigationControl, useControl } from "react-map-gl/maplibre";
 import type { MapEvent } from "react-map-gl/maplibre";
 import { type Map as MapLibreMap, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import SearchControl from "./components/SearchControl";
+import GeolocateControl from "./components/GeolocateControl";
 import { type MapViewState, type PickingInfo } from "@deck.gl/core";
 
 import { H3HexagonLayer, MVTLayer } from "@deck.gl/geo-layers";
@@ -457,7 +454,7 @@ function App() {
           placeholder="Buscar"
         />
         <NavigationControl position="top-left" showCompass={false} />
-        <GeolocateControl position="top-left" showUserLocation={false} />
+        <GeolocateControl position="top-left" />
         <LegendControl
           position="top-right"
           isOpen={isLegendOpen}

@@ -1,19 +1,21 @@
 import { describe, expect, it, vi } from "vitest";
 import { R2GeoDataRepository } from "@worker/persistence/repositories/r2_geo_data_repository";
 import type { Env } from "@worker/types";
-import type { R2ObjectBody } from "@cloudflare/workers-types";
 
-const mockEnv: Env = {
+// The repository only ever reads from the bucket, so that is all the mock
+// provides.
+const mockEnv = {
   BUCKET_GEO: {
     get: vi.fn(async (key: string) => {
       if (key === "aggregated-first.json") {
         return createJsonMock({ data: "test-data" });
       }
+      return null;
     }),
   },
-};
+} as unknown as Env;
 
-async function consumeStream<T>(jsonStream: ReadableStream<T>): T {
+async function consumeStream(jsonStream: ReadableStream): Promise<unknown> {
   const response = new Response(jsonStream);
   return await response.json();
 }
@@ -47,7 +49,7 @@ function createJsonMock<T>(data: T): R2ObjectBody {
     httpMetadata: { contentType: "application/json" },
     checksums: {},
     writeHttpMetadata: vi.fn(),
-  } as R2ObjectBody;
+  } as unknown as R2ObjectBody;
 }
 
 describe("R2 geo data repository", () => {
@@ -69,7 +71,7 @@ describe("R2 geo data repository", () => {
 
     expect(stream).toBeNull();
     expect(mockEnv.BUCKET_GEO.get).toHaveBeenCalledWith(
-      "aggregated-first.json",
+      "aggregated-notfound.json",
     );
   });
 });

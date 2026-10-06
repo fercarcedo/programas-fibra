@@ -13,6 +13,8 @@ const mockRepository: ProjectRepository = {
     }
     return null;
   }),
+  getProjectsStatus: vi.fn(),
+  getProjectsStatusLastModified: vi.fn(),
 };
 
 describe("Project service", () => {
