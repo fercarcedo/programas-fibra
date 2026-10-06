@@ -212,3 +212,36 @@
   .maplibregl-ctrl-geocoder--button {
   display: block !important;
 }
+
+/* maplibre's popup close button is a bare "×" at the browser's default button
+   size, flush against the corner of the popup: a few pixels wide, and hard to
+   hit with a finger. It gets a proper round button set in from the corner,
+   with a 44px invisible hit area around it on touch screens. Scoped under
+   .maplibregl-popup because this file loads before maplibre's stylesheet,
+   whose rules would otherwise win. */
+.maplibregl-popup .maplibregl-popup-close-button {
+  top: 6px;
+  right: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 24px;
+  line-height: 1;
+  color: #404040;
+}
+
+.maplibregl-popup .maplibregl-popup-close-button:hover,
+.maplibregl-popup .maplibregl-popup-close-button:focus-visible {
+  background-color: #f3f4f6;
+}
+
+@media (pointer: coarse) {
+  .maplibregl-popup .maplibregl-popup-close-button::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+  }
+}
