@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PendingGeolocateControl } from "../../src/components/GeolocateControl";
+import { act, render, screen } from "@testing-library/react";
+import { useControl } from "react-map-gl/maplibre";
+import GeolocateControl, {
+  PendingGeolocateControl,
+} from "../../src/components/GeolocateControl";
+
+vi.mock("react-map-gl/maplibre", () => ({ useControl: vi.fn() }));
 
 const WAITING_CLASS = "maplibregl-ctrl-geolocate-waiting";
 
@@ -11,7 +17,15 @@ type Callbacks = {
 // The control is exercised without a map: only the button and the answer from
 // the device matter here, so it is given a button of its own and treated as
 // already set up, and geolocation is answered by hand.
-const setUp = () => {
+const setUp = (
+  control = new PendingGeolocateControl(),
+  maxBounds: { west: number; east: number; south: number; north: number } = {
+    west: -19.1,
+    east: 8,
+    south: 26.8,
+    north: 44.5,
+  },
+) => {
   const requests: Callbacks[] = [];
   const getCurrentPosition = vi.fn(
     (
@@ -28,13 +42,17 @@ const setUp = () => {
     value: { getCurrentPosition },
   });
 
-  const control = new PendingGeolocateControl();
   const button = document.createElement("button");
   control._geolocateButton = button;
   control._setup = true;
   // Stands in for the map: moving the camera is not what is under test.
   const fakeMap = {
-    getMaxBounds: () => null,
+    getMaxBounds: () => ({
+      getWest: () => maxBounds.west,
+      getEast: () => maxBounds.east,
+      getSouth: () => maxBounds.south,
+      getNorth: () => maxBounds.north,
+    }),
     _getUIString: (key: string) => key,
   };
   (control as unknown as { _map: unknown })._map = fakeMap;
@@ -131,5 +149,177 @@ describe("PendingGeolocateControl", () => {
       timeout: 15_000,
       maximumAge: 60_000,
     });
+  });
+
+  it("reports a refusal to share the location", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+    );
+
+    control.trigger();
+    requests[0].onError({ code: 1 } as GeolocationPositionError);
+
+    expect(onFailureChange).toHaveBeenLastCalledWith("denied");
+  });
+
+  it("reports a position that could not be found", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+    );
+
+    control.trigger();
+    requests[0].onError({ code: 3 } as GeolocationPositionError);
+
+    expect(onFailureChange).toHaveBeenLastCalledWith("unavailable");
+  });
+
+  it("reports a position outside the map", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+      { west: 0, east: 1, south: 0, north: 1 },
+    );
+
+    control.trigger();
+    requests[0].onSuccess(position);
+
+    expect(control._updateCamera).not.toHaveBeenCalled();
+    expect(onFailureChange).toHaveBeenLastCalledWith("outofbounds");
+  });
+
+  it("reports giving up on a device that never answers", () => {
+    const onFailureChange = vi.fn();
+    const { control } = setUp(new PendingGeolocateControl(onFailureChange));
+
+    control.trigger();
+    vi.advanceTimersByTime(30_000);
+
+    expect(onFailureChange).toHaveBeenLastCalledWith("unavailable");
+  });
+
+  it("does not report a position that arrives after giving up", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+    );
+
+    control.trigger();
+    vi.advanceTimersByTime(30_000);
+    requests[0].onError({ code: 3 } as GeolocationPositionError);
+
+    expect(
+      onFailureChange.mock.calls.filter(([failure]) => failure !== null),
+    ).toHaveLength(1);
+  });
+
+  it("clears the last failure with a new tap", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+    );
+
+    control.trigger();
+    requests[0].onError({ code: 3 } as GeolocationPositionError);
+    control.trigger();
+
+    expect(onFailureChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it("does not report a position on the map", () => {
+    const onFailureChange = vi.fn();
+    const { control, requests } = setUp(
+      new PendingGeolocateControl(onFailureChange),
+    );
+
+    control.trigger();
+    requests[0].onSuccess(position);
+
+    expect(
+      onFailureChange.mock.calls.filter(([failure]) => failure !== null),
+    ).toHaveLength(0);
+  });
+});
+
+describe("GeolocateControl", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  // Hands back the control GeolocateControl asked useControl to create, which
+  // is how the failures it reports reach the component.
+  const renderControl = () => {
+    let control: PendingGeolocateControl | undefined;
+    vi.mocked(useControl).mockImplementation(((
+      create: () => PendingGeolocateControl,
+    ) => {
+      control ??= create();
+      return control;
+    }) as unknown as typeof useControl);
+    render(<GeolocateControl position="top-left" />);
+    return control!;
+  };
+
+  it("tells the user when the location could not be found", () => {
+    const control = renderControl();
+    const { requests } = setUp(control);
+
+    act(() => {
+      control.trigger();
+      requests[0].onError({ code: 3 } as GeolocationPositionError);
+    });
+
+    expect(screen.getByRole("status").textContent).toBe(
+      "No se ha podido obtener tu ubicación. Inténtalo de nuevo.",
+    );
+  });
+
+  it("tells the user when they have refused to share the location", () => {
+    const control = renderControl();
+    const { requests } = setUp(control);
+
+    act(() => {
+      control.trigger();
+      requests[0].onError({ code: 1 } as GeolocationPositionError);
+    });
+
+    expect(screen.getByRole("status").textContent).toContain(
+      "No se ha permitido el acceso a tu ubicación",
+    );
+  });
+
+  it("tells the user when they are outside the map", () => {
+    const control = renderControl();
+    const { requests } = setUp(control, {
+      west: 0,
+      east: 1,
+      south: 0,
+      north: 1,
+    });
+
+    act(() => {
+      control.trigger();
+      requests[0].onSuccess(position);
+    });
+
+    expect(screen.getByRole("status").textContent).toBe(
+      "Tu ubicación está fuera de la zona que cubre el mapa.",
+    );
+  });
+
+  it("shows nothing while the location is being found", () => {
+    const control = renderControl();
+    setUp(control);
+
+    act(() => {
+      control.trigger();
+    });
+
+    expect(screen.queryByRole("status")).toBeNull();
   });
 });
