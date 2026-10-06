@@ -14,7 +14,12 @@ type Callbacks = {
 const setUp = () => {
   const requests: Callbacks[] = [];
   const getCurrentPosition = vi.fn(
-    (onSuccess: PositionCallback, onError: PositionErrorCallback) => {
+    (
+      onSuccess: PositionCallback,
+      onError: PositionErrorCallback,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _options?: PositionOptions,
+    ) => {
       requests.push({ onSuccess, onError });
     },
   );
