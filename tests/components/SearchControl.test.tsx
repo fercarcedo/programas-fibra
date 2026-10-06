@@ -1,9 +1,17 @@
-import { afterEach, beforeEach, describe, expect, it, Mock, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  vi,
+} from "vitest";
 import { useControl } from "react-map-gl/maplibre";
 import { render } from "@testing-library/react";
 import SearchControl from "../../src/components/SearchControl";
 import MaplibreGeocoder, {
-  MaplibreGeocoderFeatureResults,
+  type MaplibreGeocoderFeatureResults,
 } from "@maplibre/maplibre-gl-geocoder";
 import maplibregl from "maplibre-gl";
 import search from "../../src/api/nominatim";

@@ -6,7 +6,9 @@ import {
 import type { ProjectService } from "@worker/application/services/project_service";
 import { buildProject } from "../../data/builders/project.builder";
 
-const mockProjectService: ProjectService = {
+// The service is a class with private members of its own, which the mock has
+// no business reproducing.
+const mockProjectService = {
   getProject: vi.fn(async (projectId: string) => {
     if (projectId === "TSI-061000-2019-0001") {
       return buildProject();
@@ -15,7 +17,7 @@ const mockProjectService: ProjectService = {
   }),
   getProjectsStatus: vi.fn(),
   getProjectsStatusLastModified: vi.fn(),
-};
+} as unknown as ProjectService;
 
 describe("Project handler", () => {
   it("should return project", async () => {

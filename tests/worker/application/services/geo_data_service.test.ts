@@ -9,9 +9,10 @@ const mockRepository: GeoDataRepository = {
     }
     return null;
   }),
+  getETag: vi.fn(),
 };
 
-async function consumeStream<T>(jsonStream: ReadableStream<T>): T {
+async function consumeStream(jsonStream: ReadableStream): Promise<unknown> {
   const response = new Response(jsonStream);
   return await response.json();
 }

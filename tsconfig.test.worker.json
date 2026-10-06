@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.worker.tsbuildinfo",
+    "strict": false,
+    "types": ["./worker-configuration.d.ts", "vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "@worker/*": ["./worker/*"]
+    }
+  },
+  "include": ["./worker-configuration.d.ts", "tests/worker"]
+}

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { toDomain } from "@worker/persistence/mapper/project_mapper";
-import { ProjectKV } from "@worker/persistence/model/project_kv";
-import { Project } from "@worker/application/domain/project";
+import type { ProjectKV } from "@worker/persistence/model/project_kv";
+import type { Project } from "@worker/application/domain/project";
 import { buildProjectKV } from "../../data/builders/project_kv.builder";
 import { buildProject } from "../../data/builders/project.builder";
 

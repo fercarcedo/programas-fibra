@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest",
+    "typecheck:tests": "tsc -p tsconfig.test.json --noEmit && tsc -p tsconfig.test.worker.json --noEmit",
     "format": "npx prettier . --write",
     "check-format": "npx prettier . --check",
     "preview": "npm run build && vite preview",

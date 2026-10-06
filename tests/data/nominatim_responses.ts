@@ -1,4 +1,4 @@
-import { NominatimSearchResponse } from "../../src/api/nominatim/types";
+import type { NominatimSearchResponse } from "../../src/api/nominatim/types";
 
 export const MOCK_NOMINATIM_RESPONSE_SUCCESS: NominatimSearchResponse[] = [
   {

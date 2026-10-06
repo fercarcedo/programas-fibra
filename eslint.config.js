@@ -42,13 +42,14 @@ export default tseslint.config(
   {
     // Test files live outside the app/worker tsconfig projects (they're not
     // part of the production build), so they get their own tsconfig here
-    // rather than being pulled into `tsc -b`.
+    // rather than being pulled into `tsc -b`. The worker's tests get one of
+    // their own, since Cloudflare's runtime types clash with the DOM's.
     files: ["tests/**/*.{ts,tsx}", "vitest.config.ts"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: { ...globals.browser, ...globals.node },
       parserOptions: {
-        project: ["./tsconfig.test.json"],
+        project: ["./tsconfig.test.json", "./tsconfig.test.worker.json"],
         tsconfigRootDir: import.meta.dirname,
       },
     },
